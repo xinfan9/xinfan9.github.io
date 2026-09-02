@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+  <head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="Content-Language" content="zh-CN">
+	<title>链表 - xinfan9's blog</title>
+
+	<link rel="icon" href="/styles/images/favicon.jpg">
+
+	<!-- Preconnect for CDN -->
+	
+	<link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+	<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+	
+
+
+	<!-- Inline Critical Reset (was index.css) -->
+	<style>
+		*,*::before,*::after{box-sizing:border-box}html{-ms-text-size-adjust:100%;-webkit-text-size-adjust:100%;-webkit-tap-highlight-color:rgba(0,0,0,0)}body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Microsoft YaHei",sans-serif;font-size:14px;line-height:1.42857143;color:#333;background-color:#f7f7f7}article,aside,details,figcaption,figure,footer,header,main,nav,section,summary{display:block}a{color:#43759e;text-decoration:none;background:transparent}a:hover,a:focus{color:#2c4d68;text-decoration:underline}a:focus{outline:thin dotted;outline-offset:-2px}img{vertical-align:middle;max-width:100%;height:auto}input,button,select,textarea{font-family:inherit;font-size:inherit;line-height:inherit}h1,h2,h3,h4,h5,h6{margin-top:0}.container{max-width:1200px;margin-left:auto;margin-right:auto;padding-left:15px;padding-right:15px}.clearfix::after{content:"";display:table;clear:both}.text-muted{color:#777}.sr-only{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0,0,0,0);border:0}
+	</style>
+
+	
+	<link rel="prefetch" as="image" href="/styles/images/api/background.webp">
+
+	<!-- Clarity Blog Theme -->
+	<link rel="stylesheet" href="/assets/css/clarity-blog.css?v=1788352046">
+
+	<!-- Prism.js Theme (non-blocking, only needed for code blocks) -->
+	
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" media="print" onload="this.media='all'" onerror="console.warn('Prism CSS load failed')">
+	
+	
+	<link rel="canonical" href="https://xinfang.site/2026/06/02/%E5%8F%A4%E6%B3%95%E7%BC%96%E7%A8%8B/%E9%93%BE%E8%A1%A8/">
+	<link rel="alternate" type="application/rss+xml" title="xinfan9's blog" href="https://xinfang.site/feed.xml">
+	
+	<meta name="description" content="链表是一种线性数据结构，各个元素节点通过记录下一节点地址的引用（指针）连接，内存无需连续。由于保存了引用，在相同数据量下，链表比数组占用更多的内存空间。
+">
+
+	<!-- Open Graph for social sharing -->
+	<meta property="og:title" content="链表">
+	<meta property="og:description" content="链表是一种线性数据结构，各个元素节点通过记录下一节点地址的引用（指针）连接，内存无需连续。由于保存了引用，在相同数据量下，链表比数组占用更多的内存空间。
+">
+	<meta property="og:url" content="https://xinfang.site/2026/06/02/%E5%8F%A4%E6%B3%95%E7%BC%96%E7%A8%8B/%E9%93%BE%E8%A1%A8/">
+	<meta property="og:site_name" content="xinfan9's blog">
+	<meta property="og:type" content="article">
+	<meta property="article:published_time" content="2026-06-02T15:03:23+08:00">
+	
+	<meta property="og:image" content="https://xinfang.site/styles/images/api/background.webp">
+	<meta property="og:image:width" content="1200">
+	<meta property="og:image:height" content="630">
+	
+	<meta property="og:locale" content="zh_CN">
+
+	<!-- Twitter Card -->
+	<meta name="twitter:card" content="summary_large_image">
+	<meta name="twitter:title" content="链表">
+	<meta name="twitter:description" content="链表是一种线性数据结构，各个元素节点通过记录下一节点地址的引用（指针）连接，内存无需连续。由于保存了引用，在相同数据量下，链表比数组占用更多的内存空间。
+">
+	<meta name="twitter:image" content="https://xinfang.site/styles/images/favicon.jpg">
+	
+	<!-- Theme color for mobile browsers -->
+	<meta name="theme-color" content="#0b72d9" media="(prefers-color-scheme: light)">
+	<meta name="theme-color" content="#0f172a" media="(prefers-color-scheme: dark)">
+
+	<!-- Prevent FOUC for theme -->
+	<script>
+		(function() {
+			const savedTheme = localStorage.getItem('theme');
+			const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+			if (savedTheme) {
+				document.documentElement.setAttribute('data-theme', savedTheme);
+			} else if (prefersDark) {
+				document.documentElement.setAttribute('data-theme', 'dark');
+			}
+		})();
+	</script>
+	
+	<!-- Prism.js only on post pages with code blocks -->
+	
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" defer></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js" defer></script>
+	
+
+	<!-- Mermaid.js for diagram rendering (conditional) -->
+	
+
+	<!-- MathJax for LaTeX rendering (conditional) -->
+	
+
+	<!-- Blog Interactive Features -->
+	<script src="/assets/js/blog.js?v=1788352046" defer></script>
+
+	<!-- JSON-LD Structured Data -->
+	
+	<script type="application/ld+json">
+	{
+		"@context": "https://schema.org",
+		"@type": "BlogPosting",
+		"inLanguage": "zh-CN",
+		"headline": "链表",
+		"image": "https://xinfang.site/styles/images/favicon.jpg",
+		"datePublished": "2026-06-02T15:03:23+08:00",
+		"dateModified": "2026-06-02T15:03:23+08:00",
+		"author": {
+			"@type": "Person",
+			"name": "xinfan9"
+		},
+		"publisher": {
+			"@type": "Organization",
+			"name": "xinfan9's blog",
+			"logo": {
+				"@type": "ImageObject",
+				"url": "https://xinfang.site/styles/images/favicon.jpg"
+			}
+		},
+		"mainEntityOfPage": {
+			"@type": "WebPage",
+			"@id": "https://xinfang.site/2026/06/02/%E5%8F%A4%E6%B3%95%E7%BC%96%E7%A8%8B/%E9%93%BE%E8%A1%A8/"
+		},
+		"keywords": "古法编程",
+		"articleBody": "链表是一种线性数据结构，各个元素节点通过记录下一节点地址的引用（指针）连接，内存无需连续。由于保存了引用，在相同数据量下，链表比数组占用更多的内存空间。\n",
+		"description": "链表是一种线性数据结构，各个元素节点通过记录下一节点地址的引用（指针）连接，内存无需连续。由于保存了引用，在相同数据量下，链表比数组占用更多的内存空间。\n"
+	}
+	</script>
+	
+</head>
+
+  <body class="index">
+
+    <!-- Reading Progress Bar -->
+<div class="reading-progress" id="reading-progress"></div>
+
+<!-- Page Background -->
+<div class="post-background"></div>
+
+<div class="post-layout">
+  <!-- Left: TOC -->
+  <aside class="post-toc-sidebar" id="post-toc-sidebar" role="navigation" aria-label="文章目录">
+    <div class="toc-panel">
+      <div class="toc-title">
+        <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="12" x2="15" y2="12"></line><line x1="3" y1="18" x2="18" y2="18"></line></svg>
+        目录
+      </div>
+      <ul class="toc-list" id="toc-list"></ul>
+    </div>
+  </aside>
+
+  <!-- Center: Article -->
+  <main class="post-main">
+    <div class="panel docs-content">
+      <div class="wrapper">
+        <header class="post-header" role="banner">
+          <a href="https://xinfang.site/" class="back-home-link">
+            <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+            返回主页
+          </a>
+          <h1 class="post-title">链表</h1>
+          <div class="post-meta-info">
+            <time class="meta-item meta-date" datetime="2026-06-02T15:03:23+08:00">
+              <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+              2026-06-02
+            </time>
+            
+            <time class="meta-item meta-update" datetime="2026-06-02T15:03:23+08:00">
+              <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 2.2"/></svg>
+              2026-06-02
+            </time>
+            
+            <span class="meta-item meta-author">
+              <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+              xinfan9
+            </span>
+            
+            <span class="meta-item meta-words">
+              <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+              279 字
+            </span>
+            
+            <span class="meta-item meta-reading">
+              <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+              约 3 分钟
+            </span>
+          </div>
+        </header>
+        <article class="post-content" role="article">
+          <p>链表是一种线性数据结构，各个元素节点通过记录下一节点地址的引用（指针）连接，内存无需连续。由于保存了引用，在相同数据量下，链表比数组占用更多的内存空间。</p>
+
+<p><img src="/post-images/古法编程/2026-06-02-链表.assets/image-20260602111735683.webp" alt="image-20260602111735683" /></p>
+
+<p>链表的节点结构</p>
+
+<pre><code class="language-cpp">struct ListNode {
+  int val;
+  ListNode* next;
+  ListNode(int x): val(x), next(nullptr) {}
+}
+</code></pre>
+
+<h1 id="链表常用操作">链表常用操作</h1>
+
+<h2 id="初始化链表">初始化链表</h2>
+
+<pre><code class="language-cpp">ListNode* n0 = new ListNode(1);
+ListNode* n1 = new ListNode(2);
+n0-&gt;next = n1;
+</code></pre>
+
+<p>通常将头节点作为链表的简称。</p>
+
+<h2 id="插入节点">插入节点</h2>
+
+<p>链表中插入节点只需要改变当前节点和前一个节点的引用。</p>
+
+<p><img src="/post-images/古法编程/2026-06-02-链表.assets/image-20260602142147098.webp" alt="image-20260602142147098" /></p>
+
+<pre><code class="language-cpp">void insert(ListNode* n0, ListNode* P) {
+  ListNode* n1 = n0-&gt;next;
+  n0-&gt;next = P;
+  P-&gt;next = n1;
+}
+</code></pre>
+
+<h2 id="删除节点">删除节点</h2>
+
+<p>删除节点只需要改变一个节点的引用。</p>
+
+<p><img src="/post-images/古法编程/2026-06-02-链表.assets/image-20260602144516594.webp" alt="image-20260602144516594" /></p>
+
+<pre><code class="language-cpp">void remove(ListNode* n0) {
+  if (n0-&gt;next == nullptr) {
+    return;
+  }
+  
+  ListNode* P = n0-&gt;next;
+  ListNode* n1 = P-&gt;next;
+  n0-&gt;next = n1;
+  delete P;
+}
+</code></pre>
+
+<h2 id="访问节点">访问节点</h2>
+
+<p>在链表中，程序需要从头节点出发访问目标节点。</p>
+
+<pre><code class="language-cpp">ListNode* access(ListNode* head, int index) {
+  for (int i = 0; i &lt; index; ++i) {
+    if (head == nullptr) {
+      return nullptr;
+    }
+    head = head-&gt;next;
+  }
+  
+  return head;
+}
+</code></pre>
+
+<h2 id="查找节点">查找节点</h2>
+
+<pre><code class="language-cpp">int find(ListNode* head, int target) {
+  int index = 0;
+  while (head != nullptr) {
+    if (head-&gt;val == target) return index;
+    head = head-&gt;next;
+    ++index;
+  }
+  
+  return -1;
+}
+</code></pre>
+
+<h1 id="常见链表类型">常见链表类型</h1>
+
+<p><img src="/post-images/古法编程/2026-06-02-链表.assets/image-20260602145834877.webp" alt="image-20260602145834877" /></p>
+
+<pre><code class="language-cpp">struct ListNode {
+  int val;
+  ListNode* next;
+  ListNode* prev;
+  ListNode(int x) : val(x), next(nullptr), prev(nullptr) {}
+}
+</code></pre>
+
+<h1 id="链表应用">链表应用</h1>
+
+<p>栈</p>
+
+<p>队列</p>
+
+<p>哈希表（解决哈希冲突）</p>
+
+<p>图（邻接表）</p>
+
+<p>红黑树</p>
+
+<p>B树</p>
+
+<p>浏览器历史</p>
+
+<p>LRU算法</p>
+
+<p>时间片轮转调度（环形链表）</p>
+
+<p>数据缓冲区（环形链表）：在音频、视频播放器中，数据流被分成多个缓冲块放入环形链表中。</p>
+
+<h1 id="qa">Q&amp;A</h1>
+
+<p><strong>Q:</strong> 可以直接使用 <code>ListNode a();</code> 来定义新变量吗？</p>
+
+<pre><code class="language-cpp">struct ListNode {
+  int val;
+  ListNode* next;
+  ListNode(int x): val(x), next(nullptr) {}
+}
+</code></pre>
+
+<p><strong>A：</strong>不可以，在 C++ 中，<strong>一旦你自定义了任意一个构造函数，编译器就不会再自动生成默认的无参构造函数</strong>。即使你的结构体里有无参构造函数，<code>ListNode a();</code> 这行代码在 C++ 中也不会被解析为“定义一个变量”，而是会被编译器当成<strong>声明了一个返回 <code>ListNode</code> 类型、名为 <code>a</code>、且没有参数的函数</strong>。</p>
+
+<p><strong>正确的定义方式</strong></p>
+
+<pre><code class="language-cpp">ListNode a(10); //栈上分配
+ListNode* a = new ListNode(10); //堆上分配，使用完后记得 delete a;
+
+struct ListNode {
+  int val;
+  ListNode* next;
+  // 补充无参构造函数
+  ListNode() : val(0), next(nullptr) {} 
+  
+  ListNode(int x): val(x), next(nullptr) {}
+};
+ListNode a; //
+</code></pre>
+
+<p>如果是用 <code>ListNode() = default; </code>则会引入垃圾值问题。</p>
+
+<p><strong>Q：如何优雅地解决“垃圾值”问题？</strong></p>
+
+<p><strong>A：对内置类型成员（int, double, 指针等），直接使用这个默认构造函数创建对象</strong>，其内置类型的成员变量将包含内存中的随机垃圾值（未定义行为）。</p>
+
+<p><strong>对自定义类型成员（如 std::string, 其他类等），它会调用该成员自己的默认构造函数来进行初始化。</strong>如果某个自定义类型的成员没有默认构造函数，编译就会直接报错。</p>
+
+<p><strong>推荐使用成员默认初始化方式。</strong></p>
+
+<pre><code>struct ListNode {
+    int val = 0;          // 默认初始化为 0
+    ListNode* next = nullptr; // 默认初始化为空指针
+};
+
+int main() {
+    ListNode a; // 此时 a.val 是 0，a.next 是 nullptr，非常安全
+}
+</code></pre>
+
+<p><strong>Q:</strong> 数组对比链表</p>
+
+<p><strong>A：</strong></p>
+
+<p><img src="/post-images/古法编程/2026-06-02-链表.assets/image-20260602145702425.webp" alt="image-20260602145702425" /></p>
+
+
+        </article>
+      </div>
+    </div>
+  </main>
+
+  <!-- Right: Category Articles -->
+  <aside class="post-category-sidebar" role="navigation" aria-label="分类文章列表">
+    <div class="category-panel">
+      
+      
+      <div class="category-sidebar-title">
+        <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
+        古法编程
+      </div>
+      <ul class="category-article-list">
+        
+        
+        <li class="">
+          <a href="/2026/07/30/%E5%8F%A4%E6%B3%95%E7%BC%96%E7%A8%8B/%E6%8E%92%E5%BA%8F/" title="排序">
+            <span class="article-title">排序</span>
+            <span class="article-date">07-30</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/07/30/%E5%8F%A4%E6%B3%95%E7%BC%96%E7%A8%8B/%E6%90%9C%E7%B4%A2/" title="搜索">
+            <span class="article-title">搜索</span>
+            <span class="article-date">07-30</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/07/28/%E5%8F%A4%E6%B3%95%E7%BC%96%E7%A8%8B/%E5%9B%BE/" title="图">
+            <span class="article-title">图</span>
+            <span class="article-date">07-28</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/07/28/%E5%8F%A4%E6%B3%95%E7%BC%96%E7%A8%8B/%E5%A0%86/" title="堆">
+            <span class="article-title">堆</span>
+            <span class="article-date">07-28</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/07/23/%E5%8F%A4%E6%B3%95%E7%BC%96%E7%A8%8B/%E4%BA%8C%E5%8F%89%E6%A0%91/" title="二叉树">
+            <span class="article-title">二叉树</span>
+            <span class="article-date">07-23</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/07/07/%E5%8F%A4%E6%B3%95%E7%BC%96%E7%A8%8B/%E5%8F%8C%E5%90%91%E9%98%9F%E5%88%97/" title="双向队列">
+            <span class="article-title">双向队列</span>
+            <span class="article-date">07-07</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/07/07/%E5%8F%A4%E6%B3%95%E7%BC%96%E7%A8%8B/%E5%93%88%E5%B8%8C%E8%A1%A8/" title="哈希表">
+            <span class="article-title">哈希表</span>
+            <span class="article-date">07-07</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/06/30/%E5%8F%A4%E6%B3%95%E7%BC%96%E7%A8%8B/%E9%98%9F%E5%88%97/" title="队列">
+            <span class="article-title">队列</span>
+            <span class="article-date">06-30</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/06/17/%E5%8F%A4%E6%B3%95%E7%BC%96%E7%A8%8B/%E6%A0%88/" title="栈">
+            <span class="article-title">栈</span>
+            <span class="article-date">06-17</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/06/10/%E5%8F%A4%E6%B3%95%E7%BC%96%E7%A8%8B/%E7%BC%93%E5%AD%98%E5%92%8C%E5%86%85%E5%AD%98/" title="缓存和内存">
+            <span class="article-title">缓存和内存</span>
+            <span class="article-date">06-10</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/06/09/%E5%8F%A4%E6%B3%95%E7%BC%96%E7%A8%8B/%E5%88%97%E8%A1%A8/" title="列表">
+            <span class="article-title">列表</span>
+            <span class="article-date">06-09</span>
+          </a>
+        </li>
+        
+        <li class="active">
+          <a href="/2026/06/02/%E5%8F%A4%E6%B3%95%E7%BC%96%E7%A8%8B/%E9%93%BE%E8%A1%A8/" title="链表">
+            <span class="article-title">链表</span>
+            <span class="article-date">06-02</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/06/02/%E5%8F%A4%E6%B3%95%E7%BC%96%E7%A8%8B/%E6%95%B0%E7%BB%84/" title="数组">
+            <span class="article-title">数组</span>
+            <span class="article-date">06-02</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/05/27/%E5%8F%A4%E6%B3%95%E7%BC%96%E7%A8%8B/%E6%95%B0%E5%AD%97%E7%BC%96%E7%A0%81/" title="数字编码">
+            <span class="article-title">数字编码</span>
+            <span class="article-date">05-27</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/05/09/%E5%8F%A4%E6%B3%95%E7%BC%96%E7%A8%8B/alog%E6%A6%82%E8%BF%B0/" title="alog概述">
+            <span class="article-title">alog概述</span>
+            <span class="article-date">05-09</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/05/09/%E5%8F%A4%E6%B3%95%E7%BC%96%E7%A8%8B/%E8%BF%AD%E4%BB%A3%E4%B8%8E%E9%80%92%E5%BD%92/" title="迭代与递归">
+            <span class="article-title">迭代与递归</span>
+            <span class="article-date">05-09</span>
+          </a>
+        </li>
+        
+      </ul>
+      
+    </div>
+  </aside>
+</div>
+
+<!-- Theme Toggle Button -->
+<button type="button" class="theme-toggle" aria-label="Toggle Theme">
+  <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+  </svg>
+  <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="12" cy="12" r="5"></circle>
+    <line x1="12" y1="1" x2="12" y2="3"></line>
+    <line x1="12" y1="21" x2="12" y2="23"></line>
+    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+    <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+    <line x1="1" y1="12" x2="3" y2="12"></line>
+    <line x1="21" y1="12" x2="23" y2="12"></line>
+    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+    <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+  </svg>
+</button>
+
+<!-- Back to Top Button -->
+<button type="button" class="back-to-top" aria-label="Back to Top">
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <polyline points="18 15 12 9 6 15"></polyline>
+  </svg>
+</button>
+
+
+    <!-- Site Footer -->
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-content">
+      <div class="footer-info">
+        <h4>xinfan9's blog</h4>
+        <p>Actually, less is more!</p>
+      </div>
+      <div class="footer-links">
+        <a href="https://github.com/xinfan9/" target="_blank" title="GitHub">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+        </a>
+        <a href="mailto:11411619@qq.com" title="Email">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+        </a>
+        <a href="/feed.xml" title="RSS">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11a9 9 0 0 1 9 9"/><path d="M4 4a16 16 0 0 1 16 16"/><circle cx="5" cy="19" r="1"/></svg>
+        </a>
+      </div>
+      <div class="footer-copyright">
+        <p>&copy; 2026 xinfan9. Built with Jekyll.</p>
+      </div>
+    </div>
+  </div>
+</footer>
+      
+    
+    <!-- Global Buttons (for non-post pages) -->
+    
+  </body>
+</html>

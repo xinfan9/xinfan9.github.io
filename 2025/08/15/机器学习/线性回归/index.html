@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+  <head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="Content-Language" content="zh-CN">
+	<title>线性回归 - xinfan9's blog</title>
+
+	<link rel="icon" href="/styles/images/favicon.jpg">
+
+	<!-- Preconnect for CDN -->
+	
+	<link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+	<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+	
+
+
+	<!-- Inline Critical Reset (was index.css) -->
+	<style>
+		*,*::before,*::after{box-sizing:border-box}html{-ms-text-size-adjust:100%;-webkit-text-size-adjust:100%;-webkit-tap-highlight-color:rgba(0,0,0,0)}body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Microsoft YaHei",sans-serif;font-size:14px;line-height:1.42857143;color:#333;background-color:#f7f7f7}article,aside,details,figcaption,figure,footer,header,main,nav,section,summary{display:block}a{color:#43759e;text-decoration:none;background:transparent}a:hover,a:focus{color:#2c4d68;text-decoration:underline}a:focus{outline:thin dotted;outline-offset:-2px}img{vertical-align:middle;max-width:100%;height:auto}input,button,select,textarea{font-family:inherit;font-size:inherit;line-height:inherit}h1,h2,h3,h4,h5,h6{margin-top:0}.container{max-width:1200px;margin-left:auto;margin-right:auto;padding-left:15px;padding-right:15px}.clearfix::after{content:"";display:table;clear:both}.text-muted{color:#777}.sr-only{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0,0,0,0);border:0}
+	</style>
+
+	
+	<link rel="prefetch" as="image" href="/styles/images/api/background.webp">
+
+	<!-- Clarity Blog Theme -->
+	<link rel="stylesheet" href="/assets/css/clarity-blog.css?v=1788352046">
+
+	<!-- Prism.js Theme (non-blocking, only needed for code blocks) -->
+	
+	
+	<link rel="canonical" href="https://xinfang.site/2025/08/15/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E7%BA%BF%E6%80%A7%E5%9B%9E%E5%BD%92/">
+	<link rel="alternate" type="application/rss+xml" title="xinfan9's blog" href="https://xinfang.site/feed.xml">
+	
+	<meta name="description" content="线性回归
+">
+
+	<!-- Open Graph for social sharing -->
+	<meta property="og:title" content="线性回归">
+	<meta property="og:description" content="线性回归
+">
+	<meta property="og:url" content="https://xinfang.site/2025/08/15/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E7%BA%BF%E6%80%A7%E5%9B%9E%E5%BD%92/">
+	<meta property="og:site_name" content="xinfan9's blog">
+	<meta property="og:type" content="article">
+	<meta property="article:published_time" content="2025-08-15T16:55:54+08:00">
+	
+	<meta property="og:image" content="https://xinfang.site/styles/images/api/background.webp">
+	<meta property="og:image:width" content="1200">
+	<meta property="og:image:height" content="630">
+	
+	<meta property="og:locale" content="zh_CN">
+
+	<!-- Twitter Card -->
+	<meta name="twitter:card" content="summary_large_image">
+	<meta name="twitter:title" content="线性回归">
+	<meta name="twitter:description" content="线性回归
+">
+	<meta name="twitter:image" content="https://xinfang.site/styles/images/favicon.jpg">
+	
+	<!-- Theme color for mobile browsers -->
+	<meta name="theme-color" content="#0b72d9" media="(prefers-color-scheme: light)">
+	<meta name="theme-color" content="#0f172a" media="(prefers-color-scheme: dark)">
+
+	<!-- Prevent FOUC for theme -->
+	<script>
+		(function() {
+			const savedTheme = localStorage.getItem('theme');
+			const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+			if (savedTheme) {
+				document.documentElement.setAttribute('data-theme', savedTheme);
+			} else if (prefersDark) {
+				document.documentElement.setAttribute('data-theme', 'dark');
+			}
+		})();
+	</script>
+	
+	<!-- Prism.js only on post pages with code blocks -->
+	
+
+	<!-- Mermaid.js for diagram rendering (conditional) -->
+	
+
+	<!-- MathJax for LaTeX rendering (conditional) -->
+	
+	<script>
+		MathJax = {
+			tex: { inlineMath: [['$','$'], ['\\(','\\)']], displayMath: [['$$','$$'], ['\\[','\\]']] },
+			svg: { fontCache: 'global' },
+			startup: { typeset: true }
+		};
+	</script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-svg.js" defer></script>
+	
+
+	<!-- Blog Interactive Features -->
+	<script src="/assets/js/blog.js?v=1788352046" defer></script>
+
+	<!-- JSON-LD Structured Data -->
+	
+	<script type="application/ld+json">
+	{
+		"@context": "https://schema.org",
+		"@type": "BlogPosting",
+		"inLanguage": "zh-CN",
+		"headline": "线性回归",
+		"image": "https://xinfang.site/styles/images/favicon.jpg",
+		"datePublished": "2025-08-15T16:55:54+08:00",
+		"dateModified": "2025-08-15T16:55:54+08:00",
+		"author": {
+			"@type": "Person",
+			"name": "xinfan9"
+		},
+		"publisher": {
+			"@type": "Organization",
+			"name": "xinfan9's blog",
+			"logo": {
+				"@type": "ImageObject",
+				"url": "https://xinfang.site/styles/images/favicon.jpg"
+			}
+		},
+		"mainEntityOfPage": {
+			"@type": "WebPage",
+			"@id": "https://xinfang.site/2025/08/15/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E7%BA%BF%E6%80%A7%E5%9B%9E%E5%BD%92/"
+		},
+		"keywords": "机器学习",
+		"articleBody": "线性回归\n",
+		"description": "线性回归\n"
+	}
+	</script>
+	
+</head>
+
+  <body class="index">
+
+    <!-- Reading Progress Bar -->
+<div class="reading-progress" id="reading-progress"></div>
+
+<!-- Page Background -->
+<div class="post-background"></div>
+
+<div class="post-layout">
+  <!-- Left: TOC -->
+  <aside class="post-toc-sidebar" id="post-toc-sidebar" role="navigation" aria-label="文章目录">
+    <div class="toc-panel">
+      <div class="toc-title">
+        <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="12" x2="15" y2="12"></line><line x1="3" y1="18" x2="18" y2="18"></line></svg>
+        目录
+      </div>
+      <ul class="toc-list" id="toc-list"></ul>
+    </div>
+  </aside>
+
+  <!-- Center: Article -->
+  <main class="post-main">
+    <div class="panel docs-content">
+      <div class="wrapper">
+        <header class="post-header" role="banner">
+          <a href="https://xinfang.site/" class="back-home-link">
+            <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+            返回主页
+          </a>
+          <h1 class="post-title">线性回归</h1>
+          <div class="post-meta-info">
+            <time class="meta-item meta-date" datetime="2025-08-15T16:55:54+08:00">
+              <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+              2025-08-15
+            </time>
+            
+            <time class="meta-item meta-update" datetime="2026-05-08T10:20:44+08:00">
+              <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 2.2"/></svg>
+              2026-05-08
+            </time>
+            
+            <span class="meta-item meta-author">
+              <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+              xinfan9
+            </span>
+            
+            <span class="meta-item meta-words">
+              <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+              376 字
+            </span>
+            
+            <span class="meta-item meta-reading">
+              <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+              约 4 分钟
+            </span>
+          </div>
+        </header>
+        <article class="post-content" role="article">
+          <h1 id="线性回归">线性回归</h1>
+
+<p><img src="/post-images/机器学习/2025-08-15-线性回归.assets/image-20250815165519750-5248129.webp" alt="image-20250815165519750" /></p>
+
+<h2 id="引言">引言</h2>
+
+<p>线性回归是机器学习中最基础的监督学习算法，其本质是通过输入特征的<strong>仿射变换</strong>（加权线性变换与平移）建立预测模型。本文详细阐述线性回归的数学原理、损失函数推导及两种求解方法。</p>
+
+<h2 id="数学原理">数学原理</h2>
+
+<h3 id="符号定义">符号定义</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>符号</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>$n$</td>
+      <td>样本数量</td>
+    </tr>
+    <tr>
+      <td>$d$</td>
+      <td>特征数量</td>
+    </tr>
+    <tr>
+      <td>$\mathbf{X} \in \mathbb{R}^{n \times d}$</td>
+      <td>特征矩阵</td>
+    </tr>
+    <tr>
+      <td>$\mathbf{w} \in \mathbb{R}^d$</td>
+      <td>权重向量</td>
+    </tr>
+    <tr>
+      <td>$b \in \mathbb{R}$</td>
+      <td>偏置项</td>
+    </tr>
+    <tr>
+      <td>$\epsilon \sim \mathcal{N}(0, \sigma^2)$</td>
+      <td>服从正态分布的噪声</td>
+    </tr>
+    <tr>
+      <td>$\hat{\mathbf{y}} \in \mathbb{R}^n$</td>
+      <td>模型预测输出向量</td>
+    </tr>
+    <tr>
+      <td>$\mathbf{x}^{(i)}$</td>
+      <td>第 $i$ 个样本的特征向量</td>
+    </tr>
+    <tr>
+      <td>$y^{(i)}$</td>
+      <td>第 $i$ 个样本的真实标签</td>
+    </tr>
+    <tr>
+      <td>$\mathbf{y} \in \mathbb{R}^n$</td>
+      <td>真实标签向量</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="回归方程">回归方程</h3>
+
+<p>线性回归模型的预测输出表示为：<br />
+<span class="kdmath">$\hat{\mathbf{y}} = \mathbf{X} \mathbf{w} + b + \epsilon$</span><br />
+其中：</p>
+
+<ul>
+  <li>$\mathbf{X}\mathbf{w}$ 是特征加权和</li>
+  <li>$b$ 是平移偏置项</li>
+  <li>$\epsilon$ 是独立同分布的高斯噪声</li>
+</ul>
+
+<h3 id="损失函数">损失函数</h3>
+
+<p>评估线性模型的性能，一般使用<strong>均方误差</strong>（Mean Squared Error, MSE）作为损失函数：<br />
+<span class="kdmath">$L(\mathbf{w}, b) = \frac{1}{n} \sum_{i=1}^{n} \frac{1}{2} \left( \mathbf{w}^\top \mathbf{x}^{(i)} + b - y^{(i)} \right)^2$</span><br />
+该损失函数衡量了模型预测值 $\hat{\mathbf{y}}$ 与真实值 $\mathbf{y}$ 之间的差异，系数 $\frac{1}{2}$ 的引入是为了在后续求导时简化表达式。</p>
+
+<h4 id="推导过程">推导过程</h4>
+
+<p>给定一组独立观测数据 $ \mathcal{D} = {(\mathbf{x}^{(i)}, y^{(i)})}_{i=1}^n $，我们希望估计模型参数 $ \mathbf{w} $ 和 $ b $，使得这些参数最有可能生成当前观测结果。</p>
+
+<p><strong>单个样本的条件概率密度函数</strong>为：<br />
+<span class="kdmath">$p(y^{(i)} \mid \mathbf{x}^{(i)}; \mathbf{w}, b) = \frac{1}{\sqrt{2\pi\sigma^2}} \exp\left( -\frac{\mathbf{w}^\top \mathbf{x}^{(i)} + b - y^{(i)}}{2\sigma^2} \right)$</span></p>
+
+<p><strong>样本独立时，数据集的对数似然函数</strong>为：<br />
+<span class="kdmath">$\begin{aligned}
+\log \mathcal{L}(\mathbf{w}, b) 
+&= \sum_{i=1}^{n} \log p(y^{(i)} \mid \mathbf{x}^{(i)}; \mathbf{w}, b) \\
+&= -\frac{n}{2} \log(2\pi\sigma^2) - \frac{1}{2\sigma^2} \sum_{i=1}^{n} (\mathbf{w}^\top \mathbf{x}^{(i)} + b - y^{(i)})^2
+\end{aligned}$</span></p>
+
+<hr />
+
+<p>注意到第一项 $-\frac{n}{2} \log(2\pi\sigma^2)$ 是常数（与 $ \mathbf{w}, b $ 无关），因此对线性回归模型进行<strong>极大似然估计（Maximum Likelihood Estimation, MLE）等价于最小化均方误差</strong>。：</p>
+
+<div class="kdmath">$$
+\max_{\mathbf{w}, b} \log \mathcal{L}(\mathbf{w}, b) \quad \Leftrightarrow \quad \min_{\mathbf{w}, b} \sum_{i=1}^{n} \left( \mathbf{w}^\top \mathbf{x}^{(i)} + b - y^{(i)} \right)^2
+$$</div>
+
+<h4 id="补充说明">补充说明</h4>
+
+<ul>
+  <li>噪声方差 $\sigma^2$ 的 MLE 估计为：<br />
+<span class="kdmath">$\hat{\sigma}^2 = \frac{1}{n} \sum_{i=1}^{n} (y^{(i)} - \mathbf{w}^\top \mathbf{x}^{(i)} - b)^2$</span></li>
+  <li>$\sigma^2$ 不影响 $\mathbf{w}, b$ 的最优解位置，仅作为缩放因子。</li>
+</ul>
+
+<h3 id="优化目标">优化目标</h3>
+
+<p>最终的优化目标是寻找使损失函数最小的参数：<br />
+<span class="kdmath">$\mathbf{w}^*, b^* = \underset{\mathbf{w}, b}{\arg\min} L(\mathbf{w}, b).$</span></p>
+
+<h2 id="求解方法">求解方法</h2>
+
+<h3 id="解法一解析解闭式解">解法一：解析解(闭式解)</h3>
+
+<p>线性回归的解可以用一个公式直接表达，这类解称为<strong>解析解</strong>（analytical solution）。</p>
+<h4 id="矩阵形式变换">矩阵形式变换</h4>
+
+<p>为统一处理偏置项，将 $b$ 合并进权重向量：<br />
+<span class="kdmath">$\mathbf{X} \leftarrow \begin{bmatrix} \mathbf{X} & \mathbf{1} \end{bmatrix}, \quad \mathbf{w} \leftarrow \begin{bmatrix} \mathbf{w} \\ b \end{bmatrix}$</span><br />
+预测简化为：<br />
+<span class="kdmath">$\hat{\mathbf{y}} = \mathbf{X}\mathbf{w}$</span></p>
+
+<p>损失函数的矩阵表示为：<br />
+<span class="kdmath">$L(\mathbf{w}) = (\mathbf{y} - \mathbf{X}\mathbf{w})^\top (\mathbf{y} - \mathbf{X}\mathbf{w})$</span></p>
+
+<h4 id="求导与极值点">求导与极值点</h4>
+
+<p>梯度计算：<br />
+<span class="kdmath">$\frac{\partial L(\mathbf{w})}{\partial \mathbf{w}} = -2 \mathbf{X}^\top \mathbf{y} + 2 \mathbf{X}^\top \mathbf{X} \mathbf{w}$</span><br />
+令梯度为0，得正规方程：<br />
+<span class="kdmath">$\mathbf{X}^\top \mathbf{X} \mathbf{w} = \mathbf{X}^\top \mathbf{y}$</span><br />
+最优解为：<br />
+<span class="kdmath">$\mathbf{w}^* = (\mathbf{X}^\top \mathbf{X})^{-1} \mathbf{X}^\top \mathbf{y}$</span></p>
+
+<blockquote>
+  <p><strong>适用条件</strong>：$\mathbf{X}^\top\mathbf{X}$ 可逆（即特征列满秩）情况下，由于公式中的值是都是已知的，我们可以直接计算出最优参数 $\mathbf{w}^*$，而不需要使用迭代优化方法。<strong>解析解适用于小规模、低维数据，但在大部分深度学习问题中不可行。</strong></p>
+</blockquote>
+
+<h3 id="解法二随机梯度下降sgd">解法二：随机梯度下降（SGD）</h3>
+
+<p>当特征维度高或样本量大时，矩阵求逆计算复杂度达 $O(d^3)$，此时推荐迭代解法，可使用<strong>小批量随机梯度下降</strong>（Minibatch Stochastic Gradient Descent, SGD）训练模型。</p>
+
+<h4 id="超参数设置">超参数设置</h4>
+
+<p>在执行迭代时，需手动设置<strong>超参数</strong>（hyperparameter）。<strong>调参</strong>（hyperparameter tuning）是选择超参数的过程。超参数通常是我们根据在独立的<strong>验证数据集</strong>（validation dataset）上评估结果来调整的。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>超参数</th>
+      <th>推荐范围/取值</th>
+      <th>说明</th>
+      <th>&#160;</th>
+      <th>&#160;</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>学习率 $\eta$</td>
+      <td>$[10^{-5}, 10^{-1}]$</td>
+      <td>控制步长，过大震荡，过小收敛慢</td>
+      <td>&#160;</td>
+      <td>&#160;</td>
+    </tr>
+    <tr>
+      <td>批量大小 $</td>
+      <td>\mathcal{B}</td>
+      <td>$</td>
+      <td>32, 64, 128</td>
+      <td>影响梯度估计稳定性与内存使用</td>
+    </tr>
+    <tr>
+      <td>迭代次数（Epochs）</td>
+      <td>10–1000</td>
+      <td>遍历数据集的次数</td>
+      <td>&#160;</td>
+      <td>&#160;</td>
+    </tr>
+  </tbody>
+</table>
+
+<h4 id="算法流程">算法流程</h4>
+
+<ol>
+  <li>
+    <p><strong>初始化</strong>：随机初始化 $\mathbf{w}, b$</p>
+  </li>
+  <li>
+    <p><strong>迭代更新</strong>（直至收敛或达到最大 epoch）：</p>
+
+    <ul>
+      <li>
+        <p>随机采样小批量 $\mathcal{B} \subseteq {1,\dots,n}$</p>
+      </li>
+      <li>
+        <p>计算梯度：<br />
+<span class="kdmath">$\nabla_{\mathbf{w}} L = \frac{1}{|\mathcal{B}|} \sum_{i \in \mathcal{B}} (\mathbf{w}^\top \mathbf{x}^{(i)} + b - y^{(i)}) \cdot \mathbf{x}^{(i)}$</span></p>
+
+        <div class="kdmath">$$
+\nabla_b L = \frac{1}{|\mathcal{B}|} \sum_{i \in \mathcal{B}} (\mathbf{w}^\top \mathbf{x}^{(i)} + b - y^{(i)})
+$$</div>
+      </li>
+      <li>
+        <p>更新参数：<br />
+<span class="kdmath">$\mathbf{w} \leftarrow \mathbf{w} - \eta \nabla_{\mathbf{w}} L, \quad
+b \leftarrow b - \eta \nabla_b L$</span></p>
+      </li>
+    </ul>
+  </li>
+</ol>
+
+<p>在训练了预定的迭代次数或满足某些其他停止条件后，得到模型参数的估计值 $\hat{\mathbf{w}}, \hat{b}$。估计值受限于学习率的精度，并不会不能在有限的步数内使损失函数非常精确地达到最小值，但会逐渐缓慢收敛。</p>
+
+<h2 id="代码实现">代码实现</h2>
+
+<h3 id="复杂实现">复杂实现</h3>
+
+<p><img src="/post-images/机器学习/2025-08-15-线性回归.assets/image-20250815163946766.webp" alt="image-20250815163946766" /></p>
+
+<h3 id="简单实现">简单实现</h3>
+
+<p><img src="/post-images/机器学习/2025-08-15-线性回归.assets/image-20250815163548542.webp" alt="image-20250815163548542" /></p>
+
+        </article>
+      </div>
+    </div>
+  </main>
+
+  <!-- Right: Category Articles -->
+  <aside class="post-category-sidebar" role="navigation" aria-label="分类文章列表">
+    <div class="category-panel">
+      
+      
+      <div class="category-sidebar-title">
+        <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
+        机器学习
+      </div>
+      <ul class="category-article-list">
+        
+        
+        <li class="">
+          <a href="/2026/08/21/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/LLM-%E8%AE%AD%E7%BB%83/" title="LLM 训练">
+            <span class="article-title">LLM 训练</span>
+            <span class="article-date">08-21</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/08/21/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0/" title="强化学习">
+            <span class="article-title">强化学习</span>
+            <span class="article-date">08-21</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/06/17/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/transformer/" title="transformer">
+            <span class="article-title">transformer</span>
+            <span class="article-date">06-17</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/05/08/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E6%A2%AF%E5%BA%A6%E4%B8%8B%E9%99%8D/" title="梯度下降">
+            <span class="article-title">梯度下降</span>
+            <span class="article-date">05-08</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/05/08/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E7%99%BE%E9%9D%A2%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" title="百面机器学习">
+            <span class="article-title">百面机器学习</span>
+            <span class="article-date">05-08</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/04/23/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E6%96%AF%E5%9D%A6%E7%A6%8F-CS224N-NLP%E8%AF%BE%E7%A8%8B/" title="斯坦福-CS224N-NLP课程">
+            <span class="article-title">斯坦福-CS224N-NLP课程</span>
+            <span class="article-date">04-23</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/04/09/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E6%AF%94%E8%BE%83%E6%A3%80%E9%AA%8C/" title="比较检验">
+            <span class="article-title">比较检验</span>
+            <span class="article-date">04-09</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/01/22/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/TitanicTutorial/" title="TitanicTutorial">
+            <span class="article-title">TitanicTutorial</span>
+            <span class="article-date">01-22</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2025/11/06/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/MLP/" title="MLP">
+            <span class="article-title">MLP</span>
+            <span class="article-date">11-06</span>
+          </a>
+        </li>
+        
+        <li class="active">
+          <a href="/2025/08/15/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E7%BA%BF%E6%80%A7%E5%9B%9E%E5%BD%92/" title="线性回归">
+            <span class="article-title">线性回归</span>
+            <span class="article-date">08-15</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2025/03/13/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E5%BC%95%E8%A8%80/" title="引言">
+            <span class="article-title">引言</span>
+            <span class="article-date">03-13</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2025/02/26/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E6%80%A7%E8%83%BD%E5%BA%A6%E9%87%8F/" title="性能度量">
+            <span class="article-title">性能度量</span>
+            <span class="article-date">02-26</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2025/02/25/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E8%AF%84%E4%BC%B0%E6%96%B9%E6%B3%95/" title="评估方法">
+            <span class="article-title">评估方法</span>
+            <span class="article-date">02-25</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2025/02/24/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E7%BB%8F%E9%AA%8C%E8%AF%AF%E5%B7%AE%E4%B8%8E%E8%BF%87%E6%8B%9F%E5%90%88/" title="经验误差与过拟合">
+            <span class="article-title">经验误差与过拟合</span>
+            <span class="article-date">02-24</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2025/02/23/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E5%81%87%E8%AE%BE%E7%A9%BA%E9%97%B4/" title="假设空间">
+            <span class="article-title">假设空间</span>
+            <span class="article-date">02-23</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2025/02/22/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E5%9F%BA%E6%9C%AC%E6%9C%AF%E8%AF%AD/" title="基本术语">
+            <span class="article-title">基本术语</span>
+            <span class="article-date">02-22</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2025/02/21/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E5%BD%92%E7%BA%B3%E5%81%8F%E5%A5%BD/" title="归纳偏好">
+            <span class="article-title">归纳偏好</span>
+            <span class="article-date">02-21</span>
+          </a>
+        </li>
+        
+      </ul>
+      
+    </div>
+  </aside>
+</div>
+
+<!-- Theme Toggle Button -->
+<button type="button" class="theme-toggle" aria-label="Toggle Theme">
+  <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+  </svg>
+  <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="12" cy="12" r="5"></circle>
+    <line x1="12" y1="1" x2="12" y2="3"></line>
+    <line x1="12" y1="21" x2="12" y2="23"></line>
+    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+    <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+    <line x1="1" y1="12" x2="3" y2="12"></line>
+    <line x1="21" y1="12" x2="23" y2="12"></line>
+    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+    <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+  </svg>
+</button>
+
+<!-- Back to Top Button -->
+<button type="button" class="back-to-top" aria-label="Back to Top">
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <polyline points="18 15 12 9 6 15"></polyline>
+  </svg>
+</button>
+
+
+    <!-- Site Footer -->
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-content">
+      <div class="footer-info">
+        <h4>xinfan9's blog</h4>
+        <p>Actually, less is more!</p>
+      </div>
+      <div class="footer-links">
+        <a href="https://github.com/xinfan9/" target="_blank" title="GitHub">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+        </a>
+        <a href="mailto:11411619@qq.com" title="Email">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+        </a>
+        <a href="/feed.xml" title="RSS">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11a9 9 0 0 1 9 9"/><path d="M4 4a16 16 0 0 1 16 16"/><circle cx="5" cy="19" r="1"/></svg>
+        </a>
+      </div>
+      <div class="footer-copyright">
+        <p>&copy; 2026 xinfan9. Built with Jekyll.</p>
+      </div>
+    </div>
+  </div>
+</footer>
+      
+    
+    <!-- Global Buttons (for non-post pages) -->
+    
+  </body>
+</html>

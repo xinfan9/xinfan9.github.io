@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+  <head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="Content-Language" content="zh-CN">
+	<title>数字编码 - xinfan9's blog</title>
+
+	<link rel="icon" href="/styles/images/favicon.jpg">
+
+	<!-- Preconnect for CDN -->
+	
+	<link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+	<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+	
+
+
+	<!-- Inline Critical Reset (was index.css) -->
+	<style>
+		*,*::before,*::after{box-sizing:border-box}html{-ms-text-size-adjust:100%;-webkit-text-size-adjust:100%;-webkit-tap-highlight-color:rgba(0,0,0,0)}body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Microsoft YaHei",sans-serif;font-size:14px;line-height:1.42857143;color:#333;background-color:#f7f7f7}article,aside,details,figcaption,figure,footer,header,main,nav,section,summary{display:block}a{color:#43759e;text-decoration:none;background:transparent}a:hover,a:focus{color:#2c4d68;text-decoration:underline}a:focus{outline:thin dotted;outline-offset:-2px}img{vertical-align:middle;max-width:100%;height:auto}input,button,select,textarea{font-family:inherit;font-size:inherit;line-height:inherit}h1,h2,h3,h4,h5,h6{margin-top:0}.container{max-width:1200px;margin-left:auto;margin-right:auto;padding-left:15px;padding-right:15px}.clearfix::after{content:"";display:table;clear:both}.text-muted{color:#777}.sr-only{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0,0,0,0);border:0}
+	</style>
+
+	
+	<link rel="prefetch" as="image" href="/styles/images/api/background.webp">
+
+	<!-- Clarity Blog Theme -->
+	<link rel="stylesheet" href="/assets/css/clarity-blog.css?v=1788352046">
+
+	<!-- Prism.js Theme (non-blocking, only needed for code blocks) -->
+	
+	
+	<link rel="canonical" href="https://xinfang.site/2026/05/27/%E5%8F%A4%E6%B3%95%E7%BC%96%E7%A8%8B/%E6%95%B0%E5%AD%97%E7%BC%96%E7%A0%81/">
+	<link rel="alternate" type="application/rss+xml" title="xinfan9's blog" href="https://xinfang.site/feed.xml">
+	
+	<meta name="description" content="整数编码
+">
+
+	<!-- Open Graph for social sharing -->
+	<meta property="og:title" content="数字编码">
+	<meta property="og:description" content="整数编码
+">
+	<meta property="og:url" content="https://xinfang.site/2026/05/27/%E5%8F%A4%E6%B3%95%E7%BC%96%E7%A8%8B/%E6%95%B0%E5%AD%97%E7%BC%96%E7%A0%81/">
+	<meta property="og:site_name" content="xinfan9's blog">
+	<meta property="og:type" content="article">
+	<meta property="article:published_time" content="2026-05-27T15:54:04+08:00">
+	
+	<meta property="og:image" content="https://xinfang.site/styles/images/api/background.webp">
+	<meta property="og:image:width" content="1200">
+	<meta property="og:image:height" content="630">
+	
+	<meta property="og:locale" content="zh_CN">
+
+	<!-- Twitter Card -->
+	<meta name="twitter:card" content="summary_large_image">
+	<meta name="twitter:title" content="数字编码">
+	<meta name="twitter:description" content="整数编码
+">
+	<meta name="twitter:image" content="https://xinfang.site/styles/images/favicon.jpg">
+	
+	<!-- Theme color for mobile browsers -->
+	<meta name="theme-color" content="#0b72d9" media="(prefers-color-scheme: light)">
+	<meta name="theme-color" content="#0f172a" media="(prefers-color-scheme: dark)">
+
+	<!-- Prevent FOUC for theme -->
+	<script>
+		(function() {
+			const savedTheme = localStorage.getItem('theme');
+			const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+			if (savedTheme) {
+				document.documentElement.setAttribute('data-theme', savedTheme);
+			} else if (prefersDark) {
+				document.documentElement.setAttribute('data-theme', 'dark');
+			}
+		})();
+	</script>
+	
+	<!-- Prism.js only on post pages with code blocks -->
+	
+
+	<!-- Mermaid.js for diagram rendering (conditional) -->
+	
+
+	<!-- MathJax for LaTeX rendering (conditional) -->
+	
+	<script>
+		MathJax = {
+			tex: { inlineMath: [['$','$'], ['\\(','\\)']], displayMath: [['$$','$$'], ['\\[','\\]']] },
+			svg: { fontCache: 'global' },
+			startup: { typeset: true }
+		};
+	</script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-svg.js" defer></script>
+	
+
+	<!-- Blog Interactive Features -->
+	<script src="/assets/js/blog.js?v=1788352046" defer></script>
+
+	<!-- JSON-LD Structured Data -->
+	
+	<script type="application/ld+json">
+	{
+		"@context": "https://schema.org",
+		"@type": "BlogPosting",
+		"inLanguage": "zh-CN",
+		"headline": "数字编码",
+		"image": "https://xinfang.site/styles/images/favicon.jpg",
+		"datePublished": "2026-05-27T15:54:04+08:00",
+		"dateModified": "2026-05-27T15:54:04+08:00",
+		"author": {
+			"@type": "Person",
+			"name": "xinfan9"
+		},
+		"publisher": {
+			"@type": "Organization",
+			"name": "xinfan9's blog",
+			"logo": {
+				"@type": "ImageObject",
+				"url": "https://xinfang.site/styles/images/favicon.jpg"
+			}
+		},
+		"mainEntityOfPage": {
+			"@type": "WebPage",
+			"@id": "https://xinfang.site/2026/05/27/%E5%8F%A4%E6%B3%95%E7%BC%96%E7%A8%8B/%E6%95%B0%E5%AD%97%E7%BC%96%E7%A0%81/"
+		},
+		"keywords": "古法编程",
+		"articleBody": "整数编码\n",
+		"description": "整数编码\n"
+	}
+	</script>
+	
+</head>
+
+  <body class="index">
+
+    <!-- Reading Progress Bar -->
+<div class="reading-progress" id="reading-progress"></div>
+
+<!-- Page Background -->
+<div class="post-background"></div>
+
+<div class="post-layout">
+  <!-- Left: TOC -->
+  <aside class="post-toc-sidebar" id="post-toc-sidebar" role="navigation" aria-label="文章目录">
+    <div class="toc-panel">
+      <div class="toc-title">
+        <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="12" x2="15" y2="12"></line><line x1="3" y1="18" x2="18" y2="18"></line></svg>
+        目录
+      </div>
+      <ul class="toc-list" id="toc-list"></ul>
+    </div>
+  </aside>
+
+  <!-- Center: Article -->
+  <main class="post-main">
+    <div class="panel docs-content">
+      <div class="wrapper">
+        <header class="post-header" role="banner">
+          <a href="https://xinfang.site/" class="back-home-link">
+            <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+            返回主页
+          </a>
+          <h1 class="post-title">数字编码</h1>
+          <div class="post-meta-info">
+            <time class="meta-item meta-date" datetime="2026-05-27T15:54:04+08:00">
+              <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+              2026-05-27
+            </time>
+            
+            <time class="meta-item meta-update" datetime="2026-05-27T15:54:04+08:00">
+              <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 2.2"/></svg>
+              2026-05-27
+            </time>
+            
+            <span class="meta-item meta-author">
+              <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+              xinfan9
+            </span>
+            
+            <span class="meta-item meta-words">
+              <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+              57 字
+            </span>
+            
+            <span class="meta-item meta-reading">
+              <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+              约 1 分钟
+            </span>
+          </div>
+        </header>
+        <article class="post-content" role="article">
+          <h1 id="整数编码">整数编码</h1>
+
+<blockquote>
+  <p>[!IMPORTANT]</p>
+
+  <p><strong>数字是以“补码”的形式存储在计算机中。</strong></p>
+</blockquote>
+
+<ul>
+  <li>原码（sign-magnitude）：原码中，将数据的二进制表示的最高位视为符号位，0表示正数，1表示负数。</li>
+  <li>反码（1‘s complement）：正数的反码与原码相同，负数的反码是除符号位外的所有位取反。</li>
+  <li>补码（2’s complement）：正数的补码与原码相同，负数的补码是在其反码的基础上加1。</li>
+</ul>
+
+<p><img src="/post-images/古法编程/2026-05-27-数字编码.assets/image-20260527145008660.webp" alt="image-20260527145008660" /></p>
+
+<p>计算机内部的硬件电路主要是基于加法运算实现的，因此，我们需要考虑三种数据表示方法对加法运算的支持程度。</p>
+
+<ul>
+  <li>原码最直观，但负数的原码不能直接用于计算，比如上面的$+5（00000101）+ （-0（10000000））= -5（10000101）$，正确答案应该是5。</li>
+  <li>通过取反码相加再取反，可以得到正确结果，$+5（00000101） + （-0（11111111））= 5 （00000101）$（反码相加需要循环进位，最高位的1进位到最低位），但反码有正负0两种表示，存在歧义。</li>
+  <li>如果换成补码，则 $+5（00000101） + （-0（0000000）） = 5 （00000101）$（补码相加，溢出位直接丢弃。）</li>
+</ul>
+
+<p>正是因为补码完美解决了原码和反码的痛点，现代计算机的硬件电路里其实<strong>根本没有独立的“减法器”</strong>。</p>
+
+<p>当你执行减法（比如 <code>A - B</code>）时，CPU 内部的加法器会通过一个简单的逻辑电路，把减数 <code>B</code> 的每一位取反，并在最低位的进位输入端偷偷加一个 <code>1</code>。这正好完美实现了“取反加一”的补码转换操作。这样一来，计算机只需要一套加法器电路，就能通吃所有的加减运算，极大地简化了硬件设计并提升了运算速度。</p>
+
+<h1 id="浮点数编码">浮点数编码</h1>
+
+<p>浮点数由三个部分组成，由32比特长度的二进制数表示。<br />
+<span class="kdmath">$b_{31}b_{30}b_{29}...b_{2}b_{1}b_{0}$</span></p>
+
+<ul>
+  <li>符号位S：占1位，对应 $b_{31}$，</li>
+  <li>指数位E:  占8位，对应 $b_{30}b_{29}&#8230;b_{23}$</li>
+  <li>分数位N：占23位，对应 $b_{22}b_{21}&#8230;b_{0}$</li>
+</ul>
+
+<p><img src="/post-images/古法编程/2026-05-27-数字编码.assets/image-20260527153020015-9867021.webp" alt="image-20260527153020015" /></p>
+
+<p>其转换公示如上图所示，由于指数位的存在，它的取值范围远大于int，但也牺牲了精度，并且两个相邻的数字的差值会随表示数据的增大而增大。</p>
+
+<p><img src="/post-images/古法编程/2026-05-27-数字编码.assets/image-20260527153907136.webp" alt="image-20260527153907136" /></p>
+
+<p>对于指数位，E=0和E=255都有特殊含义，因此最float可表示的最大值为 $2^{254-127} \cdot (2-2^{23})$ 。</p>
+
+<h1 id="字符编码">字符编码</h1>
+
+<p>计算机中的数据都是二进制表示，因此，为了表示字符，需要规定字符与二进制数的对应关系。</p>
+
+<ul>
+  <li>最早的字符集就是 ASCII 字符集。它只有128个编码，只能表示英文。</li>
+  <li>为了表示中文，中国国家标准总局发布了GB2312字符集，支持简体字。后来，扩展为GBK字符集，兼容了繁体字和罕见字。</li>
+  <li>字符集限制了多语言环境下的数据表示，不同语言的字符集会发生冲突。因此，unicode诞生，它支持了几乎所有的语言，甚至表情符。为了解决多种长度的unicode的解析歧义问题，unicode采用了等长编码的方式，每个字符都占用2个字节。</li>
+  <li>utf-8在unicode的基础上，实现了变长编码，它通过引入了首个字节的最高n位以及后续字节的前两位来表示字节数。</li>
+</ul>
+
+        </article>
+      </div>
+    </div>
+  </main>
+
+  <!-- Right: Category Articles -->
+  <aside class="post-category-sidebar" role="navigation" aria-label="分类文章列表">
+    <div class="category-panel">
+      
+      
+      <div class="category-sidebar-title">
+        <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
+        古法编程
+      </div>
+      <ul class="category-article-list">
+        
+        
+        <li class="">
+          <a href="/2026/07/30/%E5%8F%A4%E6%B3%95%E7%BC%96%E7%A8%8B/%E6%8E%92%E5%BA%8F/" title="排序">
+            <span class="article-title">排序</span>
+            <span class="article-date">07-30</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/07/30/%E5%8F%A4%E6%B3%95%E7%BC%96%E7%A8%8B/%E6%90%9C%E7%B4%A2/" title="搜索">
+            <span class="article-title">搜索</span>
+            <span class="article-date">07-30</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/07/28/%E5%8F%A4%E6%B3%95%E7%BC%96%E7%A8%8B/%E5%9B%BE/" title="图">
+            <span class="article-title">图</span>
+            <span class="article-date">07-28</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/07/28/%E5%8F%A4%E6%B3%95%E7%BC%96%E7%A8%8B/%E5%A0%86/" title="堆">
+            <span class="article-title">堆</span>
+            <span class="article-date">07-28</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/07/23/%E5%8F%A4%E6%B3%95%E7%BC%96%E7%A8%8B/%E4%BA%8C%E5%8F%89%E6%A0%91/" title="二叉树">
+            <span class="article-title">二叉树</span>
+            <span class="article-date">07-23</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/07/07/%E5%8F%A4%E6%B3%95%E7%BC%96%E7%A8%8B/%E5%8F%8C%E5%90%91%E9%98%9F%E5%88%97/" title="双向队列">
+            <span class="article-title">双向队列</span>
+            <span class="article-date">07-07</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/07/07/%E5%8F%A4%E6%B3%95%E7%BC%96%E7%A8%8B/%E5%93%88%E5%B8%8C%E8%A1%A8/" title="哈希表">
+            <span class="article-title">哈希表</span>
+            <span class="article-date">07-07</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/06/30/%E5%8F%A4%E6%B3%95%E7%BC%96%E7%A8%8B/%E9%98%9F%E5%88%97/" title="队列">
+            <span class="article-title">队列</span>
+            <span class="article-date">06-30</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/06/17/%E5%8F%A4%E6%B3%95%E7%BC%96%E7%A8%8B/%E6%A0%88/" title="栈">
+            <span class="article-title">栈</span>
+            <span class="article-date">06-17</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/06/10/%E5%8F%A4%E6%B3%95%E7%BC%96%E7%A8%8B/%E7%BC%93%E5%AD%98%E5%92%8C%E5%86%85%E5%AD%98/" title="缓存和内存">
+            <span class="article-title">缓存和内存</span>
+            <span class="article-date">06-10</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/06/09/%E5%8F%A4%E6%B3%95%E7%BC%96%E7%A8%8B/%E5%88%97%E8%A1%A8/" title="列表">
+            <span class="article-title">列表</span>
+            <span class="article-date">06-09</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/06/02/%E5%8F%A4%E6%B3%95%E7%BC%96%E7%A8%8B/%E9%93%BE%E8%A1%A8/" title="链表">
+            <span class="article-title">链表</span>
+            <span class="article-date">06-02</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/06/02/%E5%8F%A4%E6%B3%95%E7%BC%96%E7%A8%8B/%E6%95%B0%E7%BB%84/" title="数组">
+            <span class="article-title">数组</span>
+            <span class="article-date">06-02</span>
+          </a>
+        </li>
+        
+        <li class="active">
+          <a href="/2026/05/27/%E5%8F%A4%E6%B3%95%E7%BC%96%E7%A8%8B/%E6%95%B0%E5%AD%97%E7%BC%96%E7%A0%81/" title="数字编码">
+            <span class="article-title">数字编码</span>
+            <span class="article-date">05-27</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/05/09/%E5%8F%A4%E6%B3%95%E7%BC%96%E7%A8%8B/alog%E6%A6%82%E8%BF%B0/" title="alog概述">
+            <span class="article-title">alog概述</span>
+            <span class="article-date">05-09</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/05/09/%E5%8F%A4%E6%B3%95%E7%BC%96%E7%A8%8B/%E8%BF%AD%E4%BB%A3%E4%B8%8E%E9%80%92%E5%BD%92/" title="迭代与递归">
+            <span class="article-title">迭代与递归</span>
+            <span class="article-date">05-09</span>
+          </a>
+        </li>
+        
+      </ul>
+      
+    </div>
+  </aside>
+</div>
+
+<!-- Theme Toggle Button -->
+<button type="button" class="theme-toggle" aria-label="Toggle Theme">
+  <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+  </svg>
+  <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="12" cy="12" r="5"></circle>
+    <line x1="12" y1="1" x2="12" y2="3"></line>
+    <line x1="12" y1="21" x2="12" y2="23"></line>
+    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+    <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+    <line x1="1" y1="12" x2="3" y2="12"></line>
+    <line x1="21" y1="12" x2="23" y2="12"></line>
+    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+    <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+  </svg>
+</button>
+
+<!-- Back to Top Button -->
+<button type="button" class="back-to-top" aria-label="Back to Top">
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <polyline points="18 15 12 9 6 15"></polyline>
+  </svg>
+</button>
+
+
+    <!-- Site Footer -->
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-content">
+      <div class="footer-info">
+        <h4>xinfan9's blog</h4>
+        <p>Actually, less is more!</p>
+      </div>
+      <div class="footer-links">
+        <a href="https://github.com/xinfan9/" target="_blank" title="GitHub">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+        </a>
+        <a href="mailto:11411619@qq.com" title="Email">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+        </a>
+        <a href="/feed.xml" title="RSS">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11a9 9 0 0 1 9 9"/><path d="M4 4a16 16 0 0 1 16 16"/><circle cx="5" cy="19" r="1"/></svg>
+        </a>
+      </div>
+      <div class="footer-copyright">
+        <p>&copy; 2026 xinfan9. Built with Jekyll.</p>
+      </div>
+    </div>
+  </div>
+</footer>
+      
+    
+    <!-- Global Buttons (for non-post pages) -->
+    
+  </body>
+</html>

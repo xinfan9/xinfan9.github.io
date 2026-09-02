@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+  <head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="Content-Language" content="zh-CN">
+	<title>初识智能体 - xinfan9's blog</title>
+
+	<link rel="icon" href="/styles/images/favicon.jpg">
+
+	<!-- Preconnect for CDN -->
+	
+	<link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+	<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+	
+
+
+	<!-- Inline Critical Reset (was index.css) -->
+	<style>
+		*,*::before,*::after{box-sizing:border-box}html{-ms-text-size-adjust:100%;-webkit-text-size-adjust:100%;-webkit-tap-highlight-color:rgba(0,0,0,0)}body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Microsoft YaHei",sans-serif;font-size:14px;line-height:1.42857143;color:#333;background-color:#f7f7f7}article,aside,details,figcaption,figure,footer,header,main,nav,section,summary{display:block}a{color:#43759e;text-decoration:none;background:transparent}a:hover,a:focus{color:#2c4d68;text-decoration:underline}a:focus{outline:thin dotted;outline-offset:-2px}img{vertical-align:middle;max-width:100%;height:auto}input,button,select,textarea{font-family:inherit;font-size:inherit;line-height:inherit}h1,h2,h3,h4,h5,h6{margin-top:0}.container{max-width:1200px;margin-left:auto;margin-right:auto;padding-left:15px;padding-right:15px}.clearfix::after{content:"";display:table;clear:both}.text-muted{color:#777}.sr-only{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0,0,0,0);border:0}
+	</style>
+
+	
+	<link rel="prefetch" as="image" href="/styles/images/api/background.webp">
+
+	<!-- Clarity Blog Theme -->
+	<link rel="stylesheet" href="/assets/css/clarity-blog.css?v=1788352046">
+
+	<!-- Prism.js Theme (non-blocking, only needed for code blocks) -->
+	
+	
+	<link rel="canonical" href="https://xinfang.site/2026/06/09/agent/%E5%A4%A7%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E9%A9%B1%E5%8A%A8%E7%9A%84%E6%99%BA%E8%83%BD%E4%BD%93/">
+	<link rel="alternate" type="application/rss+xml" title="xinfan9's blog" href="https://xinfang.site/feed.xml">
+	
+	<meta name="description" content="智能体通常被定义为：通过 Sensors 感知环境 Environment，并通过 Actuators 行动以达成特定任务的实体。为了理解智能体如何运作，我们首先要理解它的任务环境。在人工智能领域，常用 PEAS 模型来描述任务环境。
+">
+
+	<!-- Open Graph for social sharing -->
+	<meta property="og:title" content="初识智能体">
+	<meta property="og:description" content="智能体通常被定义为：通过 Sensors 感知环境 Environment，并通过 Actuators 行动以达成特定任务的实体。为了理解智能体如何运作，我们首先要理解它的任务环境。在人工智能领域，常用 PEAS 模型来描述任务环境。
+">
+	<meta property="og:url" content="https://xinfang.site/2026/06/09/agent/%E5%A4%A7%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E9%A9%B1%E5%8A%A8%E7%9A%84%E6%99%BA%E8%83%BD%E4%BD%93/">
+	<meta property="og:site_name" content="xinfan9's blog">
+	<meta property="og:type" content="article">
+	<meta property="article:published_time" content="2026-06-09T16:15:46+08:00">
+	
+	<meta property="og:image" content="https://xinfang.site/styles/images/api/background.webp">
+	<meta property="og:image:width" content="1200">
+	<meta property="og:image:height" content="630">
+	
+	<meta property="og:locale" content="zh_CN">
+
+	<!-- Twitter Card -->
+	<meta name="twitter:card" content="summary_large_image">
+	<meta name="twitter:title" content="初识智能体">
+	<meta name="twitter:description" content="智能体通常被定义为：通过 Sensors 感知环境 Environment，并通过 Actuators 行动以达成特定任务的实体。为了理解智能体如何运作，我们首先要理解它的任务环境。在人工智能领域，常用 PEAS 模型来描述任务环境。
+">
+	<meta name="twitter:image" content="https://xinfang.site/styles/images/favicon.jpg">
+	
+	<!-- Theme color for mobile browsers -->
+	<meta name="theme-color" content="#0b72d9" media="(prefers-color-scheme: light)">
+	<meta name="theme-color" content="#0f172a" media="(prefers-color-scheme: dark)">
+
+	<!-- Prevent FOUC for theme -->
+	<script>
+		(function() {
+			const savedTheme = localStorage.getItem('theme');
+			const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+			if (savedTheme) {
+				document.documentElement.setAttribute('data-theme', savedTheme);
+			} else if (prefersDark) {
+				document.documentElement.setAttribute('data-theme', 'dark');
+			}
+		})();
+	</script>
+	
+	<!-- Prism.js only on post pages with code blocks -->
+	
+
+	<!-- Mermaid.js for diagram rendering (conditional) -->
+	
+
+	<!-- MathJax for LaTeX rendering (conditional) -->
+	
+
+	<!-- Blog Interactive Features -->
+	<script src="/assets/js/blog.js?v=1788352046" defer></script>
+
+	<!-- JSON-LD Structured Data -->
+	
+	<script type="application/ld+json">
+	{
+		"@context": "https://schema.org",
+		"@type": "BlogPosting",
+		"inLanguage": "zh-CN",
+		"headline": "初识智能体",
+		"image": "https://xinfang.site/styles/images/favicon.jpg",
+		"datePublished": "2026-06-09T16:15:46+08:00",
+		"dateModified": "2026-06-09T16:15:46+08:00",
+		"author": {
+			"@type": "Person",
+			"name": "xinfan9"
+		},
+		"publisher": {
+			"@type": "Organization",
+			"name": "xinfan9's blog",
+			"logo": {
+				"@type": "ImageObject",
+				"url": "https://xinfang.site/styles/images/favicon.jpg"
+			}
+		},
+		"mainEntityOfPage": {
+			"@type": "WebPage",
+			"@id": "https://xinfang.site/2026/06/09/agent/%E5%A4%A7%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E9%A9%B1%E5%8A%A8%E7%9A%84%E6%99%BA%E8%83%BD%E4%BD%93/"
+		},
+		"keywords": "Agent",
+		"articleBody": "智能体通常被定义为：通过 Sensors 感知环境 Environment，并通过 Actuators 行动以达成特定任务的实体。为了理解智能体如何运作，我们首先要理解它的任务环境。在人工智能领域，常用 PEAS 模型来描述任务环境。\n",
+		"description": "智能体通常被定义为：通过 Sensors 感知环境 Environment，并通过 Actuators 行动以达成特定任务的实体。为了理解智能体如何运作，我们首先要理解它的任务环境。在人工智能领域，常用 PEAS 模型来描述任务环境。\n"
+	}
+	</script>
+	
+</head>
+
+  <body class="index">
+
+    <!-- Reading Progress Bar -->
+<div class="reading-progress" id="reading-progress"></div>
+
+<!-- Page Background -->
+<div class="post-background"></div>
+
+<div class="post-layout">
+  <!-- Left: TOC -->
+  <aside class="post-toc-sidebar" id="post-toc-sidebar" role="navigation" aria-label="文章目录">
+    <div class="toc-panel">
+      <div class="toc-title">
+        <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="12" x2="15" y2="12"></line><line x1="3" y1="18" x2="18" y2="18"></line></svg>
+        目录
+      </div>
+      <ul class="toc-list" id="toc-list"></ul>
+    </div>
+  </aside>
+
+  <!-- Center: Article -->
+  <main class="post-main">
+    <div class="panel docs-content">
+      <div class="wrapper">
+        <header class="post-header" role="banner">
+          <a href="https://xinfang.site/" class="back-home-link">
+            <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+            返回主页
+          </a>
+          <h1 class="post-title">初识智能体</h1>
+          <div class="post-meta-info">
+            <time class="meta-item meta-date" datetime="2026-06-09T16:15:46+08:00">
+              <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+              2026-06-09
+            </time>
+            
+            <time class="meta-item meta-update" datetime="2026-06-10T16:46:07+08:00">
+              <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 2.2"/></svg>
+              2026-06-10
+            </time>
+            
+            <span class="meta-item meta-author">
+              <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+              xinfan9
+            </span>
+            
+            <span class="meta-item meta-words">
+              <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+              166 字
+            </span>
+            
+            <span class="meta-item meta-reading">
+              <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+              约 2 分钟
+            </span>
+          </div>
+        </header>
+        <article class="post-content" role="article">
+          <p>智能体通常被定义为：<strong>通过 Sensors 感知环境 Environment，并通过 Actuators 行动以达成特定任务的实体</strong>。为了理解智能体如何运作，我们首先要理解它的任务环境。在人工智能领域，常用 <strong>PEAS</strong> 模型来描述任务环境。</p>
+
+<h1 id="peas模型">PEAS模型</h1>
+
+<ul>
+  <li><strong>P (Performance)</strong>：绩效/目标函数（要达成什么效果、如何衡量好坏）</li>
+  <li><strong>E (Environment)</strong>：环境（智能体工作的外部世界、输入/约束、上下文）</li>
+  <li><strong>A (Actuators)</strong>：执行器（智能体能采取的动作：输出什么、怎么影响环境）</li>
+  <li><strong>S (Sensors)</strong>：传感器（智能体能接收的感知信息：读到哪些数据）</li>
+</ul>
+
+<h1 id="智能体的运行机制">智能体的运行机制</h1>
+
+<p><img src="/post-images/Agent/2026-06-10-大语言模型驱动的智能体.assets/image-20260603114939381.webp" alt="image-20260603114939381" /></p>
+
+<p>智能体在目标达成的过程中，是通过一个持续的循环与环境进行交互的“感知-思考-行动”过程，这个过程也称为智能体循环（Agent Loop）。</p>
+
+<ol>
+  <li>感知（Perception）。智能体接收来自外部的观察信息。</li>
+  <li>思考（Thought）。智能体收到信息时候，进入决策阶段。该阶段可以细分为两个环节：
+    <ol>
+      <li>规划（Planning）。智能体基于对外部环境的观察和内部记忆更新对任务的理解，并制造整个行动计划。</li>
+      <li>工具选择（Tool Selection）。根据当前计划，智能体选择最合适的工具，并确定调用工具的参数。</li>
+    </ol>
+  </li>
+  <li>行动（Action）。智能体通过执行器执行具体的行动。</li>
+  <li>目标达成。如果没有目标达成，则重复智能体循环；如果目标达成，则结束智能体循环。</li>
+</ol>
+
+<h1 id="大语言模型驱动的智能体">大语言模型驱动的智能体</h1>
+
+<p><img src="/post-images/Agent/2026-06-10-大语言模型驱动的智能体.assets/image-20260610161602348.webp" alt="image-20260610161602348" /></p>
+
+<ul>
+  <li>感知。智能体从外部环境接受用户指令、API返回的数据状态变化等观察信息，成为智能体决策的起点。</li>
+  <li>思考。
+    <ul>
+      <li>规划。智能体通过反思和自我批判等方式根据接受的观察信息，将宏观目标分解为具体可执行的步骤清单。</li>
+      <li>推理及工具选择。智能体整合规划的步骤清单、自身的记忆，进行深度推理，决策哪些工具被使用。</li>
+    </ul>
+  </li>
+  <li>行动。执行模块完成真正的工具使用。</li>
+  <li>目标达成。LLM根据工具的返回结果，判断目标是否达成，未达成，则进入下一轮的“感知-思考-行动”循环。</li>
+</ul>
+
+<p>大语言模型驱动的智能体，相比传统智能体，有诸多优势。</p>
+
+<p><img src="/post-images/Agent/2026-06-10-大语言模型驱动的智能体.assets/image-20260603114226601.webp" alt="image-20260603114226601" /></p>
+
+<p>它的工作流程主要在三个方面取得了比较大的优化：</p>
+
+<ul>
+  <li><strong>规划</strong>：智能体将高层次目标分解为逻辑子任务。</li>
+  <li><strong>工具使用</strong>：智能体能主动调用工具来补全信息或响应动作。</li>
+  <li><strong>动态修正</strong>：智能体能将用户的反馈视为新约束，从而做出相应调整。</li>
+</ul>
+
+<h1 id="workflow-和-agent的差异">Workflow 和 Agent的差异</h1>
+
+<ul>
+  <li>Workflow（工作流）是对一系列任务和步骤进行预定义、结构化编排的自动化范式。它的本质是一个精确静态的流程图，严格规定了执行操作的顺序和条件。</li>
+  <li>Agent（智能体）是一个具备感知、思考、行动、动态修正的系统。它可以按照多次智能体循环的方式达成最终目标。</li>
+</ul>
+
+<p><img src="/post-images/Agent/2026-06-10-大语言模型驱动的智能体.assets/image-20260608104731088.webp" alt="image-20260608104731088" /></p>
+
+<h1 id="课后题">课后题</h1>
+
+<h2 id="判断以下四个-case-的主体系是否属于智能体智能体系统可多选并分析">判断以下四个 case 的主体系是否属于“智能体/智能体系统”（可多选并分析）：</h2>
+
+<ul>
+  <li><strong>case A</strong>：一台符合理结构的<strong>超级计算机</strong>，拥有<strong>高达每秒 2EFlop</strong> 的峰值算力</li>
+  <li><strong>case B</strong>：特斯拉<strong>自动驾驶系统</strong>在高速公路上行驶时，突然检测到前方有障碍物，需要在毫秒级做出刹车或变道决策</li>
+  <li><strong>case C</strong>：AlphaGo 在与人类棋手对弈时，需要评估当前局面并规划未来数十步的最优策略</li>
+  <li><strong>case D</strong>：ChatGPT 扮演的<strong>智能客服</strong>在处理用户投诉时，需要查询订单信息、分析问题原因、提供解决方案并安抚用户情绪</li>
+</ul>
+
+<h3 id="case-a不属于智能体">case A：<strong>不属于智能体</strong></h3>
+
+<ul>
+  <li>主要依据：超级计算机是<strong>算力硬件/通用高性能计算平台</strong>，本身并不具备“感知环境—决策—行动—目标达成”的闭环能力。</li>
+  <li>只有当它被<strong>具体算法系统</strong>驱动、并实现自主感知与决策/行动闭环时，才可能成为智能体的一部分；但题干只描述“算力很强的计算机”。</li>
+</ul>
+
+<hr />
+
+<h3 id="case-b属于智能体yes">case B：<strong>属于智能体（Yes）</strong></h3>
+
+<ul>
+  <li>依据：
+    <ol>
+      <li><strong>感知</strong>：前方障碍物</li>
+      <li><strong>思考</strong>：选择刹车或变道</li>
+      <li><strong>行动</strong>：控制车辆执行相应动作</li>
+      <li><strong>目标</strong>：安全通过/避免碰撞</li>
+    </ol>
+  </li>
+</ul>
+
+<hr />
+
+<h3 id="case-c属于智能体yes">case C：<strong>属于智能体（Yes）</strong></h3>
+
+<ul>
+  <li>依据：
+    <ol>
+      <li><strong>感知：</strong>棋局局面</li>
+      <li><strong>思考</strong>：评估当前局面</li>
+      <li><strong>行动</strong>：并选择下一步落子</li>
+      <li><strong>目标</strong>：赢棋/最优策略</li>
+    </ol>
+  </li>
+</ul>
+
+<hr />
+
+<h3 id="case-d属于智能体yes">case D：<strong>属于智能体（Yes）</strong></h3>
+
+<ul>
+  <li>依据：
+    <ol>
+      <li><strong>感知</strong>：理解用户投诉内容</li>
+      <li><strong>思考</strong>：查询订单信息、分析问题原因</li>
+      <li><strong>行动</strong>：给出解决方案并安抚情绪</li>
+      <li><strong>目标</strong>：解决问题、提升用户满意度</li>
+    </ol>
+  </li>
+</ul>
+
+<h2 id="假设你需要为一个智能健身教练设计任务环境这个智能体能够">假设你需要为一个“智能健身教练”设计任务环境。这个智能体能够：</h2>
+
+<ul>
+  <li>通过可穿戴设备监测用户的心率、运动强度等生理数据</li>
+  <li>根据用户的健身目标（减脂/增肌/提升耐力）动态调整训练计划</li>
+  <li>在用户运动过程中提供实时语音指导和动作纠正</li>
+  <li>评估训练效果并给出饮食建议</li>
+</ul>
+
+<p>请使用 <strong>PEAS 模型</strong>完整描述这个智能体的任务环境，并分析该环境具有哪些特性（如部分可观察、随机性、动态性等）。</p>
+
+<h3 id="pperformance绩效目标">P（Performance，绩效/目标）</h3>
+
+<ul>
+  <li>达成用户健身目标：减脂/增肌/提升耐力的进展（体脂、肌肉、耐力指标随时间提升）</li>
+  <li><strong>安全性</strong>：训练强度不过载、降低受伤风险（异常心率/疲劳时能及时降强度或提示停止）</li>
+  <li><strong>训练效果</strong>：完成训练任务并能在合适强度区间产生有效刺激</li>
+  <li><strong>可执行与体验</strong>：指导清晰、可跟做；饮食建议合理且能促进目标达成</li>
+  <li><strong>效率</strong>：在安全前提下获得更好的训练收益（更少无效重复、减少失败/跳过）</li>
+</ul>
+
+<h3 id="eenvironment环境">E（Environment，环境）</h3>
+
+<ul>
+  <li>用户的真实身体状态与约束：当前心肺水平、疲劳程度、既往伤病、动作能力等</li>
+  <li>训练场景与条件：室内/室外、器械可用性、空间限制、当天活动安排</li>
+  <li>数据与反馈环境：可穿戴设备/传感器的测量条件与误差、网络延迟（若有）</li>
+  <li>训练过程本身是“阶段性环境”：热身→训练→放松，状态随时间变化</li>
+  <li>用户行为的变化：用户可能未完全按指导执行（存在偏差）</li>
+</ul>
+
+<h3 id="aactuators执行作用方式">A（Actuators，执行/作用方式）</h3>
+
+<ul>
+  <li>输出训练计划与动态调整指令：推荐组数/次数/强度/节奏、调整训练内容</li>
+  <li>实时语音/文字/可视化指导：告诉用户“接下来做什么、怎么做”</li>
+  <li>动作纠正：提醒姿势错误、发出停止/减速/重做等指令</li>
+  <li>风险干预：检测到异常（如心率超出安全区间）时建议暂停、降强度或就医/咨询</li>
+  <li>饮食建议：给出摄入量与宏量营养建议、补剂/饮食时机等</li>
+</ul>
+
+<h3 id="ssensors传感器感知输入">S（Sensors，传感器/感知输入）</h3>
+
+<ul>
+  <li>来自可穿戴设备的生理数据：心率、运动强度、（可能还有HRV/血氧等，视设备）</li>
+  <li>运动表现数据：训练时长、速度/配速/功率（如有）、步频/活动量、完成的动作次数</li>
+  <li>（可选/扩展）动作数据：通过相机/IMU 识别动作姿态与偏差</li>
+  <li>用户目标与历史记录：减脂/增肌/耐力设定、历史训练日志与趋势</li>
+  <li>用户当前状态的间接信号：如主观疲劳/是否遵循指导（若系统采集）</li>
+</ul>
+
+<h2 id="为什么智能体智能体系统会产生幻觉生成看似合理但实际错误的信息">为什么智能体/智能体系统会产生“幻觉”（生成看似合理但实际错误的信息）？</h2>
+
+<p>常见原因可概括为：智能体在循环中可能出现 <strong>感知误差（Perception）</strong>、<strong>思考误差（Thought）</strong>、<strong>行动误差（Action）</strong>，而当缺少验证与反馈闭环时，错误会被持续放大，从而形成“幻觉”。</p>
+
+<hr />
+
+<h3 id="1感知误差perception--观测阶段">1）感知误差（Perception / 观测阶段）</h3>
+
+<ol>
+  <li><strong>上下文信息不全/观测不足（Partial Observability）</strong>：关键事实不可获得（如售罄余量、价格、开放时间等），只能推断，导致输出偏离真实世界。</li>
+  <li><strong>传感或工具观测带噪/不可靠</strong>：数据缺失、噪声、识别偏差，使得智能体“看到”的信息本身不准。</li>
+  <li><strong>多轮对话中的误差累积</strong>：前一轮的错误观测/假设进入下一轮推理，形成“自我强化”的错因链条。</li>
+</ol>
+
+<hr />
+
+<h3 id="2思考误差thought--推理与规划阶段">2）思考误差（Thought / 推理与规划阶段）</h3>
+
+<ol>
+  <li><strong>状态更新错误（belief update 错）</strong>：智能体把旧信息当新信息，或更新记忆/约束时出错，导致后续决策基于错误前提。</li>
+  <li><strong>约束/目标建模偏差</strong>：误解用户目标、预算或时间约束，使得生成的策略虽然“自洽”，但不满足真实要求。</li>
+  <li><strong>证据不足下仍做强推断</strong>：当观测不完备时，未显式承认“不确定”，仍强行得出结论。</li>
+  <li><strong>推理/规划的误差在循环中传播</strong>：某轮规划偏了，后续轮次不断“在偏差上优化”，最终更偏离正确答案。</li>
+</ol>
+
+<hr />
+
+<h3 id="3行动误差action--执行与输出阶段">3）行动误差（Action / 执行与输出阶段）</h3>
+
+<ol>
+  <li><strong>缺少真实世界的验证机制</strong>：未进行事实检索、工具查询或约束校验，模型只能靠语言先验补全，从而给出错误但合理的内容。</li>
+  <li><strong>工具调用失败或数据过期</strong>：API 超时、返回空值或数据滞后；若缺少重试/降级/不可得提示兜底，仍可能继续生成。</li>
+  <li><strong>行动后的反馈/观测闭环缺失</strong>：推荐或执行后没有再次感知核验（Observation），错误无法及时纠正并被带到下一轮。</li>
+</ol>
+
+<h2 id="如果最大循环次数没有限制智能体可能会出现什么问题">如果最大循环次数没有限制，智能体可能会出现什么问题？</h2>
+
+<p>若把多轮 Thought-Action-Observation 循环无限放开，会出现：</p>
+
+<ol>
+  <li>
+    <p><strong>无限循环/过度迭代</strong></p>
+
+    <p>系统可能一直在找“下一步”，但没有真正收敛到可用结论。</p>
+  </li>
+  <li>
+    <p><strong>成本与延迟大幅上升</strong></p>
+
+    <p>每轮都要做推理/调用工具/生成文本，计算与 API 成本会暴涨。</p>
+  </li>
+  <li>
+    <p><strong>误差越来越大（误差累积）</strong></p>
+
+    <p>第一次推理可能已经偏了，后续循环会在错误基础上不断“修修补补”，最终更偏离事实。</p>
+  </li>
+  <li>
+    <p><strong>策略漂移（目标被稀释）</strong></p>
+
+    <p>原本目标可能是“生成一个满足条件的行程”，但循环太多会导致策略频繁变更，最后输出不稳定。</p>
+  </li>
+</ol>
+
+<h2 id="如何评估一个智能体的智能程度仅使用准确率指标是否足够">如何评估一个智能体的“智能程度”？仅使用准确率指标是否足够？</h2>
+
+<p>“智能”通常不仅是回答对不对，还包括：<strong>能否完成任务、能否适应环境、能否长期稳定、能否在不确定下做出正确决策</strong>。因此准确率通常不够。</p>
+
+<ul>
+  <li><strong>任务目标达成率</strong>：最终是否真的满足目标（可执行、有效、安全）</li>
+  <li><strong>感知质量</strong>：工具/传感输入是否可靠、缺失时是否能合理降级</li>
+  <li><strong>思考质量</strong>：是否规划合理、是否能在约束下产生可行决策（回合数、工具次数可作代理指标）</li>
+  <li><strong>行动可验证性（Grounding）</strong>：输出是否基于真实工具/检索结果而非纯生成</li>
+  <li><strong>动态修正能力</strong>：遇到反馈或冲突时，能否更新思考并继续走向目标</li>
+  <li><strong>鲁棒性与安全性</strong>：异常情况下是否仍保持约束（预算、风险边界等）</li>
+</ul>
+
+        </article>
+      </div>
+    </div>
+  </main>
+
+  <!-- Right: Category Articles -->
+  <aside class="post-category-sidebar" role="navigation" aria-label="分类文章列表">
+    <div class="category-panel">
+      
+      
+      <div class="category-sidebar-title">
+        <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
+        Agent
+      </div>
+      <ul class="category-article-list">
+        
+        
+        <li class="">
+          <a href="/2026/08/24/agent/%E9%95%BF%E7%A8%8B%E4%BB%BB%E5%8A%A1/" title="长程任务">
+            <span class="article-title">长程任务</span>
+            <span class="article-date">08-24</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/08/21/agent/RAG/" title="RAG">
+            <span class="article-title">RAG</span>
+            <span class="article-date">08-21</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/08/21/agent/%E4%B8%8A%E4%B8%8B%E6%96%87%E5%B7%A5%E7%A8%8B/" title="上下文工程">
+            <span class="article-title">上下文工程</span>
+            <span class="article-date">08-21</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/08/21/agent/%E8%AE%B0%E5%BF%86/" title="记忆">
+            <span class="article-title">记忆</span>
+            <span class="article-date">08-21</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/08/21/agent/Agent-RL/" title="Agent RL">
+            <span class="article-title">Agent RL</span>
+            <span class="article-date">08-21</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/08/21/agent/MCP/" title="MCP">
+            <span class="article-title">MCP</span>
+            <span class="article-date">08-21</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/08/10/agent/Plan-and-Solve/" title="Plan and Solve">
+            <span class="article-title">Plan and Solve</span>
+            <span class="article-date">08-10</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/08/10/agent/Reflection/" title="Reflection">
+            <span class="article-title">Reflection</span>
+            <span class="article-date">08-10</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/07/31/agent/ReAct/" title="ReAct">
+            <span class="article-title">ReAct</span>
+            <span class="article-date">07-31</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/07/30/agent/Scaling-Laws%E4%B8%8E%E6%A8%A1%E5%9E%8B%E5%B9%BB%E8%A7%89/" title="Scaling Laws">
+            <span class="article-title">Scaling Laws</span>
+            <span class="article-date">07-30</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/07/30/agent/%E6%A8%A1%E5%9E%8B%E9%80%89%E6%8B%A9%E7%9A%84%E8%80%83%E9%87%8F/" title="模型选择的考量">
+            <span class="article-title">模型选择的考量</span>
+            <span class="article-date">07-30</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/07/30/agent/Tokenizer/" title="Tokenizer">
+            <span class="article-title">Tokenizer</span>
+            <span class="article-date">07-30</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/07/23/agent/%E6%8F%90%E7%A4%BA%E5%B7%A5%E7%A8%8B/" title="提示工程">
+            <span class="article-title">提示工程</span>
+            <span class="article-date">07-23</span>
+          </a>
+        </li>
+        
+        <li class="active">
+          <a href="/2026/06/09/agent/%E5%A4%A7%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E9%A9%B1%E5%8A%A8%E7%9A%84%E6%99%BA%E8%83%BD%E4%BD%93/" title="初识智能体">
+            <span class="article-title">初识智能体</span>
+            <span class="article-date">06-09</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/04/23/agent/Openclaw/" title="Openclaw">
+            <span class="article-title">Openclaw</span>
+            <span class="article-date">04-23</span>
+          </a>
+        </li>
+        
+      </ul>
+      
+    </div>
+  </aside>
+</div>
+
+<!-- Theme Toggle Button -->
+<button type="button" class="theme-toggle" aria-label="Toggle Theme">
+  <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+  </svg>
+  <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="12" cy="12" r="5"></circle>
+    <line x1="12" y1="1" x2="12" y2="3"></line>
+    <line x1="12" y1="21" x2="12" y2="23"></line>
+    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+    <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+    <line x1="1" y1="12" x2="3" y2="12"></line>
+    <line x1="21" y1="12" x2="23" y2="12"></line>
+    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+    <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+  </svg>
+</button>
+
+<!-- Back to Top Button -->
+<button type="button" class="back-to-top" aria-label="Back to Top">
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <polyline points="18 15 12 9 6 15"></polyline>
+  </svg>
+</button>
+
+
+    <!-- Site Footer -->
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-content">
+      <div class="footer-info">
+        <h4>xinfan9's blog</h4>
+        <p>Actually, less is more!</p>
+      </div>
+      <div class="footer-links">
+        <a href="https://github.com/xinfan9/" target="_blank" title="GitHub">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+        </a>
+        <a href="mailto:11411619@qq.com" title="Email">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+        </a>
+        <a href="/feed.xml" title="RSS">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11a9 9 0 0 1 9 9"/><path d="M4 4a16 16 0 0 1 16 16"/><circle cx="5" cy="19" r="1"/></svg>
+        </a>
+      </div>
+      <div class="footer-copyright">
+        <p>&copy; 2026 xinfan9. Built with Jekyll.</p>
+      </div>
+    </div>
+  </div>
+</footer>
+      
+    
+    <!-- Global Buttons (for non-post pages) -->
+    
+  </body>
+</html>

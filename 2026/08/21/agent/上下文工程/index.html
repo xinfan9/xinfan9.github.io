@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+  <head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="Content-Language" content="zh-CN">
+	<title>上下文工程 - xinfan9's blog</title>
+
+	<link rel="icon" href="/styles/images/favicon.jpg">
+
+	<!-- Preconnect for CDN -->
+	
+	<link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+	<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+	
+
+
+	<!-- Inline Critical Reset (was index.css) -->
+	<style>
+		*,*::before,*::after{box-sizing:border-box}html{-ms-text-size-adjust:100%;-webkit-text-size-adjust:100%;-webkit-tap-highlight-color:rgba(0,0,0,0)}body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Microsoft YaHei",sans-serif;font-size:14px;line-height:1.42857143;color:#333;background-color:#f7f7f7}article,aside,details,figcaption,figure,footer,header,main,nav,section,summary{display:block}a{color:#43759e;text-decoration:none;background:transparent}a:hover,a:focus{color:#2c4d68;text-decoration:underline}a:focus{outline:thin dotted;outline-offset:-2px}img{vertical-align:middle;max-width:100%;height:auto}input,button,select,textarea{font-family:inherit;font-size:inherit;line-height:inherit}h1,h2,h3,h4,h5,h6{margin-top:0}.container{max-width:1200px;margin-left:auto;margin-right:auto;padding-left:15px;padding-right:15px}.clearfix::after{content:"";display:table;clear:both}.text-muted{color:#777}.sr-only{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0,0,0,0);border:0}
+	</style>
+
+	
+	<link rel="prefetch" as="image" href="/styles/images/api/background.webp">
+
+	<!-- Clarity Blog Theme -->
+	<link rel="stylesheet" href="/assets/css/clarity-blog.css?v=1788352046">
+
+	<!-- Prism.js Theme (non-blocking, only needed for code blocks) -->
+	
+	
+	<link rel="canonical" href="https://xinfang.site/2026/08/21/agent/%E4%B8%8A%E4%B8%8B%E6%96%87%E5%B7%A5%E7%A8%8B/">
+	<link rel="alternate" type="application/rss+xml" title="xinfan9's blog" href="https://xinfang.site/feed.xml">
+	
+	<meta name="description" content="上下文工程关注每一次模型调用前，如何以可复用、可度量、可迭代的方式拼装上下文，所谓上下文。区别于提示工程，提示工程聚焦于如何写出好的prompt，而上下文工程需要管理prompt、每次调用的tool、MCP、外部数据、记忆等整个上下文策略。
+">
+
+	<!-- Open Graph for social sharing -->
+	<meta property="og:title" content="上下文工程">
+	<meta property="og:description" content="上下文工程关注每一次模型调用前，如何以可复用、可度量、可迭代的方式拼装上下文，所谓上下文。区别于提示工程，提示工程聚焦于如何写出好的prompt，而上下文工程需要管理prompt、每次调用的tool、MCP、外部数据、记忆等整个上下文策略。
+">
+	<meta property="og:url" content="https://xinfang.site/2026/08/21/agent/%E4%B8%8A%E4%B8%8B%E6%96%87%E5%B7%A5%E7%A8%8B/">
+	<meta property="og:site_name" content="xinfan9's blog">
+	<meta property="og:type" content="article">
+	<meta property="article:published_time" content="2026-08-21T21:41:47+08:00">
+	
+	<meta property="og:image" content="https://xinfang.site/styles/images/api/background.webp">
+	<meta property="og:image:width" content="1200">
+	<meta property="og:image:height" content="630">
+	
+	<meta property="og:locale" content="zh_CN">
+
+	<!-- Twitter Card -->
+	<meta name="twitter:card" content="summary_large_image">
+	<meta name="twitter:title" content="上下文工程">
+	<meta name="twitter:description" content="上下文工程关注每一次模型调用前，如何以可复用、可度量、可迭代的方式拼装上下文，所谓上下文。区别于提示工程，提示工程聚焦于如何写出好的prompt，而上下文工程需要管理prompt、每次调用的tool、MCP、外部数据、记忆等整个上下文策略。
+">
+	<meta name="twitter:image" content="https://xinfang.site/styles/images/favicon.jpg">
+	
+	<!-- Theme color for mobile browsers -->
+	<meta name="theme-color" content="#0b72d9" media="(prefers-color-scheme: light)">
+	<meta name="theme-color" content="#0f172a" media="(prefers-color-scheme: dark)">
+
+	<!-- Prevent FOUC for theme -->
+	<script>
+		(function() {
+			const savedTheme = localStorage.getItem('theme');
+			const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+			if (savedTheme) {
+				document.documentElement.setAttribute('data-theme', savedTheme);
+			} else if (prefersDark) {
+				document.documentElement.setAttribute('data-theme', 'dark');
+			}
+		})();
+	</script>
+	
+	<!-- Prism.js only on post pages with code blocks -->
+	
+
+	<!-- Mermaid.js for diagram rendering (conditional) -->
+	
+
+	<!-- MathJax for LaTeX rendering (conditional) -->
+	
+
+	<!-- Blog Interactive Features -->
+	<script src="/assets/js/blog.js?v=1788352046" defer></script>
+
+	<!-- JSON-LD Structured Data -->
+	
+	<script type="application/ld+json">
+	{
+		"@context": "https://schema.org",
+		"@type": "BlogPosting",
+		"inLanguage": "zh-CN",
+		"headline": "上下文工程",
+		"image": "https://xinfang.site/styles/images/favicon.jpg",
+		"datePublished": "2026-08-21T21:41:47+08:00",
+		"dateModified": "2026-08-21T21:41:47+08:00",
+		"author": {
+			"@type": "Person",
+			"name": "xinfan9"
+		},
+		"publisher": {
+			"@type": "Organization",
+			"name": "xinfan9's blog",
+			"logo": {
+				"@type": "ImageObject",
+				"url": "https://xinfang.site/styles/images/favicon.jpg"
+			}
+		},
+		"mainEntityOfPage": {
+			"@type": "WebPage",
+			"@id": "https://xinfang.site/2026/08/21/agent/%E4%B8%8A%E4%B8%8B%E6%96%87%E5%B7%A5%E7%A8%8B/"
+		},
+		"keywords": "Agent",
+		"articleBody": "上下文工程关注每一次模型调用前，如何以可复用、可度量、可迭代的方式拼装上下文，所谓上下文。区别于提示工程，提示工程聚焦于如何写出好的prompt，而上下文工程需要管理prompt、每次调用的tool、MCP、外部数据、记忆等整个上下文策略。\n",
+		"description": "上下文工程关注每一次模型调用前，如何以可复用、可度量、可迭代的方式拼装上下文，所谓上下文。区别于提示工程，提示工程聚焦于如何写出好的prompt，而上下文工程需要管理prompt、每次调用的tool、MCP、外部数据、记忆等整个上下文策略。\n"
+	}
+	</script>
+	
+</head>
+
+  <body class="index">
+
+    <!-- Reading Progress Bar -->
+<div class="reading-progress" id="reading-progress"></div>
+
+<!-- Page Background -->
+<div class="post-background"></div>
+
+<div class="post-layout">
+  <!-- Left: TOC -->
+  <aside class="post-toc-sidebar" id="post-toc-sidebar" role="navigation" aria-label="文章目录">
+    <div class="toc-panel">
+      <div class="toc-title">
+        <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="12" x2="15" y2="12"></line><line x1="3" y1="18" x2="18" y2="18"></line></svg>
+        目录
+      </div>
+      <ul class="toc-list" id="toc-list"></ul>
+    </div>
+  </aside>
+
+  <!-- Center: Article -->
+  <main class="post-main">
+    <div class="panel docs-content">
+      <div class="wrapper">
+        <header class="post-header" role="banner">
+          <a href="https://xinfang.site/" class="back-home-link">
+            <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+            返回主页
+          </a>
+          <h1 class="post-title">上下文工程</h1>
+          <div class="post-meta-info">
+            <time class="meta-item meta-date" datetime="2026-08-21T21:41:47+08:00">
+              <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+              2026-08-21
+            </time>
+            
+            <time class="meta-item meta-update" datetime="2026-08-21T21:41:47+08:00">
+              <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 2.2"/></svg>
+              2026-08-21
+            </time>
+            
+            <span class="meta-item meta-author">
+              <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+              xinfan9
+            </span>
+            
+            <span class="meta-item meta-words">
+              <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+              20 字
+            </span>
+            
+            <span class="meta-item meta-reading">
+              <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+              约 1 分钟
+            </span>
+          </div>
+        </header>
+        <article class="post-content" role="article">
+          <p>上下文工程关注每一次模型调用前，如何以可复用、可度量、可迭代的方式拼装上下文，所谓上下文。区别于提示工程，提示工程聚焦于如何写出好的prompt，而上下文工程需要管理prompt、每次调用的tool、MCP、外部数据、记忆等整个上下文策略。</p>
+
+<h1 id="上下文工程目标">上下文工程目标</h1>
+
+<p>在llm运行的过程中，存在<strong>上下文腐蚀（context rot）</strong>现象：随着窗口增大，随着token越来越多，模型获取信息的能力会退化。也就是说，上下文是一种有限资源，并且存在边际收益递减。优秀的上下文的目标是：<strong>用尽可能少、但高信号密度的tokens，最大化获得期望结果的概率。</strong></p>
+
+<h1 id="上下文工程主要内容">上下文工程主要内容</h1>
+
+<h2 id="系统提示system-prompt">系统提示（system Prompt）</h2>
+
+<p>系统提示需的目标是能完整勾勒出期望行为的最小必要信息集合。</p>
+
+<h2 id="工具tools">工具（Tools）</h2>
+
+<p>工具定义了智能体与知识、行动空间的通信规范。</p>
+
+<h2 id="示例few-shot">示例（Few-shot）</h2>
+
+<p>好的示例胜过千言万语，提供多样且典型的示例。</p>
+
+<h1 id="上下文工程常见手段">上下文工程常见手段</h1>
+
+<p>在智能体的工程实践中，早期人们采用推理前一次性检索，如今已经过渡为<strong>“及时上下文”</strong>模式，只需要维护知识的<strong>轻量化引用载体</strong>，如tools、MCP等，在运行过程中通过工具动态加载所需数据来拼接上下文。及时上下文系统要求更多的运行时间，因此实际应用中，采用预加载+及时上下文的混合模式。尤其对于长时程任务，要求智能体在超出上下文窗口的长序列行动中，仍能保持连贯性、上下文一致与目标导向，例如大型项目开发、小说总结等。</p>
+
+<h2 id="压缩整合">压缩整合</h2>
+
+<p>当对话接近上下文上限时，需要用当前摘要进行总结，并重启一个新的上下文窗口，保留的内容包括：关键决策和输出、实现细节、未解决缺陷，丢弃的内容包括：重复的工具输出和已过时内容。需要先优化召回，确保不遗漏关键信息，再优化精确度。</p>
+
+<h2 id="智能体记忆">智能体记忆</h2>
+
+<p>智能体以固定频率将关键上下文进行持久化，再后续阶段按需查询。</p>
+
+<h2 id="子代理架构">子代理架构</h2>
+
+<p>将上下文的关注点分离到子agent中分别运行吧，主agent负责整合和推理。</p>
+
+
+        </article>
+      </div>
+    </div>
+  </main>
+
+  <!-- Right: Category Articles -->
+  <aside class="post-category-sidebar" role="navigation" aria-label="分类文章列表">
+    <div class="category-panel">
+      
+      
+      <div class="category-sidebar-title">
+        <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
+        Agent
+      </div>
+      <ul class="category-article-list">
+        
+        
+        <li class="">
+          <a href="/2026/08/24/agent/%E9%95%BF%E7%A8%8B%E4%BB%BB%E5%8A%A1/" title="长程任务">
+            <span class="article-title">长程任务</span>
+            <span class="article-date">08-24</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/08/21/agent/RAG/" title="RAG">
+            <span class="article-title">RAG</span>
+            <span class="article-date">08-21</span>
+          </a>
+        </li>
+        
+        <li class="active">
+          <a href="/2026/08/21/agent/%E4%B8%8A%E4%B8%8B%E6%96%87%E5%B7%A5%E7%A8%8B/" title="上下文工程">
+            <span class="article-title">上下文工程</span>
+            <span class="article-date">08-21</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/08/21/agent/%E8%AE%B0%E5%BF%86/" title="记忆">
+            <span class="article-title">记忆</span>
+            <span class="article-date">08-21</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/08/21/agent/Agent-RL/" title="Agent RL">
+            <span class="article-title">Agent RL</span>
+            <span class="article-date">08-21</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/08/21/agent/MCP/" title="MCP">
+            <span class="article-title">MCP</span>
+            <span class="article-date">08-21</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/08/10/agent/Plan-and-Solve/" title="Plan and Solve">
+            <span class="article-title">Plan and Solve</span>
+            <span class="article-date">08-10</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/08/10/agent/Reflection/" title="Reflection">
+            <span class="article-title">Reflection</span>
+            <span class="article-date">08-10</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/07/31/agent/ReAct/" title="ReAct">
+            <span class="article-title">ReAct</span>
+            <span class="article-date">07-31</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/07/30/agent/Scaling-Laws%E4%B8%8E%E6%A8%A1%E5%9E%8B%E5%B9%BB%E8%A7%89/" title="Scaling Laws">
+            <span class="article-title">Scaling Laws</span>
+            <span class="article-date">07-30</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/07/30/agent/%E6%A8%A1%E5%9E%8B%E9%80%89%E6%8B%A9%E7%9A%84%E8%80%83%E9%87%8F/" title="模型选择的考量">
+            <span class="article-title">模型选择的考量</span>
+            <span class="article-date">07-30</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/07/30/agent/Tokenizer/" title="Tokenizer">
+            <span class="article-title">Tokenizer</span>
+            <span class="article-date">07-30</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/07/23/agent/%E6%8F%90%E7%A4%BA%E5%B7%A5%E7%A8%8B/" title="提示工程">
+            <span class="article-title">提示工程</span>
+            <span class="article-date">07-23</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/06/09/agent/%E5%A4%A7%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E9%A9%B1%E5%8A%A8%E7%9A%84%E6%99%BA%E8%83%BD%E4%BD%93/" title="初识智能体">
+            <span class="article-title">初识智能体</span>
+            <span class="article-date">06-09</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/04/23/agent/Openclaw/" title="Openclaw">
+            <span class="article-title">Openclaw</span>
+            <span class="article-date">04-23</span>
+          </a>
+        </li>
+        
+      </ul>
+      
+    </div>
+  </aside>
+</div>
+
+<!-- Theme Toggle Button -->
+<button type="button" class="theme-toggle" aria-label="Toggle Theme">
+  <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+  </svg>
+  <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="12" cy="12" r="5"></circle>
+    <line x1="12" y1="1" x2="12" y2="3"></line>
+    <line x1="12" y1="21" x2="12" y2="23"></line>
+    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+    <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+    <line x1="1" y1="12" x2="3" y2="12"></line>
+    <line x1="21" y1="12" x2="23" y2="12"></line>
+    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+    <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+  </svg>
+</button>
+
+<!-- Back to Top Button -->
+<button type="button" class="back-to-top" aria-label="Back to Top">
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <polyline points="18 15 12 9 6 15"></polyline>
+  </svg>
+</button>
+
+
+    <!-- Site Footer -->
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-content">
+      <div class="footer-info">
+        <h4>xinfan9's blog</h4>
+        <p>Actually, less is more!</p>
+      </div>
+      <div class="footer-links">
+        <a href="https://github.com/xinfan9/" target="_blank" title="GitHub">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+        </a>
+        <a href="mailto:11411619@qq.com" title="Email">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+        </a>
+        <a href="/feed.xml" title="RSS">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11a9 9 0 0 1 9 9"/><path d="M4 4a16 16 0 0 1 16 16"/><circle cx="5" cy="19" r="1"/></svg>
+        </a>
+      </div>
+      <div class="footer-copyright">
+        <p>&copy; 2026 xinfan9. Built with Jekyll.</p>
+      </div>
+    </div>
+  </div>
+</footer>
+      
+    
+    <!-- Global Buttons (for non-post pages) -->
+    
+  </body>
+</html>

@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+  <head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="Content-Language" content="zh-CN">
+	<title>二叉树 - xinfan9's blog</title>
+
+	<link rel="icon" href="/styles/images/favicon.jpg">
+
+	<!-- Preconnect for CDN -->
+	
+	<link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+	<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+	
+
+
+	<!-- Inline Critical Reset (was index.css) -->
+	<style>
+		*,*::before,*::after{box-sizing:border-box}html{-ms-text-size-adjust:100%;-webkit-text-size-adjust:100%;-webkit-tap-highlight-color:rgba(0,0,0,0)}body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Microsoft YaHei",sans-serif;font-size:14px;line-height:1.42857143;color:#333;background-color:#f7f7f7}article,aside,details,figcaption,figure,footer,header,main,nav,section,summary{display:block}a{color:#43759e;text-decoration:none;background:transparent}a:hover,a:focus{color:#2c4d68;text-decoration:underline}a:focus{outline:thin dotted;outline-offset:-2px}img{vertical-align:middle;max-width:100%;height:auto}input,button,select,textarea{font-family:inherit;font-size:inherit;line-height:inherit}h1,h2,h3,h4,h5,h6{margin-top:0}.container{max-width:1200px;margin-left:auto;margin-right:auto;padding-left:15px;padding-right:15px}.clearfix::after{content:"";display:table;clear:both}.text-muted{color:#777}.sr-only{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0,0,0,0);border:0}
+	</style>
+
+	
+	<link rel="prefetch" as="image" href="/styles/images/api/background.webp">
+
+	<!-- Clarity Blog Theme -->
+	<link rel="stylesheet" href="/assets/css/clarity-blog.css?v=1788352046">
+
+	<!-- Prism.js Theme (non-blocking, only needed for code blocks) -->
+	
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" media="print" onload="this.media='all'" onerror="console.warn('Prism CSS load failed')">
+	
+	
+	<link rel="canonical" href="https://xinfang.site/2026/07/23/%E5%8F%A4%E6%B3%95%E7%BC%96%E7%A8%8B/%E4%BA%8C%E5%8F%89%E6%A0%91/">
+	<link rel="alternate" type="application/rss+xml" title="xinfan9's blog" href="https://xinfang.site/feed.xml">
+	
+	<meta name="description" content="二叉树（binary tree）是一种非线性数据结构，代表祖先与后代的派生关系，体现了分治思想。
+">
+
+	<!-- Open Graph for social sharing -->
+	<meta property="og:title" content="二叉树">
+	<meta property="og:description" content="二叉树（binary tree）是一种非线性数据结构，代表祖先与后代的派生关系，体现了分治思想。
+">
+	<meta property="og:url" content="https://xinfang.site/2026/07/23/%E5%8F%A4%E6%B3%95%E7%BC%96%E7%A8%8B/%E4%BA%8C%E5%8F%89%E6%A0%91/">
+	<meta property="og:site_name" content="xinfan9's blog">
+	<meta property="og:type" content="article">
+	<meta property="article:published_time" content="2026-07-23T17:40:21+08:00">
+	
+	<meta property="og:image" content="https://xinfang.site/styles/images/api/background.webp">
+	<meta property="og:image:width" content="1200">
+	<meta property="og:image:height" content="630">
+	
+	<meta property="og:locale" content="zh_CN">
+
+	<!-- Twitter Card -->
+	<meta name="twitter:card" content="summary_large_image">
+	<meta name="twitter:title" content="二叉树">
+	<meta name="twitter:description" content="二叉树（binary tree）是一种非线性数据结构，代表祖先与后代的派生关系，体现了分治思想。
+">
+	<meta name="twitter:image" content="https://xinfang.site/styles/images/favicon.jpg">
+	
+	<!-- Theme color for mobile browsers -->
+	<meta name="theme-color" content="#0b72d9" media="(prefers-color-scheme: light)">
+	<meta name="theme-color" content="#0f172a" media="(prefers-color-scheme: dark)">
+
+	<!-- Prevent FOUC for theme -->
+	<script>
+		(function() {
+			const savedTheme = localStorage.getItem('theme');
+			const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+			if (savedTheme) {
+				document.documentElement.setAttribute('data-theme', savedTheme);
+			} else if (prefersDark) {
+				document.documentElement.setAttribute('data-theme', 'dark');
+			}
+		})();
+	</script>
+	
+	<!-- Prism.js only on post pages with code blocks -->
+	
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" defer></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js" defer></script>
+	
+
+	<!-- Mermaid.js for diagram rendering (conditional) -->
+	
+
+	<!-- MathJax for LaTeX rendering (conditional) -->
+	
+	<script>
+		MathJax = {
+			tex: { inlineMath: [['$','$'], ['\\(','\\)']], displayMath: [['$$','$$'], ['\\[','\\]']] },
+			svg: { fontCache: 'global' },
+			startup: { typeset: true }
+		};
+	</script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-svg.js" defer></script>
+	
+
+	<!-- Blog Interactive Features -->
+	<script src="/assets/js/blog.js?v=1788352046" defer></script>
+
+	<!-- JSON-LD Structured Data -->
+	
+	<script type="application/ld+json">
+	{
+		"@context": "https://schema.org",
+		"@type": "BlogPosting",
+		"inLanguage": "zh-CN",
+		"headline": "二叉树",
+		"image": "https://xinfang.site/styles/images/favicon.jpg",
+		"datePublished": "2026-07-23T17:40:21+08:00",
+		"dateModified": "2026-07-23T17:40:21+08:00",
+		"author": {
+			"@type": "Person",
+			"name": "xinfan9"
+		},
+		"publisher": {
+			"@type": "Organization",
+			"name": "xinfan9's blog",
+			"logo": {
+				"@type": "ImageObject",
+				"url": "https://xinfang.site/styles/images/favicon.jpg"
+			}
+		},
+		"mainEntityOfPage": {
+			"@type": "WebPage",
+			"@id": "https://xinfang.site/2026/07/23/%E5%8F%A4%E6%B3%95%E7%BC%96%E7%A8%8B/%E4%BA%8C%E5%8F%89%E6%A0%91/"
+		},
+		"keywords": "古法编程",
+		"articleBody": "二叉树（binary tree）是一种非线性数据结构，代表祖先与后代的派生关系，体现了分治思想。\n",
+		"description": "二叉树（binary tree）是一种非线性数据结构，代表祖先与后代的派生关系，体现了分治思想。\n"
+	}
+	</script>
+	
+</head>
+
+  <body class="index">
+
+    <!-- Reading Progress Bar -->
+<div class="reading-progress" id="reading-progress"></div>
+
+<!-- Page Background -->
+<div class="post-background"></div>
+
+<div class="post-layout">
+  <!-- Left: TOC -->
+  <aside class="post-toc-sidebar" id="post-toc-sidebar" role="navigation" aria-label="文章目录">
+    <div class="toc-panel">
+      <div class="toc-title">
+        <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="12" x2="15" y2="12"></line><line x1="3" y1="18" x2="18" y2="18"></line></svg>
+        目录
+      </div>
+      <ul class="toc-list" id="toc-list"></ul>
+    </div>
+  </aside>
+
+  <!-- Center: Article -->
+  <main class="post-main">
+    <div class="panel docs-content">
+      <div class="wrapper">
+        <header class="post-header" role="banner">
+          <a href="https://xinfang.site/" class="back-home-link">
+            <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+            返回主页
+          </a>
+          <h1 class="post-title">二叉树</h1>
+          <div class="post-meta-info">
+            <time class="meta-item meta-date" datetime="2026-07-23T17:40:21+08:00">
+              <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+              2026-07-23
+            </time>
+            
+            <time class="meta-item meta-update" datetime="2026-07-23T17:40:21+08:00">
+              <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 2.2"/></svg>
+              2026-07-23
+            </time>
+            
+            <span class="meta-item meta-author">
+              <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+              xinfan9
+            </span>
+            
+            <span class="meta-item meta-words">
+              <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+              583 字
+            </span>
+            
+            <span class="meta-item meta-reading">
+              <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+              约 6 分钟
+            </span>
+          </div>
+        </header>
+        <article class="post-content" role="article">
+          <p>二叉树（binary tree）是一种非线性数据结构，代表祖先与后代的派生关系，体现了<strong>分治思想</strong>。</p>
+
+<p>二叉树的基本单元是节点，包括值和左右节点指针。</p>
+
+<pre><code class="language-cpp">struct TreeNode {
+  int val;
+  TreeNode* left;
+  TreeNode* right;
+  TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+}
+</code></pre>
+
+<p>在二叉树中，除了叶节点，其他节点都包含子节点和非空子树。</p>
+
+<p><img src="/post-images/古法编程/2026-07-23-二叉树.assets/image-20260723101927313.webp" alt="image-20260723101927313" /></p>
+
+<ul>
+  <li>根节点（root node）：位于顶点的节点。</li>
+  <li>叶节点（leaf node）：没有子节点的节点。</li>
+  <li>边（edge）：连接两个节点的线段。</li>
+  <li>子树（subtree）：以左子节点为根节点的子树成为左子树(left subtree)，右子树亦然。</li>
+  <li>度（degree）：节点的子节点的数量，二叉树中取值为0，1，2。</li>
+  <li>高度（height）：根节点到叶节点的边的数量。</li>
+  <li>深度（depth）：从根节点到该节点经过的边的数量。</li>
+  <li>节点的高度：从距离该节点最远的叶节点到该节点的边的数量。</li>
+</ul>
+
+<p><img src="/post-images/古法编程/2026-07-23-二叉树.assets/image-20260723102252569.webp" alt="image-20260723102252569" /></p>
+
+<h1 id="二叉树基本操作">二叉树基本操作</h1>
+
+<h2 id="初始化">初始化</h2>
+
+<pre><code class="language-cpp">TreeNode* n0 = new TreeNode(0);
+TreeNode* n1 = new TreeNode(1);
+TreeNode* n2 = new TreeNode(2);
+TreeNode* n3 = new TreeNode(3);
+n0-&gt;left = n1;
+n0-&gt;right = n2;
+n1-&gt;left = n3;
+</code></pre>
+
+<h2 id="插入与删除节点">插入与删除节点</h2>
+
+<p><img src="/post-images/古法编程/2026-07-23-二叉树.assets/image-20260723103420678.webp" alt="image-20260723103420678" /></p>
+
+<pre><code class="language-cpp">TreeNode* P = new TreeNode(0);
+n1-&gt;left = P;
+P-&gt;left = n2;
+
+//删除
+n1-&gt;left = n2;
+delete P;
+</code></pre>
+
+<h1 id="常见二叉树类型">常见二叉树类型</h1>
+
+<h2 id="完美二叉树">完美二叉树</h2>
+
+<p><img src="/post-images/古法编程/2026-07-23-二叉树.assets/image-20260723103449792.webp" alt="image-20260723103449792" /></p>
+
+<p>若树的高度为h，则节点总数为 $2^{h + 1} - 1$。完美二叉树可用数组表示。</p>
+
+<h2 id="完全二叉树">完全二叉树</h2>
+
+<p><img src="/post-images/古法编程/2026-07-23-二叉树.assets/image-20260723103600877.webp" alt="image-20260723103600877" /></p>
+
+<p>仅最底层的节点未填满。完全二叉树也可用数组表示。</p>
+
+<h2 id="平衡二叉树">平衡二叉树</h2>
+
+<p><img src="/post-images/古法编程/2026-07-23-二叉树.assets/image-20260723103801324.webp" alt="image-20260723103801324" /></p>
+
+<h1 id="二叉树遍历">二叉树遍历</h1>
+
+<h2 id="层序遍历广度优先搜索">层序遍历（广度优先搜索）</h2>
+
+<p><img src="/post-images/古法编程/2026-07-23-二叉树.assets/image-20260723105640428.webp" alt="image-20260723105640428" /></p>
+
+<pre><code class="language-cpp">vector&lt;int&gt; levelOrder(TreeNode* root) {
+  queue&lt;TreeNode*&gt; queue;
+  queue.push(root);
+  vector&lt;int&gt; vec;
+  while(!.queue.empty()) {
+    TreeNode* node = queue.front();
+    queue.pop();
+    vec.push_back(node-&gt;val);
+    if (node-&gt;left != nullptr) queue.push(queue.pop());
+    if (node-&gt;right != nullptr) queue.push(queue.pop());
+  }
+  
+  return vec;
+}
+</code></pre>
+
+<h2 id="深度优先遍历前序中序后序">深度优先遍历（前序、中序、后序）</h2>
+
+<p><img src="/post-images/古法编程/2026-07-23-二叉树.assets/image-20260723113241208.webp" alt="image-20260723113241208" /></p>
+
+<pre><code class="language-cpp">void preOrder(TreeNode* root) {
+  if (root == nullptr) return;
+  vec.push_back(root-&gt;val);
+  preOrder(root-&gt;left);
+  preOrder(root-&gt;right);
+}
+
+void inOrder(TreeNode* root) {
+  if (root == nullptr) return;
+  inOrder(root-&gt;left);
+  vec.push_back(root-&gt;val);
+  inOrder(root-&gt;right);
+}
+
+void postOrder(TreeNode* root) {
+  if (root == nullptr) return;
+  postOrder(root-&gt;left);
+  postOrder(root-&gt;right);
+  vec.push_back(root-&gt;val);
+}
+</code></pre>
+
+<p><strong>前序遍历的递归过程</strong></p>
+
+<p><img src="/post-images/古法编程/2026-07-23-二叉树.assets/image-20260723113620603.webp" alt="image-20260723113620603" /></p>
+
+<p><img src="/post-images/古法编程/2026-07-23-二叉树.assets/image-20260723114758289.webp" alt="image-20260723114758289" /></p>
+
+<h1 id="二叉树的数组表示">二叉树的数组表示</h1>
+
+<p>二叉组的数组表示有以下优点：</p>
+
+<ul>
+  <li>数组存储的二叉树对缓存友好，访问与遍历速度快。</li>
+  <li>不需要存储指针，节省空间。</li>
+  <li>允许随机访问节点。</li>
+</ul>
+
+<p>缺点：</p>
+
+<ul>
+  <li>数组存储需要连续空间，不适合存储数据量大的树。</li>
+  <li>增删节点需要通过数组的插入与删除实现，效率低。</li>
+  <li>二叉树存在大量None时，数组存储空间利用率低。</li>
+</ul>
+
+<p>对于完美二叉树和完全二叉树，可用 $2i + 1$ 和 $2i + 2$  表示二叉树。</p>
+
+<p>对于任意二叉树，可用none占位实现这个效果。</p>
+
+<p><img src="/post-images/古法编程/2026-07-23-二叉树.assets/image-20260723115313415.webp" alt="image-20260723115313415" /></p>
+
+<p><img src="/post-images/古法编程/2026-07-23-二叉树.assets/image-20260723115350246.webp" alt="image-20260723115350246" /></p>
+
+<pre><code class="language-cpp">class ArrayBinaryTree {
+public:
+  ArrayBinaryTree(vector&lt;int&gt; arr) {
+    tree = arr;
+  }
+  
+  int size() {
+    return tree.size();
+  }
+  
+  int val(int i) {
+    if (i &lt; 0 || i &gt;= size()) return INT_MAX;
+    return tree[i];
+  }
+  
+  int left(int i) return 2*i + 1;
+  int right(int i) return 2*i + 2;
+  int parent(int i) return (i - 1)/2;
+  
+  vector&lt;int&gt; levelOrder() {
+    vector&lt;int&gt; res;
+    for (int i = 0; i &lt; size(); ++i) {
+      if (val(i) != INT_MAX) res.push_back(val(i));
+    }
+    
+    return res;
+  }
+  
+  vector&lt;int&gt; preOrder() {
+    vector&lt;int&gt; res;
+    dfs(0, "pre", res);
+  }
+  
+  vector&lt;int&gt; inOrder() {
+    vector&lt;int&gt; res;
+    dfs(0, "in", res);
+  }
+  
+  vector&lt;int&gt; postOrder() {
+    vector&lt;int&gt; res;
+    dfs(0, "post", res);
+  }
+    
+private:
+  vector&lt;int&gt; tree;
+  void dfs(int i, string order, vector&lt;int&gt;&amp; res) {
+    if (val[i] == INT_MAX) return;
+    
+    if (order == "pre")
+      res.push_back(val(i));
+    
+    dfs(left(i), order, res);
+    if (order == "in") 
+      res.push_back(val(i));
+    dfs(left(i), order, res);
+    if (order == "post")
+      res.push_back(val(i));
+  }
+}
+</code></pre>
+
+<h1 id="二叉树的应用">二叉树的应用</h1>
+
+<h2 id="二叉搜索树">二叉搜索树</h2>
+
+<p>二叉搜索树(binary search tree)</p>
+
+<ul>
+  <li>左子树所有节点的值 &lt; 根节点的值 &lt; 右子树所有节点的值</li>
+  <li>任意节点的左右子树也满足条件1。</li>
+  <li>二叉搜索树不允许存在重复节点。</li>
+</ul>
+
+<p><img src="/post-images/古法编程/2026-07-23-二叉树.assets/image-20260723171653657.webp" alt="image-20260723171653657" /></p>
+
+<h3 id="二叉搜索树的常见操作">二叉搜索树的常见操作</h3>
+
+<p><strong>查找</strong></p>
+
+<p><img src="/post-images/古法编程/2026-07-23-二叉树.assets/image-20260723171755403.webp" alt="image-20260723171755403" /></p>
+
+<pre><code class="language-cpp">TreeNode* search(int num) {
+  TreeNode* cur = root;
+  while (cur != nullptr) {
+    if (cur-&gt;val &lt; num) cur = cur-&gt;right;
+    else if (cur-&gt;val &gt; num) cur = cur-&gt;left;
+    else break;
+  }
+  
+  return cur;
+}
+</code></pre>
+
+<p><strong>插入</strong></p>
+
+<p>插入过程中，需要保存上一轮访问的节点，以便在遍历到None时，能获取到父节点。</p>
+
+<p><img src="/post-images/古法编程/2026-07-23-二叉树.assets/image-20260723171935150.webp" alt="image-20260723171935150" /></p>
+
+<pre><code class="language-cpp">void insert(int num) {
+  if (root == nullptr) {
+    root = new TreeNode(num);
+    return;
+  }
+  
+  TreeNode* cur = root;
+  TreeNode* pre = nullptr;
+  
+  while (cur != nullptr) {
+    if (cur-&gt;val == num) {
+      return;
+    }
+    
+    pre = cur;
+    if (cur-&gt;val &lt; num) {
+      cur = cur-&gt;right;
+    } else {
+      cur = cur-&gt;left;
+    }
+  }
+    
+  TreeNode* node = new TreeNode(num);
+  if (pre-&gt;val &lt; num) pre-&gt;right = node;
+  else pre-&gt;left = node;
+}
+</code></pre>
+
+<p><strong>删除</strong></p>
+
+<p>删除分三种情况：</p>
+
+<ol>
+  <li>删除度为0的点</li>
+</ol>
+
+<p><img src="/post-images/古法编程/2026-07-23-二叉树.assets/image-20260723172653489.webp" alt="image-20260723172653489" /></p>
+
+<ol>
+  <li>删除度为1的点</li>
+</ol>
+
+<p><img src="/post-images/古法编程/2026-07-23-二叉树.assets/image-20260723172709348.webp" alt="image-20260723172709348" /></p>
+
+<ol>
+  <li>删除度为2的点</li>
+</ol>
+
+<p><img src="/post-images/古法编程/2026-07-23-二叉树.assets/image-20260723172909135.webp" alt="image-20260723172909135" /></p>
+
+<p>删除操作的核心思想就是：找到待删除节点中序遍历的下一个节点，用该节点的值覆盖删除节点，然后递归删除下一个节点。</p>
+
+<pre><code class="language-cpp">void remove(int num) {
+  if (root == nullptr) {
+    return;
+  }
+  
+  TreeNode* cur = root;
+  TreeNode* pre = nullptr;
+  // 寻找删除节点
+  while (cur != nullptr) {
+    if (cur-&gt;val == num) break;
+    pre = cur;
+    if (cur-&gt;val &lt; num) cur = cur-&gt;right;
+    else cur = cur-&gt;left;
+  }
+  if (cur == nullptr) {
+    return;
+  }
+  
+  if (cur-&gt;left == nullptr || cur-&gt;right == nullptr) {
+    TreeNode* child = cur-&gt;left != nullptr ? cur-&gt;left : cur-&gt;right;
+    if (cur != root) {
+      if (pre-&gt;left == cur) pre-&gt;left = child;
+      else pre-&gt;right = child;
+    } else {
+      root = child;
+    }
+    
+    delete cur;
+  } else {
+    TreeNode* tmp = cur-&gt;right;
+    while (tmp-&gt;left != nullptr) {
+      tmp = tmp-&gt;left;
+    }
+    
+    int tmpVal = tmp-&gt;val;
+    remove(tmp-&gt;val);
+    cur-&gt;val = tmpVal;
+  }
+}
+</code></pre>
+
+<h2 id="avl-树">AVL 树</h2>
+
+<p>待补充</p>
+
+
+        </article>
+      </div>
+    </div>
+  </main>
+
+  <!-- Right: Category Articles -->
+  <aside class="post-category-sidebar" role="navigation" aria-label="分类文章列表">
+    <div class="category-panel">
+      
+      
+      <div class="category-sidebar-title">
+        <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
+        古法编程
+      </div>
+      <ul class="category-article-list">
+        
+        
+        <li class="">
+          <a href="/2026/07/30/%E5%8F%A4%E6%B3%95%E7%BC%96%E7%A8%8B/%E6%8E%92%E5%BA%8F/" title="排序">
+            <span class="article-title">排序</span>
+            <span class="article-date">07-30</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/07/30/%E5%8F%A4%E6%B3%95%E7%BC%96%E7%A8%8B/%E6%90%9C%E7%B4%A2/" title="搜索">
+            <span class="article-title">搜索</span>
+            <span class="article-date">07-30</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/07/28/%E5%8F%A4%E6%B3%95%E7%BC%96%E7%A8%8B/%E5%9B%BE/" title="图">
+            <span class="article-title">图</span>
+            <span class="article-date">07-28</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/07/28/%E5%8F%A4%E6%B3%95%E7%BC%96%E7%A8%8B/%E5%A0%86/" title="堆">
+            <span class="article-title">堆</span>
+            <span class="article-date">07-28</span>
+          </a>
+        </li>
+        
+        <li class="active">
+          <a href="/2026/07/23/%E5%8F%A4%E6%B3%95%E7%BC%96%E7%A8%8B/%E4%BA%8C%E5%8F%89%E6%A0%91/" title="二叉树">
+            <span class="article-title">二叉树</span>
+            <span class="article-date">07-23</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/07/07/%E5%8F%A4%E6%B3%95%E7%BC%96%E7%A8%8B/%E5%8F%8C%E5%90%91%E9%98%9F%E5%88%97/" title="双向队列">
+            <span class="article-title">双向队列</span>
+            <span class="article-date">07-07</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/07/07/%E5%8F%A4%E6%B3%95%E7%BC%96%E7%A8%8B/%E5%93%88%E5%B8%8C%E8%A1%A8/" title="哈希表">
+            <span class="article-title">哈希表</span>
+            <span class="article-date">07-07</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/06/30/%E5%8F%A4%E6%B3%95%E7%BC%96%E7%A8%8B/%E9%98%9F%E5%88%97/" title="队列">
+            <span class="article-title">队列</span>
+            <span class="article-date">06-30</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/06/17/%E5%8F%A4%E6%B3%95%E7%BC%96%E7%A8%8B/%E6%A0%88/" title="栈">
+            <span class="article-title">栈</span>
+            <span class="article-date">06-17</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/06/10/%E5%8F%A4%E6%B3%95%E7%BC%96%E7%A8%8B/%E7%BC%93%E5%AD%98%E5%92%8C%E5%86%85%E5%AD%98/" title="缓存和内存">
+            <span class="article-title">缓存和内存</span>
+            <span class="article-date">06-10</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/06/09/%E5%8F%A4%E6%B3%95%E7%BC%96%E7%A8%8B/%E5%88%97%E8%A1%A8/" title="列表">
+            <span class="article-title">列表</span>
+            <span class="article-date">06-09</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/06/02/%E5%8F%A4%E6%B3%95%E7%BC%96%E7%A8%8B/%E9%93%BE%E8%A1%A8/" title="链表">
+            <span class="article-title">链表</span>
+            <span class="article-date">06-02</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/06/02/%E5%8F%A4%E6%B3%95%E7%BC%96%E7%A8%8B/%E6%95%B0%E7%BB%84/" title="数组">
+            <span class="article-title">数组</span>
+            <span class="article-date">06-02</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/05/27/%E5%8F%A4%E6%B3%95%E7%BC%96%E7%A8%8B/%E6%95%B0%E5%AD%97%E7%BC%96%E7%A0%81/" title="数字编码">
+            <span class="article-title">数字编码</span>
+            <span class="article-date">05-27</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/05/09/%E5%8F%A4%E6%B3%95%E7%BC%96%E7%A8%8B/alog%E6%A6%82%E8%BF%B0/" title="alog概述">
+            <span class="article-title">alog概述</span>
+            <span class="article-date">05-09</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/05/09/%E5%8F%A4%E6%B3%95%E7%BC%96%E7%A8%8B/%E8%BF%AD%E4%BB%A3%E4%B8%8E%E9%80%92%E5%BD%92/" title="迭代与递归">
+            <span class="article-title">迭代与递归</span>
+            <span class="article-date">05-09</span>
+          </a>
+        </li>
+        
+      </ul>
+      
+    </div>
+  </aside>
+</div>
+
+<!-- Theme Toggle Button -->
+<button type="button" class="theme-toggle" aria-label="Toggle Theme">
+  <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+  </svg>
+  <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="12" cy="12" r="5"></circle>
+    <line x1="12" y1="1" x2="12" y2="3"></line>
+    <line x1="12" y1="21" x2="12" y2="23"></line>
+    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+    <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+    <line x1="1" y1="12" x2="3" y2="12"></line>
+    <line x1="21" y1="12" x2="23" y2="12"></line>
+    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+    <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+  </svg>
+</button>
+
+<!-- Back to Top Button -->
+<button type="button" class="back-to-top" aria-label="Back to Top">
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <polyline points="18 15 12 9 6 15"></polyline>
+  </svg>
+</button>
+
+
+    <!-- Site Footer -->
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-content">
+      <div class="footer-info">
+        <h4>xinfan9's blog</h4>
+        <p>Actually, less is more!</p>
+      </div>
+      <div class="footer-links">
+        <a href="https://github.com/xinfan9/" target="_blank" title="GitHub">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+        </a>
+        <a href="mailto:11411619@qq.com" title="Email">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+        </a>
+        <a href="/feed.xml" title="RSS">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11a9 9 0 0 1 9 9"/><path d="M4 4a16 16 0 0 1 16 16"/><circle cx="5" cy="19" r="1"/></svg>
+        </a>
+      </div>
+      <div class="footer-copyright">
+        <p>&copy; 2026 xinfan9. Built with Jekyll.</p>
+      </div>
+    </div>
+  </div>
+</footer>
+      
+    
+    <!-- Global Buttons (for non-post pages) -->
+    
+  </body>
+</html>

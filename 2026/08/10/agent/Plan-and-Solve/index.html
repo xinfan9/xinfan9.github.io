@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+  <head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="Content-Language" content="zh-CN">
+	<title>Plan and Solve - xinfan9's blog</title>
+
+	<link rel="icon" href="/styles/images/favicon.jpg">
+
+	<!-- Preconnect for CDN -->
+	
+	<link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+	<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+	
+
+
+	<!-- Inline Critical Reset (was index.css) -->
+	<style>
+		*,*::before,*::after{box-sizing:border-box}html{-ms-text-size-adjust:100%;-webkit-text-size-adjust:100%;-webkit-tap-highlight-color:rgba(0,0,0,0)}body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Microsoft YaHei",sans-serif;font-size:14px;line-height:1.42857143;color:#333;background-color:#f7f7f7}article,aside,details,figcaption,figure,footer,header,main,nav,section,summary{display:block}a{color:#43759e;text-decoration:none;background:transparent}a:hover,a:focus{color:#2c4d68;text-decoration:underline}a:focus{outline:thin dotted;outline-offset:-2px}img{vertical-align:middle;max-width:100%;height:auto}input,button,select,textarea{font-family:inherit;font-size:inherit;line-height:inherit}h1,h2,h3,h4,h5,h6{margin-top:0}.container{max-width:1200px;margin-left:auto;margin-right:auto;padding-left:15px;padding-right:15px}.clearfix::after{content:"";display:table;clear:both}.text-muted{color:#777}.sr-only{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0,0,0,0);border:0}
+	</style>
+
+	
+	<link rel="prefetch" as="image" href="/styles/images/api/background.webp">
+
+	<!-- Clarity Blog Theme -->
+	<link rel="stylesheet" href="/assets/css/clarity-blog.css?v=1788352046">
+
+	<!-- Prism.js Theme (non-blocking, only needed for code blocks) -->
+	
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" media="print" onload="this.media='all'" onerror="console.warn('Prism CSS load failed')">
+	
+	
+	<link rel="canonical" href="https://xinfang.site/2026/08/10/agent/Plan-and-Solve/">
+	<link rel="alternate" type="application/rss+xml" title="xinfan9's blog" href="https://xinfang.site/feed.xml">
+	
+	<meta name="description" content="ReAct是一种反应式的、步进决策的智能体，而Plan-and-Solve则是在动工之前则完成所有的规划，它的整个流程可以解耦成两个阶段：
+">
+
+	<!-- Open Graph for social sharing -->
+	<meta property="og:title" content="Plan and Solve">
+	<meta property="og:description" content="ReAct是一种反应式的、步进决策的智能体，而Plan-and-Solve则是在动工之前则完成所有的规划，它的整个流程可以解耦成两个阶段：
+">
+	<meta property="og:url" content="https://xinfang.site/2026/08/10/agent/Plan-and-Solve/">
+	<meta property="og:site_name" content="xinfan9's blog">
+	<meta property="og:type" content="article">
+	<meta property="article:published_time" content="2026-08-10T20:22:08+08:00">
+	
+	<meta property="og:image" content="https://xinfang.site/styles/images/api/background.webp">
+	<meta property="og:image:width" content="1200">
+	<meta property="og:image:height" content="630">
+	
+	<meta property="og:locale" content="zh_CN">
+
+	<!-- Twitter Card -->
+	<meta name="twitter:card" content="summary_large_image">
+	<meta name="twitter:title" content="Plan and Solve">
+	<meta name="twitter:description" content="ReAct是一种反应式的、步进决策的智能体，而Plan-and-Solve则是在动工之前则完成所有的规划，它的整个流程可以解耦成两个阶段：
+">
+	<meta name="twitter:image" content="https://xinfang.site/styles/images/favicon.jpg">
+	
+	<!-- Theme color for mobile browsers -->
+	<meta name="theme-color" content="#0b72d9" media="(prefers-color-scheme: light)">
+	<meta name="theme-color" content="#0f172a" media="(prefers-color-scheme: dark)">
+
+	<!-- Prevent FOUC for theme -->
+	<script>
+		(function() {
+			const savedTheme = localStorage.getItem('theme');
+			const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+			if (savedTheme) {
+				document.documentElement.setAttribute('data-theme', savedTheme);
+			} else if (prefersDark) {
+				document.documentElement.setAttribute('data-theme', 'dark');
+			}
+		})();
+	</script>
+	
+	<!-- Prism.js only on post pages with code blocks -->
+	
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" defer></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js" defer></script>
+	
+
+	<!-- Mermaid.js for diagram rendering (conditional) -->
+	
+
+	<!-- MathJax for LaTeX rendering (conditional) -->
+	
+	<script>
+		MathJax = {
+			tex: { inlineMath: [['$','$'], ['\\(','\\)']], displayMath: [['$$','$$'], ['\\[','\\]']] },
+			svg: { fontCache: 'global' },
+			startup: { typeset: true }
+		};
+	</script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-svg.js" defer></script>
+	
+
+	<!-- Blog Interactive Features -->
+	<script src="/assets/js/blog.js?v=1788352046" defer></script>
+
+	<!-- JSON-LD Structured Data -->
+	
+	<script type="application/ld+json">
+	{
+		"@context": "https://schema.org",
+		"@type": "BlogPosting",
+		"inLanguage": "zh-CN",
+		"headline": "Plan and Solve",
+		"image": "https://xinfang.site/styles/images/favicon.jpg",
+		"datePublished": "2026-08-10T20:22:08+08:00",
+		"dateModified": "2026-08-10T20:22:08+08:00",
+		"author": {
+			"@type": "Person",
+			"name": "xinfan9"
+		},
+		"publisher": {
+			"@type": "Organization",
+			"name": "xinfan9's blog",
+			"logo": {
+				"@type": "ImageObject",
+				"url": "https://xinfang.site/styles/images/favicon.jpg"
+			}
+		},
+		"mainEntityOfPage": {
+			"@type": "WebPage",
+			"@id": "https://xinfang.site/2026/08/10/agent/Plan-and-Solve/"
+		},
+		"keywords": "Agent",
+		"articleBody": "ReAct是一种反应式的、步进决策的智能体，而Plan-and-Solve则是在动工之前则完成所有的规划，它的整个流程可以解耦成两个阶段：\n",
+		"description": "ReAct是一种反应式的、步进决策的智能体，而Plan-and-Solve则是在动工之前则完成所有的规划，它的整个流程可以解耦成两个阶段：\n"
+	}
+	</script>
+	
+</head>
+
+  <body class="index">
+
+    <!-- Reading Progress Bar -->
+<div class="reading-progress" id="reading-progress"></div>
+
+<!-- Page Background -->
+<div class="post-background"></div>
+
+<div class="post-layout">
+  <!-- Left: TOC -->
+  <aside class="post-toc-sidebar" id="post-toc-sidebar" role="navigation" aria-label="文章目录">
+    <div class="toc-panel">
+      <div class="toc-title">
+        <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="12" x2="15" y2="12"></line><line x1="3" y1="18" x2="18" y2="18"></line></svg>
+        目录
+      </div>
+      <ul class="toc-list" id="toc-list"></ul>
+    </div>
+  </aside>
+
+  <!-- Center: Article -->
+  <main class="post-main">
+    <div class="panel docs-content">
+      <div class="wrapper">
+        <header class="post-header" role="banner">
+          <a href="https://xinfang.site/" class="back-home-link">
+            <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+            返回主页
+          </a>
+          <h1 class="post-title">Plan and Solve</h1>
+          <div class="post-meta-info">
+            <time class="meta-item meta-date" datetime="2026-08-10T20:22:08+08:00">
+              <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+              2026-08-10
+            </time>
+            
+            <time class="meta-item meta-update" datetime="2026-08-10T20:22:08+08:00">
+              <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 2.2"/></svg>
+              2026-08-10
+            </time>
+            
+            <span class="meta-item meta-author">
+              <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+              xinfan9
+            </span>
+            
+            <span class="meta-item meta-words">
+              <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+              238 字
+            </span>
+            
+            <span class="meta-item meta-reading">
+              <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+              约 3 分钟
+            </span>
+          </div>
+        </header>
+        <article class="post-content" role="article">
+          <p>ReAct是一种反应式的、步进决策的智能体，而Plan-and-Solve则是在动工之前则完成所有的规划，它的整个流程可以解耦成两个阶段：</p>
+
+<ol>
+  <li>规划阶段(Planning Phase): 智能体接收用户的完整问题，它的第一个任务是将问题分解为分步骤的行动计划，这个计划本身就是一次大模型调用产物。</li>
+  <li>执行阶段(Solving Phase)：获取完整的计划后，智能体严格按照计划中的步骤逐一执行，每一步执行都可能是独立的LLM调用或者对上一步的加工处理，直到所有步骤完成，最终得出答案。</li>
+</ol>
+
+<p>可以将这两个阶段形式化表达为：</p>
+
+<ol>
+  <li>
+    <p>规划模型$\pi_{\text{plan}}$根据原始问题$q$生成一个包含$n$个步骤的计划$P=(p_1, p_2, \dots, p_n)$<br />
+<span class="kdmath">$P = \pi_{\text{plan}}(q)$</span></p>
+  </li>
+  <li>
+    <p>随后，在执行阶段，执行模型$\pi_{\text{solve}}$会逐一完成计划中的步骤。对于第$i$个步骤，其解决方案$s_i$的生成会<br />
+同时依赖于原始问题$q$、完整计划$P$以及之前所有步骤的执行结果$(s_1, \dots, s_{i-1})$：<br />
+<span class="kdmath">$s_i = \pi_{\text{solve}}(q, P, (s_1, \dots, s_{i-1}))$</span></p>
+  </li>
+</ol>
+
+<p><img src="/post-images/Agent/2026-08-10-Plan and Solve.assets/image-20260803200725819.webp" alt="image-20260803200725819" /></p>
+
+<p>Plan-and-Solve 适用于可以被清晰分解的复杂任务，包括多步数学应用题，需要整个多个信息源的报告、代码生成等。</p>
+
+<h1 id="plan-and-solve实现">Plan-and-Solve实现</h1>
+
+<p>假设，目标问题是：“周一卖出15个水果，周二卖出的苹果数量是周一两倍，周三卖出的数量比周二少五个”。</p>
+
+<p>则两个阶段的任务为：</p>
+
+<ol>
+  <li>规划阶段：将问题分级为三个步骤：计算周二销量、计算周三销量、计算总销量</li>
+  <li>执行阶段：按照计划一步步完成计算，并将每步结果作为下一步输入。</li>
+</ol>
+
+<h2 id="规划阶段">规划阶段</h2>
+
+<p>规划阶段的产出为：<code>［"步骤1","步骤2","步骤3", ...］</code>。</p>
+
+<h3 id="prompt-设计">Prompt 设计</h3>
+
+<pre><code class="language-python">PLANNER_PROMPT_TEMPLATE = """
+你是一个顶级的AI规划专家。你的任务是将用户提出的复杂问题分解成一个由多个简单步骤组成的行动计划。
+请确保计划中的每个步骤都是一个独立的、可执行的子任务，并且严格按照逻辑顺序排列。
+你的输出必须是一个Python列表，其中每个元素都是一个描述子任务的字符串。
+问题：｛question｝
+请严格按照以下格式输出你的计划，```python与```作为前后缀是必要的：
+```python
+［"步骤1","步骤2","步骤3", ...］
+```
+"""
+</code></pre>
+
+<p>这个提示词具备以下特点：</p>
+
+<ul>
+  <li>角色设定</li>
+  <li>任务描述</li>
+  <li>格式规约</li>
+</ul>
+
+<h3 id="代码实现">代码实现</h3>
+
+<pre><code class="language-python">class Planner:
+    def __init__(self, llm_client):
+        self.llm_client = llm_client
+        
+    def plan(self, question: str) -&gt; list[str]:
+        prompt = PLANNER_PROMPT_TEMPLATE.format(question = question)
+        
+        messages = [{"role": "user", "content": prompt}]
+        
+        response_text = self.llm_client.think(messages = messages) or ""
+        
+        try:
+            plan_str = response_text.split("```python")[1].split("```")[0].strip()
+            plan = ast.literal_eval(plan_str)
+            return plan if isinstance(plan, list) else []
+        except Exception as e:
+            return []
+</code></pre>
+
+<h2 id="执行器与状态管理">执行器与状态管理</h2>
+
+<p>在规划器(Planner)生成了清晰的行动蓝图后，需要一个执行器(Executor)来完成计算中的任务。执行器在已有上下文的基础上，专注解决具体某个步骤的问题，因此，执行器的prompt需要具备以下特点：</p>
+
+<ul>
+  <li>原始问题</li>
+  <li>完整计划</li>
+  <li>历史步骤结果</li>
+  <li>当前步骤</li>
+</ul>
+
+<pre><code class="language-python">EXECUTOR_PROMPT_TEMPLATE = """
+你是一位顶级的AI执行专家。你的任务是严格按照给定的计划,一步步地解决问题。
+你将收到原始问题、完整的计划、以及到目前为止已经完成的步骤和结果。
+请你专注于解决"当前步骤",并仅输出该步骤的最终答案,不要输出任何额外的解释或对话。
+
+# 原始问题:
+{question}
+
+# 完整计划:
+{plan}
+
+# 历史步骤与结果:
+{history}
+
+# 当前步骤:
+{current_step}
+
+请仅输出针对"当前步骤"的回答:
+"""
+</code></pre>
+
+<h3 id="代码实现-1">代码实现</h3>
+
+<pre><code class="language-python">class Exceptor:
+    def __init__(self, llm_client):
+        self.llm_client = llm_client
+
+    def execute(self, question: str, plan: list[str]) -&gt; str:
+        response_text = ""
+        history = ""
+
+        for i, step in enumerate(plan):
+            prompt = EXECUTOR_PROMPT_TEMPLATE.format(
+                question = question,
+                plan = plan,
+                history = history if history else "无",
+                current_step = step
+            )
+
+            messages = [{"role": "user", "content": prompt}]
+
+            response_text = self.llm_client.think(messages = messages) or ""
+
+            history += f"步骤 {i + 1}: {step} \n 结果：{response_text}\n\n"
+
+        final_answer = response_text
+        return final_answer
+</code></pre>
+
+<h1 id="整体实现">整体实现</h1>
+
+<pre><code>class PlanAndSolveAgent:
+    def __init__(self, llm_client):
+        self.llm_client = llm_client
+        self.planner = Planner(self.llm_client)
+        self.executor = Exceptor(self.llm_client)
+        
+    def run(self, question: str):
+        plan = self.planner.plan(question)
+        if not plan:
+            return
+        
+        final_answer = self.executor.execute(question, plan)
+</code></pre>
+
+
+        </article>
+      </div>
+    </div>
+  </main>
+
+  <!-- Right: Category Articles -->
+  <aside class="post-category-sidebar" role="navigation" aria-label="分类文章列表">
+    <div class="category-panel">
+      
+      
+      <div class="category-sidebar-title">
+        <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
+        Agent
+      </div>
+      <ul class="category-article-list">
+        
+        
+        <li class="">
+          <a href="/2026/08/24/agent/%E9%95%BF%E7%A8%8B%E4%BB%BB%E5%8A%A1/" title="长程任务">
+            <span class="article-title">长程任务</span>
+            <span class="article-date">08-24</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/08/21/agent/RAG/" title="RAG">
+            <span class="article-title">RAG</span>
+            <span class="article-date">08-21</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/08/21/agent/%E4%B8%8A%E4%B8%8B%E6%96%87%E5%B7%A5%E7%A8%8B/" title="上下文工程">
+            <span class="article-title">上下文工程</span>
+            <span class="article-date">08-21</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/08/21/agent/%E8%AE%B0%E5%BF%86/" title="记忆">
+            <span class="article-title">记忆</span>
+            <span class="article-date">08-21</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/08/21/agent/Agent-RL/" title="Agent RL">
+            <span class="article-title">Agent RL</span>
+            <span class="article-date">08-21</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/08/21/agent/MCP/" title="MCP">
+            <span class="article-title">MCP</span>
+            <span class="article-date">08-21</span>
+          </a>
+        </li>
+        
+        <li class="active">
+          <a href="/2026/08/10/agent/Plan-and-Solve/" title="Plan and Solve">
+            <span class="article-title">Plan and Solve</span>
+            <span class="article-date">08-10</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/08/10/agent/Reflection/" title="Reflection">
+            <span class="article-title">Reflection</span>
+            <span class="article-date">08-10</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/07/31/agent/ReAct/" title="ReAct">
+            <span class="article-title">ReAct</span>
+            <span class="article-date">07-31</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/07/30/agent/Scaling-Laws%E4%B8%8E%E6%A8%A1%E5%9E%8B%E5%B9%BB%E8%A7%89/" title="Scaling Laws">
+            <span class="article-title">Scaling Laws</span>
+            <span class="article-date">07-30</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/07/30/agent/%E6%A8%A1%E5%9E%8B%E9%80%89%E6%8B%A9%E7%9A%84%E8%80%83%E9%87%8F/" title="模型选择的考量">
+            <span class="article-title">模型选择的考量</span>
+            <span class="article-date">07-30</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/07/30/agent/Tokenizer/" title="Tokenizer">
+            <span class="article-title">Tokenizer</span>
+            <span class="article-date">07-30</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/07/23/agent/%E6%8F%90%E7%A4%BA%E5%B7%A5%E7%A8%8B/" title="提示工程">
+            <span class="article-title">提示工程</span>
+            <span class="article-date">07-23</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/06/09/agent/%E5%A4%A7%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E9%A9%B1%E5%8A%A8%E7%9A%84%E6%99%BA%E8%83%BD%E4%BD%93/" title="初识智能体">
+            <span class="article-title">初识智能体</span>
+            <span class="article-date">06-09</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/04/23/agent/Openclaw/" title="Openclaw">
+            <span class="article-title">Openclaw</span>
+            <span class="article-date">04-23</span>
+          </a>
+        </li>
+        
+      </ul>
+      
+    </div>
+  </aside>
+</div>
+
+<!-- Theme Toggle Button -->
+<button type="button" class="theme-toggle" aria-label="Toggle Theme">
+  <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+  </svg>
+  <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="12" cy="12" r="5"></circle>
+    <line x1="12" y1="1" x2="12" y2="3"></line>
+    <line x1="12" y1="21" x2="12" y2="23"></line>
+    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+    <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+    <line x1="1" y1="12" x2="3" y2="12"></line>
+    <line x1="21" y1="12" x2="23" y2="12"></line>
+    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+    <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+  </svg>
+</button>
+
+<!-- Back to Top Button -->
+<button type="button" class="back-to-top" aria-label="Back to Top">
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <polyline points="18 15 12 9 6 15"></polyline>
+  </svg>
+</button>
+
+
+    <!-- Site Footer -->
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-content">
+      <div class="footer-info">
+        <h4>xinfan9's blog</h4>
+        <p>Actually, less is more!</p>
+      </div>
+      <div class="footer-links">
+        <a href="https://github.com/xinfan9/" target="_blank" title="GitHub">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+        </a>
+        <a href="mailto:11411619@qq.com" title="Email">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+        </a>
+        <a href="/feed.xml" title="RSS">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11a9 9 0 0 1 9 9"/><path d="M4 4a16 16 0 0 1 16 16"/><circle cx="5" cy="19" r="1"/></svg>
+        </a>
+      </div>
+      <div class="footer-copyright">
+        <p>&copy; 2026 xinfan9. Built with Jekyll.</p>
+      </div>
+    </div>
+  </div>
+</footer>
+      
+    
+    <!-- Global Buttons (for non-post pages) -->
+    
+  </body>
+</html>

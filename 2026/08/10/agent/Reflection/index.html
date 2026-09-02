@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+  <head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="Content-Language" content="zh-CN">
+	<title>Reflection - xinfan9's blog</title>
+
+	<link rel="icon" href="/styles/images/favicon.jpg">
+
+	<!-- Preconnect for CDN -->
+	
+	<link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+	<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+	
+
+
+	<!-- Inline Critical Reset (was index.css) -->
+	<style>
+		*,*::before,*::after{box-sizing:border-box}html{-ms-text-size-adjust:100%;-webkit-text-size-adjust:100%;-webkit-tap-highlight-color:rgba(0,0,0,0)}body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Microsoft YaHei",sans-serif;font-size:14px;line-height:1.42857143;color:#333;background-color:#f7f7f7}article,aside,details,figcaption,figure,footer,header,main,nav,section,summary{display:block}a{color:#43759e;text-decoration:none;background:transparent}a:hover,a:focus{color:#2c4d68;text-decoration:underline}a:focus{outline:thin dotted;outline-offset:-2px}img{vertical-align:middle;max-width:100%;height:auto}input,button,select,textarea{font-family:inherit;font-size:inherit;line-height:inherit}h1,h2,h3,h4,h5,h6{margin-top:0}.container{max-width:1200px;margin-left:auto;margin-right:auto;padding-left:15px;padding-right:15px}.clearfix::after{content:"";display:table;clear:both}.text-muted{color:#777}.sr-only{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0,0,0,0);border:0}
+	</style>
+
+	
+	<link rel="prefetch" as="image" href="/styles/images/api/background.webp">
+
+	<!-- Clarity Blog Theme -->
+	<link rel="stylesheet" href="/assets/css/clarity-blog.css?v=1788352046">
+
+	<!-- Prism.js Theme (non-blocking, only needed for code blocks) -->
+	
+	
+	<link rel="canonical" href="https://xinfang.site/2026/08/10/agent/Reflection/">
+	<link rel="alternate" type="application/rss+xml" title="xinfan9's blog" href="https://xinfang.site/feed.xml">
+	
+	<meta name="description" content="Reflection 机制的灵感来源于人类的学习过程—— 执行-&gt;反思-&gt;优化。它为智能体引入了一种事后(post-hoc)的自我校正循环。
+">
+
+	<!-- Open Graph for social sharing -->
+	<meta property="og:title" content="Reflection">
+	<meta property="og:description" content="Reflection 机制的灵感来源于人类的学习过程—— 执行-&gt;反思-&gt;优化。它为智能体引入了一种事后(post-hoc)的自我校正循环。
+">
+	<meta property="og:url" content="https://xinfang.site/2026/08/10/agent/Reflection/">
+	<meta property="og:site_name" content="xinfan9's blog">
+	<meta property="og:type" content="article">
+	<meta property="article:published_time" content="2026-08-10T20:22:08+08:00">
+	
+	<meta property="og:image" content="https://xinfang.site/styles/images/api/background.webp">
+	<meta property="og:image:width" content="1200">
+	<meta property="og:image:height" content="630">
+	
+	<meta property="og:locale" content="zh_CN">
+
+	<!-- Twitter Card -->
+	<meta name="twitter:card" content="summary_large_image">
+	<meta name="twitter:title" content="Reflection">
+	<meta name="twitter:description" content="Reflection 机制的灵感来源于人类的学习过程—— 执行-&gt;反思-&gt;优化。它为智能体引入了一种事后(post-hoc)的自我校正循环。
+">
+	<meta name="twitter:image" content="https://xinfang.site/styles/images/favicon.jpg">
+	
+	<!-- Theme color for mobile browsers -->
+	<meta name="theme-color" content="#0b72d9" media="(prefers-color-scheme: light)">
+	<meta name="theme-color" content="#0f172a" media="(prefers-color-scheme: dark)">
+
+	<!-- Prevent FOUC for theme -->
+	<script>
+		(function() {
+			const savedTheme = localStorage.getItem('theme');
+			const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+			if (savedTheme) {
+				document.documentElement.setAttribute('data-theme', savedTheme);
+			} else if (prefersDark) {
+				document.documentElement.setAttribute('data-theme', 'dark');
+			}
+		})();
+	</script>
+	
+	<!-- Prism.js only on post pages with code blocks -->
+	
+
+	<!-- Mermaid.js for diagram rendering (conditional) -->
+	
+
+	<!-- MathJax for LaTeX rendering (conditional) -->
+	
+	<script>
+		MathJax = {
+			tex: { inlineMath: [['$','$'], ['\\(','\\)']], displayMath: [['$$','$$'], ['\\[','\\]']] },
+			svg: { fontCache: 'global' },
+			startup: { typeset: true }
+		};
+	</script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-svg.js" defer></script>
+	
+
+	<!-- Blog Interactive Features -->
+	<script src="/assets/js/blog.js?v=1788352046" defer></script>
+
+	<!-- JSON-LD Structured Data -->
+	
+	<script type="application/ld+json">
+	{
+		"@context": "https://schema.org",
+		"@type": "BlogPosting",
+		"inLanguage": "zh-CN",
+		"headline": "Reflection",
+		"image": "https://xinfang.site/styles/images/favicon.jpg",
+		"datePublished": "2026-08-10T20:22:08+08:00",
+		"dateModified": "2026-08-10T20:22:08+08:00",
+		"author": {
+			"@type": "Person",
+			"name": "xinfan9"
+		},
+		"publisher": {
+			"@type": "Organization",
+			"name": "xinfan9's blog",
+			"logo": {
+				"@type": "ImageObject",
+				"url": "https://xinfang.site/styles/images/favicon.jpg"
+			}
+		},
+		"mainEntityOfPage": {
+			"@type": "WebPage",
+			"@id": "https://xinfang.site/2026/08/10/agent/Reflection/"
+		},
+		"keywords": "Agent",
+		"articleBody": "Reflection 机制的灵感来源于人类的学习过程—— 执行-&gt;反思-&gt;优化。它为智能体引入了一种事后(post-hoc)的自我校正循环。\n",
+		"description": "Reflection 机制的灵感来源于人类的学习过程—— 执行-&gt;反思-&gt;优化。它为智能体引入了一种事后(post-hoc)的自我校正循环。\n"
+	}
+	</script>
+	
+</head>
+
+  <body class="index">
+
+    <!-- Reading Progress Bar -->
+<div class="reading-progress" id="reading-progress"></div>
+
+<!-- Page Background -->
+<div class="post-background"></div>
+
+<div class="post-layout">
+  <!-- Left: TOC -->
+  <aside class="post-toc-sidebar" id="post-toc-sidebar" role="navigation" aria-label="文章目录">
+    <div class="toc-panel">
+      <div class="toc-title">
+        <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="12" x2="15" y2="12"></line><line x1="3" y1="18" x2="18" y2="18"></line></svg>
+        目录
+      </div>
+      <ul class="toc-list" id="toc-list"></ul>
+    </div>
+  </aside>
+
+  <!-- Center: Article -->
+  <main class="post-main">
+    <div class="panel docs-content">
+      <div class="wrapper">
+        <header class="post-header" role="banner">
+          <a href="https://xinfang.site/" class="back-home-link">
+            <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+            返回主页
+          </a>
+          <h1 class="post-title">Reflection</h1>
+          <div class="post-meta-info">
+            <time class="meta-item meta-date" datetime="2026-08-10T20:22:08+08:00">
+              <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+              2026-08-10
+            </time>
+            
+            <time class="meta-item meta-update" datetime="2026-08-10T20:22:08+08:00">
+              <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 2.2"/></svg>
+              2026-08-10
+            </time>
+            
+            <span class="meta-item meta-author">
+              <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+              xinfan9
+            </span>
+            
+            <span class="meta-item meta-words">
+              <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+              253 字
+            </span>
+            
+            <span class="meta-item meta-reading">
+              <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+              约 3 分钟
+            </span>
+          </div>
+        </header>
+        <article class="post-content" role="article">
+          <p>Reflection 机制的灵感来源于人类的学习过程—— <strong>执行-&gt;反思-&gt;优化</strong>。它为智能体引入了一种事后(post-hoc)的自我校正循环。</p>
+
+<ol>
+  <li>执行(Execution)：智能体使用 ReAct 或 Plan-and-Solve 尝试完成任务，生成一个初步的行动轨迹</li>
+  <li>反思(Reflection)：智能体调用独立的（带有定制prompt）扮演“评审员”角色的大模型，从事实错误、逻辑漏洞、效率问题等多个维度对行动轨迹进行评估。</li>
+  <li>优化(Refinement)：智能体将初步行动轨迹和评审结果作为新的上下文，再次调用大模型。</li>
+</ol>
+
+<p>这个循环可以重复进行多次，直到反思阶段不再发现新的问题，或者达到预设的迭代次数上限。我们可以将这个迭代优化的过程形式化地表达出来。假设 $O_i$ 是第 ( i ) 次迭代产生的输出 $O_0$ 为初始输出），反思模型 $\pi_{\text{reflect}}$ 会生成针对  $O_i$ 的反馈 $F_i$ ：</p>
+
+<p><span class="kdmath">$F_i = \pi_{\text{reflect}}(\text{Task}, O_i)$</span><br />
+随后，优化模型 $\pi_{\text{refine}}$  会结合原始任务、上一版输出以及反馈，生成新一版的输出 $O_{i+1}$ ：</p>
+
+<div class="kdmath">$$
+O_{i+1} = \pi_{\text{refine}}(\text{Task}, O_i, F_i)
+$$</div>
+
+<p><img src="/post-images/Agent/2026-08-10-Reflection.assets/image-20260810105352513.webp" alt="image-20260810105352513" /></p>
+
+<h1 id="reflection实现">Reflection实现</h1>
+
+<p>Reflection 通常对应着信息的存储和提取，为了在实战中体现Reflection机制，需要引入记忆管理机制。这里以一个代码生成与迭代优化任务——使用python找到[1,n]之间的全部质数为例，有以下原因：</p>
+
+<ul>
+  <li>大模型初次生成的代码很可能是简单且效率低下的递归实现。</li>
+  <li>通过反思能够发现重复计算的问题</li>
+</ul>
+
+<h2 id="提示词设计">提示词设计</h2>
+
+<h3 id="初始任务提示词">初始任务提示词</h3>
+
+<pre><code>INITIAL_PROMPT_TEMPLATE = """
+你是一位资深的Python程序员。请根据以下要求，编写一个Python函数。
+你的代码必须包含完整的函数签名、文档字符串，并遵循PEP 8编码规范。
+
+要求：{task}
+
+请直接输出代码，不要包含任何额外的解释。
+"""
+</code></pre>
+
+<h3 id="反思提示词设计">反思提示词设计</h3>
+
+<pre><code>REFLECT_PROMPT_TEMPLATE = """
+你是一位极其严格的代码评审专家和资深算法工程师，对代码的性能有极致的要求。
+你的任务是审查以下Python代码，并专注于找出其在&lt;strong&gt;算法效率&lt;/strong&gt;上的主要瓶颈。
+
+# 原始任务：
+{task}
+
+# 待审查的代码：
+```python
+{code}
+```
+请分析该代码的时间复杂度，并思考是否存在一种&lt;strong&gt;算法上更优&lt;/strong&gt;的解决方案来显著提升性能。
+如果存在，请清晰地指出当前算法的不足，并提出具体的、可行的改进算法建议（例如，使用筛法替代试除法）。
+如果代码在算法层面已经达到最优，才能回答"无需改进"。
+
+请直接输出你的反馈，不要包含任何额外的解释。
+"""
+</code></pre>
+
+<h3 id="优化提示词设计">优化提示词设计</h3>
+
+<pre><code>REFINE_PROMPT_TEMPLATE = """
+你是一位资深的Python程序员。你正在根据一位代码评审专家的反馈来优化你的代码。
+
+# 原始任务：
+{task}
+
+# 你上一轮尝试的代码：
+{last_code_attempt}
+评审员的反馈：
+{feedback}
+
+请根据评审员的反馈，生成一个优化后的新版本代码。
+你的代码必须包含完整的函数签名、文档字符串，并遵循PEP 8编码规范。
+请直接输出优化后的代码，不要包含任何额外的解释。
+"""
+</code></pre>
+
+<h2 id="记忆管理">记忆管理</h2>
+
+<p>以下实现通过<code>records</code>存储行动和反思，并使用 <code>get_trajectory</code>将记忆序列化为上下文。</p>
+
+<pre><code>from typing import List, Any, Dict, Optional
+
+
+class Memory:
+    def __init__(self):
+        self.records: List[Dict[str, Any]] = []
+
+    def add_record(self, record_type: str, content: str):
+        record = {"type": record_type, "content":content}
+        self.records.append(record)
+
+    # 将记忆列表格式化为可构建上下文的字符串
+    def get_trajectory(self)-&gt; str:
+        trajectory_parts = []
+        for record in self.records:
+            if record['type'] == 'execution':
+                trajectory_parts.append(self, f"---上一轮尝试---\n {record['content']}")
+            elif record['type'] == 'reflection':
+                trajectory_parts.append(f"---评审员反馈---\n{record['content']}")
+                
+        return "\n\n".join(trajectory_parts)
+    
+    def get_last_excution(self)-&gt;Optional[str]:
+        for record in reversed(self.records):
+            if record['type'] == 'execution':
+                return record['content']
+        return None
+</code></pre>
+
+<h2 id="agent-内核实现">Agent 内核实现</h2>
+
+<pre><code>
+class ReflectionAgent:
+    def __init__(self, llm_client, max_iterations):
+        self.llm_client = llm_client
+        self.memory = Memory()
+        self.max_iterations = max_iterations
+
+    def run(self, task: str):
+        initial_prompt = INITIAL_PROMPT_TEMPLATE.format(task = task)
+        initial_code = self._get_llm_response(initial_prompt)
+        self.memory.add_record("excution", initial_code)
+
+        for i in range(self.max_iterations):
+            last_code = self.memory.get_last_excution()
+            reflect_prompt = REFLECT_PROMPT_TEMPLATE.format(task = task, last_code = last_code)
+            feedback = self._get_llm_response(reflect_prompt)
+
+            if "无需改进" in feedback:
+                break
+
+            refine_prompt = REFINE_PROMPT_TEMPLATE.format(task=task, last_code_attempt=last_code, feedback=feedback)
+            refined_code = self._get_llm_response(refine_prompt)
+            self.memory.add_record("excution", refined_code)
+
+    def _get_llm_response(self, prompt: str)-&gt; str:
+        messages = [{"role": "user", "content": prompt}]
+        response_text = self.llm_client.think(messages = messages) or ""
+        return response_text
+
+</code></pre>
+
+<h1 id="reflection的特点">Reflection的特点</h1>
+
+<ul>
+  <li>成本增加 ：模型调用开销增加、任务延迟增加、提示词复杂度增加</li>
+  <li>质量跃迁：反思和优化极大的提高了解决方案的质量和可靠性。</li>
+</ul>
+
+
+        </article>
+      </div>
+    </div>
+  </main>
+
+  <!-- Right: Category Articles -->
+  <aside class="post-category-sidebar" role="navigation" aria-label="分类文章列表">
+    <div class="category-panel">
+      
+      
+      <div class="category-sidebar-title">
+        <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
+        Agent
+      </div>
+      <ul class="category-article-list">
+        
+        
+        <li class="">
+          <a href="/2026/08/24/agent/%E9%95%BF%E7%A8%8B%E4%BB%BB%E5%8A%A1/" title="长程任务">
+            <span class="article-title">长程任务</span>
+            <span class="article-date">08-24</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/08/21/agent/RAG/" title="RAG">
+            <span class="article-title">RAG</span>
+            <span class="article-date">08-21</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/08/21/agent/%E4%B8%8A%E4%B8%8B%E6%96%87%E5%B7%A5%E7%A8%8B/" title="上下文工程">
+            <span class="article-title">上下文工程</span>
+            <span class="article-date">08-21</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/08/21/agent/%E8%AE%B0%E5%BF%86/" title="记忆">
+            <span class="article-title">记忆</span>
+            <span class="article-date">08-21</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/08/21/agent/Agent-RL/" title="Agent RL">
+            <span class="article-title">Agent RL</span>
+            <span class="article-date">08-21</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/08/21/agent/MCP/" title="MCP">
+            <span class="article-title">MCP</span>
+            <span class="article-date">08-21</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/08/10/agent/Plan-and-Solve/" title="Plan and Solve">
+            <span class="article-title">Plan and Solve</span>
+            <span class="article-date">08-10</span>
+          </a>
+        </li>
+        
+        <li class="active">
+          <a href="/2026/08/10/agent/Reflection/" title="Reflection">
+            <span class="article-title">Reflection</span>
+            <span class="article-date">08-10</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/07/31/agent/ReAct/" title="ReAct">
+            <span class="article-title">ReAct</span>
+            <span class="article-date">07-31</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/07/30/agent/Scaling-Laws%E4%B8%8E%E6%A8%A1%E5%9E%8B%E5%B9%BB%E8%A7%89/" title="Scaling Laws">
+            <span class="article-title">Scaling Laws</span>
+            <span class="article-date">07-30</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/07/30/agent/%E6%A8%A1%E5%9E%8B%E9%80%89%E6%8B%A9%E7%9A%84%E8%80%83%E9%87%8F/" title="模型选择的考量">
+            <span class="article-title">模型选择的考量</span>
+            <span class="article-date">07-30</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/07/30/agent/Tokenizer/" title="Tokenizer">
+            <span class="article-title">Tokenizer</span>
+            <span class="article-date">07-30</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/07/23/agent/%E6%8F%90%E7%A4%BA%E5%B7%A5%E7%A8%8B/" title="提示工程">
+            <span class="article-title">提示工程</span>
+            <span class="article-date">07-23</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/06/09/agent/%E5%A4%A7%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E9%A9%B1%E5%8A%A8%E7%9A%84%E6%99%BA%E8%83%BD%E4%BD%93/" title="初识智能体">
+            <span class="article-title">初识智能体</span>
+            <span class="article-date">06-09</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/04/23/agent/Openclaw/" title="Openclaw">
+            <span class="article-title">Openclaw</span>
+            <span class="article-date">04-23</span>
+          </a>
+        </li>
+        
+      </ul>
+      
+    </div>
+  </aside>
+</div>
+
+<!-- Theme Toggle Button -->
+<button type="button" class="theme-toggle" aria-label="Toggle Theme">
+  <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+  </svg>
+  <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="12" cy="12" r="5"></circle>
+    <line x1="12" y1="1" x2="12" y2="3"></line>
+    <line x1="12" y1="21" x2="12" y2="23"></line>
+    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+    <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+    <line x1="1" y1="12" x2="3" y2="12"></line>
+    <line x1="21" y1="12" x2="23" y2="12"></line>
+    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+    <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+  </svg>
+</button>
+
+<!-- Back to Top Button -->
+<button type="button" class="back-to-top" aria-label="Back to Top">
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <polyline points="18 15 12 9 6 15"></polyline>
+  </svg>
+</button>
+
+
+    <!-- Site Footer -->
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-content">
+      <div class="footer-info">
+        <h4>xinfan9's blog</h4>
+        <p>Actually, less is more!</p>
+      </div>
+      <div class="footer-links">
+        <a href="https://github.com/xinfan9/" target="_blank" title="GitHub">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+        </a>
+        <a href="mailto:11411619@qq.com" title="Email">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+        </a>
+        <a href="/feed.xml" title="RSS">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11a9 9 0 0 1 9 9"/><path d="M4 4a16 16 0 0 1 16 16"/><circle cx="5" cy="19" r="1"/></svg>
+        </a>
+      </div>
+      <div class="footer-copyright">
+        <p>&copy; 2026 xinfan9. Built with Jekyll.</p>
+      </div>
+    </div>
+  </div>
+</footer>
+      
+    
+    <!-- Global Buttons (for non-post pages) -->
+    
+  </body>
+</html>

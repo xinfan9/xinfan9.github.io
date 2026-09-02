@@ -1,0 +1,807 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+  <head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="Content-Language" content="zh-CN">
+	<title>alog概述 - xinfan9's blog</title>
+
+	<link rel="icon" href="/styles/images/favicon.jpg">
+
+	<!-- Preconnect for CDN -->
+	
+	<link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+	<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+	
+
+
+	<!-- Inline Critical Reset (was index.css) -->
+	<style>
+		*,*::before,*::after{box-sizing:border-box}html{-ms-text-size-adjust:100%;-webkit-text-size-adjust:100%;-webkit-tap-highlight-color:rgba(0,0,0,0)}body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Microsoft YaHei",sans-serif;font-size:14px;line-height:1.42857143;color:#333;background-color:#f7f7f7}article,aside,details,figcaption,figure,footer,header,main,nav,section,summary{display:block}a{color:#43759e;text-decoration:none;background:transparent}a:hover,a:focus{color:#2c4d68;text-decoration:underline}a:focus{outline:thin dotted;outline-offset:-2px}img{vertical-align:middle;max-width:100%;height:auto}input,button,select,textarea{font-family:inherit;font-size:inherit;line-height:inherit}h1,h2,h3,h4,h5,h6{margin-top:0}.container{max-width:1200px;margin-left:auto;margin-right:auto;padding-left:15px;padding-right:15px}.clearfix::after{content:"";display:table;clear:both}.text-muted{color:#777}.sr-only{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0,0,0,0);border:0}
+	</style>
+
+	
+	<link rel="prefetch" as="image" href="/styles/images/api/background.webp">
+
+	<!-- Clarity Blog Theme -->
+	<link rel="stylesheet" href="/assets/css/clarity-blog.css?v=1788352046">
+
+	<!-- Prism.js Theme (non-blocking, only needed for code blocks) -->
+	
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" media="print" onload="this.media='all'" onerror="console.warn('Prism CSS load failed')">
+	
+	
+	<link rel="canonical" href="https://xinfang.site/2026/05/09/%E5%8F%A4%E6%B3%95%E7%BC%96%E7%A8%8B/alog%E6%A6%82%E8%BF%B0/">
+	<link rel="alternate" type="application/rss+xml" title="xinfan9's blog" href="https://xinfang.site/feed.xml">
+	
+	<meta name="description" content="
+  为什么要学习算法？
+
+  学算法并非为了工作中实现它，而是面对实际问题善于找到最优解。
+
+  人的知识越完备，经验越多，分析问题就越深入。
+
+  参考书目：《Hello algo》
+
+">
+
+	<!-- Open Graph for social sharing -->
+	<meta property="og:title" content="alog概述">
+	<meta property="og:description" content="
+  为什么要学习算法？
+
+  学算法并非为了工作中实现它，而是面对实际问题善于找到最优解。
+
+  人的知识越完备，经验越多，分析问题就越深入。
+
+  参考书目：《Hello algo》
+
+">
+	<meta property="og:url" content="https://xinfang.site/2026/05/09/%E5%8F%A4%E6%B3%95%E7%BC%96%E7%A8%8B/alog%E6%A6%82%E8%BF%B0/">
+	<meta property="og:site_name" content="xinfan9's blog">
+	<meta property="og:type" content="article">
+	<meta property="article:published_time" content="2026-05-09T11:49:14+08:00">
+	
+	<meta property="og:image" content="https://xinfang.site/styles/images/api/background.webp">
+	<meta property="og:image:width" content="1200">
+	<meta property="og:image:height" content="630">
+	
+	<meta property="og:locale" content="zh_CN">
+
+	<!-- Twitter Card -->
+	<meta name="twitter:card" content="summary_large_image">
+	<meta name="twitter:title" content="alog概述">
+	<meta name="twitter:description" content="
+  为什么要学习算法？
+
+  学算法并非为了工作中实现它，而是面对实际问题善于找到最优解。
+
+  人的知识越完备，经验越多，分析问题就越深入。
+
+  参考书目：《Hello algo》
+
+">
+	<meta name="twitter:image" content="https://xinfang.site/styles/images/favicon.jpg">
+	
+	<!-- Theme color for mobile browsers -->
+	<meta name="theme-color" content="#0b72d9" media="(prefers-color-scheme: light)">
+	<meta name="theme-color" content="#0f172a" media="(prefers-color-scheme: dark)">
+
+	<!-- Prevent FOUC for theme -->
+	<script>
+		(function() {
+			const savedTheme = localStorage.getItem('theme');
+			const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+			if (savedTheme) {
+				document.documentElement.setAttribute('data-theme', savedTheme);
+			} else if (prefersDark) {
+				document.documentElement.setAttribute('data-theme', 'dark');
+			}
+		})();
+	</script>
+	
+	<!-- Prism.js only on post pages with code blocks -->
+	
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" defer></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js" defer></script>
+	
+
+	<!-- Mermaid.js for diagram rendering (conditional) -->
+	
+
+	<!-- MathJax for LaTeX rendering (conditional) -->
+	
+	<script>
+		MathJax = {
+			tex: { inlineMath: [['$','$'], ['\\(','\\)']], displayMath: [['$$','$$'], ['\\[','\\]']] },
+			svg: { fontCache: 'global' },
+			startup: { typeset: true }
+		};
+	</script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-svg.js" defer></script>
+	
+
+	<!-- Blog Interactive Features -->
+	<script src="/assets/js/blog.js?v=1788352046" defer></script>
+
+	<!-- JSON-LD Structured Data -->
+	
+	<script type="application/ld+json">
+	{
+		"@context": "https://schema.org",
+		"@type": "BlogPosting",
+		"inLanguage": "zh-CN",
+		"headline": "alog概述",
+		"image": "https://xinfang.site/styles/images/favicon.jpg",
+		"datePublished": "2026-05-09T11:49:14+08:00",
+		"dateModified": "2026-05-09T11:49:14+08:00",
+		"author": {
+			"@type": "Person",
+			"name": "xinfan9"
+		},
+		"publisher": {
+			"@type": "Organization",
+			"name": "xinfan9's blog",
+			"logo": {
+				"@type": "ImageObject",
+				"url": "https://xinfang.site/styles/images/favicon.jpg"
+			}
+		},
+		"mainEntityOfPage": {
+			"@type": "WebPage",
+			"@id": "https://xinfang.site/2026/05/09/%E5%8F%A4%E6%B3%95%E7%BC%96%E7%A8%8B/alog%E6%A6%82%E8%BF%B0/"
+		},
+		"keywords": "古法编程",
+		"articleBody": "\n  为什么要学习算法？\n\n  学算法并非为了工作中实现它，而是面对实际问题善于找到最优解。\n\n  人的知识越完备，经验越多，分析问题就越深入。\n\n  参考书目：《Hello algo》\n\n",
+		"description": "\n  为什么要学习算法？\n\n  学算法并非为了工作中实现它，而是面对实际问题善于找到最优解。\n\n  人的知识越完备，经验越多，分析问题就越深入。\n\n  参考书目：《Hello algo》\n\n"
+	}
+	</script>
+	
+</head>
+
+  <body class="index">
+
+    <!-- Reading Progress Bar -->
+<div class="reading-progress" id="reading-progress"></div>
+
+<!-- Page Background -->
+<div class="post-background"></div>
+
+<div class="post-layout">
+  <!-- Left: TOC -->
+  <aside class="post-toc-sidebar" id="post-toc-sidebar" role="navigation" aria-label="文章目录">
+    <div class="toc-panel">
+      <div class="toc-title">
+        <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="12" x2="15" y2="12"></line><line x1="3" y1="18" x2="18" y2="18"></line></svg>
+        目录
+      </div>
+      <ul class="toc-list" id="toc-list"></ul>
+    </div>
+  </aside>
+
+  <!-- Center: Article -->
+  <main class="post-main">
+    <div class="panel docs-content">
+      <div class="wrapper">
+        <header class="post-header" role="banner">
+          <a href="https://xinfang.site/" class="back-home-link">
+            <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+            返回主页
+          </a>
+          <h1 class="post-title">alog概述</h1>
+          <div class="post-meta-info">
+            <time class="meta-item meta-date" datetime="2026-05-09T11:49:14+08:00">
+              <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+              2026-05-09
+            </time>
+            
+            <time class="meta-item meta-update" datetime="2026-05-27T15:54:04+08:00">
+              <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 2.2"/></svg>
+              2026-05-27
+            </time>
+            
+            <span class="meta-item meta-author">
+              <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+              xinfan9
+            </span>
+            
+            <span class="meta-item meta-words">
+              <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+              604 字
+            </span>
+            
+            <span class="meta-item meta-reading">
+              <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+              约 7 分钟
+            </span>
+          </div>
+        </header>
+        <article class="post-content" role="article">
+          <blockquote>
+  <p>为什么要学习算法？</p>
+
+  <p>学算法并非为了工作中实现它，而是面对实际问题善于找到最优解。</p>
+
+  <p>人的知识越完备，经验越多，分析问题就越深入。</p>
+
+  <p>参考书目：<a href="https://www.hello-algo.com/">《Hello algo》</a></p>
+</blockquote>
+
+<h1 id="基本概念">基本概念</h1>
+
+<h3 id="算法的定义">算法的定义</h3>
+
+<p>算法（algorithm）是<strong>一组指令或操作步骤</strong>，其特性包括：</p>
+
+<ul>
+  <li>明晰的输入和输出</li>
+  <li>可行性：有限步骤、有限时间和内存空间。</li>
+  <li>幂等性：同样的输入始终相同的输出。</li>
+</ul>
+
+<h3 id="数据结构定义">数据结构定义</h3>
+
+<p>数据结构（data structure）是组织和存储数据的方式，包括内容、关系、操作，其设计目标为：</p>
+
+<ul>
+  <li>更小的空间</li>
+  <li>更快的操作</li>
+  <li>简洁的信息表示。</li>
+</ul>
+
+<blockquote>
+  <p>[!NOTE]</p>
+
+  <p>数据结构设计是一个权衡的过程，想要某方面提升，往往需要另一方面的损失。</p>
+</blockquote>
+
+<h3 id="数据结构的分类">数据结构的分类</h3>
+
+<p>按照逻辑结构划分，可分为“线性”和“非线性两大类”，非线性结构又可分为树形结构和网状结构。</p>
+
+<p>树、堆、哈希表等元素之间一对多关系的结构，称为树形结构，而在图中，元素之间是多对多关系。</p>
+
+<p><img src="/post-images/古法编程/2026-05-09-alog概述.assets/image-20260527143450292-9863692.webp" alt="image-20260527143450292" /></p>
+
+<p>按照物理结构划分，可分为连续空间（数组）存储结构和分散空间（链表）存储结构。物理结构反映了数据在计算机内存中的存储方式。所有的数据结构都是基于链表和数组或者两者的组合实现的。</p>
+
+<p><img src="/post-images/古法编程/2026-05-09-alog概述.assets/image-20260527143908081.webp" alt="image-20260527143908081" /></p>
+
+<h3 id="数据结构与算法的联系">数据结构与算法的联系</h3>
+
+<p><img src="/post-images/古法编程/2026-05-09-alog概述.assets/image-20260509111458021.webp" alt="image-20260509111458021" /></p>
+
+<p>算法与数据结构结合才能高效解决实际问题，常说的算法实际上也包括了数据结构。</p>
+
+<hr />
+
+<h1 id="复杂度分析">复杂度分析</h1>
+
+<p>算法的设计，分为两个步骤：</p>
+
+<ol>
+  <li>找到问题的解</li>
+  <li>寻找最优解</li>
+</ol>
+
+<p>对于步骤一，毋庸置疑，算法需要正确的将满足条件的全部输入都能在规定时间内映射到输出空间。</p>
+
+<p>对于步骤二，所谓最优，即空间效率和时间效率都处于较高水准，并且综合两个指标来看属于最优水平。</p>
+
+<p>而有效评估算法效率，则需要复杂度分析。</p>
+
+<h2 id="复杂度分析的方法">复杂度分析的方法</h2>
+
+<p>复杂度分析主要有两种方法。</p>
+
+<ul>
+  <li>实际测试：直接用测试用例运行两个方法，监控记录运行时间和内存占比。
+    <ul>
+      <li>缺点：难以排除测试环境diff带来的干扰；完整测试依赖较多资源和时间。</li>
+    </ul>
+  </li>
+  <li>理论估算：通过计算来估算算法效率，也称为<strong>渐进复杂度分析</strong>（asymptotic complexity analysis）。</li>
+</ul>
+
+<p>对于渐进复杂度分析，它描述了<strong>随着输入数据规模增加，算法时间和空间的增长趋势</strong>，而非具体值。</p>
+
+<h2 id="时间复杂度">时间复杂度</h2>
+
+<p>时间复杂度不是算法运行时间，而是<strong>算法运行随数据量变大时的增长趋势</strong>。、</p>
+
+<p>对于以下三个算法</p>
+
+<pre><code class="language-cpp">void algorithm_A(int n) {
+	cout &lt;&lt; 0 &lt;&lt; endl;
+}
+
+void algorithm_B(int n) {
+  for (int i = 0; i &lt; n; ++i) cout &lt;&lt; 0 &lt;&lt; endl;
+}
+
+void algorithm_C(int n) {
+  for (int i = 0; i &lt; 1000000; ++i) { cout &lt;&lt; 0 &lt;&lt; endl;}
+}
+</code></pre>
+
+<p>A和C的复杂度都是<strong>常数阶</strong>，B与n成线性关系，被称为<strong>线性阶</strong>。</p>
+
+<p><img src="/post-images/古法编程/2026-05-09-alog概述.assets/image-20260513114004712.webp" alt="image-20260513114004712" /></p>
+
+<h3 id="时间复杂度的特点">时间复杂度的特点</h3>
+
+<ul>
+  <li><strong>时间复杂度是有效的</strong>。随着数据的增大，复杂度高的算法执行时间一定会超过复杂度低的算法。</li>
+  <li><strong>时间复杂度便于统计</strong>。在分析时间复杂度的时候，可以将运行时间统一简化为<strong>操作数量统计</strong>，这样就避免了运行平台和运算类型带来的干扰。</li>
+  <li><strong>时间复杂度具有局限性</strong>。不能仅凭时间复杂度判断算法效率，因为实际生产环境中，数据的输入分布是受限的，就比如上图中的C算法，在输入数据量不超过100的情况下，是不如B算法的。</li>
+</ul>
+
+<h3 id="时间复杂度的表示">时间复杂度的表示</h3>
+
+<p>我们把算法的操作数量关于输入数据大小 $n$ 的函数，记为 $T(n)$，我们将时间复杂度记为 $O(n)$，后者是前者的渐进上界，即两者处于相同的增长级别，并且有以下关系：</p>
+
+<p><img src="/post-images/古法编程/2026-05-09-alog概述.assets/image-20260513141542589.webp" alt="image-20260513141542589" /></p>
+
+<h3 id="时间复杂度的推算步骤">时间复杂度的推算步骤</h3>
+
+<ol>
+  <li>step 1:统计操作数量。要想求得 $O(n)$，我们必须先得到 $T(n)$，这需要我们逐行统计操作数量。在统计过程中，我们可以利用以下技巧简化计算：
+    <ul>
+      <li>忽略常数。</li>
+      <li>省略系数。</li>
+      <li>循环且套时使用乘法。</li>
+    </ul>
+  </li>
+  <li>step 2:判断渐进上界。<strong>时间复杂度由 $T(n)$中最高阶的项来决定</strong>。当 $n$ 趋于无穷大时，最高项发挥主导作用。</li>
+</ol>
+
+<h3 id="常见类型的时间复杂度">常见类型的时间复杂度</h3>
+
+<div class="kdmath">$$
+$O(1) < O(\log n) < O(n) < O(n\log n) < O(n^2) < O(2^n) < O(n!)$
+$$</div>
+
+<p><img src="/post-images/古法编程/2026-05-09-alog概述.assets/image-20260513145437600.webp" alt="image-20260513145437600" /></p>
+
+<h4 id="常数阶-o1">常数阶 $O(1)$</h4>
+
+<p>常数阶的操作数量与输入数据大小 $n$ 无关，不随着 $n$变化。</p>
+
+<pre><code class="language-cpp">int constant(int n) {
+	int count = 0;
+	int size = 100000;
+	for (int i = 0; i &lt; size; ++i) ++count;
+	return count;
+}
+</code></pre>
+
+<h4 id="线性阶-on">线性阶 $O(n)$</h4>
+
+<p>线性阶的操作数量相对于输入数据大小以线性级别增长。</p>
+
+<pre><code class="language-cpp">int linear(int n) {
+	int count = 0;
+	for (int i = 0; i &lt; n; ++i) ++count;
+	return count;
+}
+</code></pre>
+
+<p>遍历数组和遍历链表等操作的时间复杂度均为 $O(n)$。</p>
+
+<h4 id="平方阶-on2">平方阶 $O(n^2)$</h4>
+
+<p>平方阶的操作数量相对于输入数据大小 $n$以平方级别增长。平方阶通常出现在循环嵌套中，比如下面的冒泡排序的例子。</p>
+
+<pre><code class="language-cpp">int bubbleSort(vector&lt;int&gt;&amp; nums) {
+  int count = 0;
+  for (int i = nums.size() - 1; i &gt; 0; --i) {
+    for (int j = 0; j &lt; i; ++j) {
+      if (nums[j] &gt; nums[j + 1]) {
+        int tmp = nums[j];
+        nums[j] = nums[j + 1];
+        nums[j + 1] = tmp;
+        count += 3;
+      }
+    }
+  }
+  return count;
+}
+</code></pre>
+
+<p><img src="/post-images/古法编程/2026-05-09-alog概述.assets/image-20260513150403211.webp" alt="image-20260513150403211" /></p>
+
+<h4 id="指数阶-o2n">指数阶 $O(2^n)$</h4>
+
+<p>指数主要出现在递归函数中，数据规模每增加1，操作数增加一倍。</p>
+
+<pre><code class="language-cpp">int expRecur(int n) {
+	if (n == 1) return 1;
+	return expRecur(n - 1) + exprecur(n - 1) + 1;
+}
+</code></pre>
+
+<p><img src="/post-images/古法编程/2026-05-09-alog概述.assets/image-20260513151531768.webp" alt="image-20260513151531768" /></p>
+
+<h4 id="对数阶-ologn">对数阶 $O(\log{n})$</h4>
+
+<p>对数阶与指数相反，数据规模每增加一倍，操作数增加1。对数阶也经常出现在递归函数中。</p>
+
+<pre><code class="language-cpp">int logRecur(int n) {
+	if (n &lt;= 1) return 0;
+	return logRecur(n/2) + 1;
+}
+</code></pre>
+
+<p><img src="/post-images/古法编程/2026-05-09-alog概述.assets/image-20260513151923070.webp" alt="image-20260513151923070" /></p>
+
+<h4 id="线性对数阶-onlogn">线性对数阶 $O(n\log{n})$</h4>
+
+<p>线性对数阶常出现在嵌套循环中，外层或内层一层$n$，一层 $\log{n}$ 。</p>
+
+<pre><code class="language-cpp">int linearLogrecur(int n) {
+  if (n &lt;= 1) return 1;
+  int count = linearLogRecur(n/2) + linearLogRecur（n/2);
+  for (int i = 0; i &lt; n; ++i) count++;
+  return count;
+}
+</code></pre>
+
+<p><img src="/post-images/古法编程/2026-05-09-alog概述.assets/image-20260513152055015.webp" alt="image-20260513152055015" /></p>
+
+<h4 id="阶乘阶-on">阶乘阶 $O(n!)$</h4>
+
+<p>阶乘对应数学上的全排列问题，通常也是使用递归实现。</p>
+
+<pre><code class="language-cpp">int factorialRecur(int n) {
+	if (n == 0) return 1;
+	int count = 0;
+	for (int i = 0; i &lt; n; ++i) {
+		count += factorialRecur(n - 1);
+	}
+	
+	return count;
+}
+</code></pre>
+
+<p><img src="/post-images/古法编程/2026-05-09-alog概述.assets/image-20260513152554067.webp" alt="image-20260513152554067" /></p>
+
+<p>当(n \geq 4)时恒有(n! &gt; 2^{n}) ，因此阶乘阶比指数阶增长的更快。</p>
+
+<h3 id="最差最佳平均时间复杂度">最差、最佳、平均时间复杂度</h3>
+
+<p>算法的时间效率不是固定的，而是与输入数据的分布有关。</p>
+
+<ul>
+  <li>最差时间复杂度对应函数渐进上界，用 $O$表示。最差时间复杂度更为常用，给出了一个效率安全值。</li>
+  <li>最佳时间复杂度对应函数渐进下界，用 $\Omega$ 表示。</li>
+  <li>平均时间复杂度可以体现算法在随机输入数据下的运行效率，用 $\Theta$ 表示（为了省事，常用 $O$代替），平均时间复杂度等于于数据分布下的整体数学期望，存在一定的计算难度，因此不常见。</li>
+</ul>
+
+<h2 id="空间复杂度">空间复杂度</h2>
+
+<p>空间复杂度（space complexity）用于衡量算法占用内存空间随着数据量变大时的增长趋势。</p>
+
+<h3 id="算法与内存空间">算法与内存空间</h3>
+
+<p>算法在运行过程中，使用的内存空间主要包括以下三种：</p>
+
+<ul>
+  <li>输入空间。输入空间用于存储算法的输入数据。</li>
+  <li>暂存空间。暂存空间用于存储算法在运行过程中的变量、对象、函数上下文的数据。暂存空间可以进一步划分为三部分：
+    <ul>
+      <li>暂存数据：用于保存算法在运行过程中的各种常量、变量和对象。</li>
+      <li>栈帧空间：主要包括函数的上下文。系统调用函数时会在栈顶创建一个栈帧，函数返回后空间释放。</li>
+      <li>指令空间：用于保存编译后的程序指令，通常极小，忽略不计。</li>
+    </ul>
+  </li>
+  <li>输出空间。输出空间用于存储算法的输出数据。</li>
+</ul>
+
+<p>一般情况下，空间复杂度的统计范围是“暂存空间” + “输出空间”。</p>
+
+<p><img src="/post-images/古法编程/2026-05-09-alog概述.assets/image-20260513154254241.webp" alt="image-20260513154254241" /></p>
+
+<h3 id="空间复杂度的推算步骤">空间复杂度的推算步骤</h3>
+
+<p><strong>对于空间复杂度，只关注最差空间复杂度。</strong> 最差代表算法运行的峰值内存，并且也是对内存空间的硬性要求。</p>
+
+<h3 id="常见类型的空间复杂度">常见类型的空间复杂度。</h3>
+
+<div class="kdmath">$$
+O(1) < O(\log n) < O(n) < O(n^2) < O(2^n)
+$$</div>
+
+<p><img src="/post-images/古法编程/2026-05-09-alog概述.assets/image-20260513154630831.webp" alt="image-20260513154630831" /></p>
+
+<h4 id="常数阶-o1-1">常数阶 $O(1)$</h4>
+
+<p>常数阶常见于与输入数据大小无关的算法。</p>
+
+<pre><code class="language-cpp">int func() {
+	return 0;
+}
+
+void constant(int n) {
+	const int a = 0;
+	int b = 0;
+	vector&lt;int&gt; nums(10000);
+	ListNode node(0);
+	
+	for (int i = 0; i &lt; n; ++i) int c = 0;
+	for (int i = 0; i &lt; n; ++i) func();
+}
+</code></pre>
+
+<h4 id="线性阶-on-1">线性阶 $O(n)$</h4>
+
+<p>线性阶常见于元素数量与 $n$ 成正比的数组、链表、栈、队列等。</p>
+
+<pre><code class="language-cpp">void linear(int n) {
+	vector&lt;int&gt; nums(n);
+	vector&lt;ListNode&gt; nodes;
+	for (int i = 0; i &lt; n; ++i) {
+		nodes.push_back(ListNodes(i));
+	}
+	
+	unordered_map&lt;int, string&gt; map;
+	for (int i = 0; i &lt; n; ++i) {
+		map[i] = to_string(i);
+	}
+}
+</code></pre>
+
+<p>对于以下递归函数，它的空间复杂度也是n</p>
+
+<pre><code class="language-cpp">void linearRecur(int n) {
+	if (n == 1) return;
+  linearRecur(n - 1);
+}
+</code></pre>
+
+<p><img src="/post-images/古法编程/2026-05-09-alog概述.assets/image-20260513155702085.webp" alt="image-20260513155702085" /></p>
+
+<h4 id="平方阶-on2-1">平方阶 $O(n^2)$</h4>
+
+<p>平方常见于矩阵和图。</p>
+
+<pre><code class="language-cpp">void quadratic(int n) {
+  vector&lt;vector&lt;int&gt;&gt; numMatrix;
+  for (int i = 0; i &lt; n; ++i) {
+    vector&lt;int&gt; tmp;
+    for (int j = 0; j &lt; n; ++j) tmp.push_back(0);
+  }
+  
+  numMatrix.push_back(tmp);
+}
+</code></pre>
+
+<p>以下递归函数，递归深度为 $n$，每个递归函数中初始化数组，平均长度为 $\frac{n}{2}$，总体空间复杂度也是 $O(n_2)$。</p>
+
+<pre><code class="language-cpp">int quadraticrecur(int n) {
+  if (n &lt;= 0) return 0;
+  vector&lt;int&gt; nums(n);
+	cout &lt;&lt; n &lt;&lt; endl;
+  return quadraticRecur(n - 1);
+}
+</code></pre>
+
+<p><img src="/post-images/古法编程/2026-05-09-alog概述.assets/image-20260513160520311.webp" alt="image-20260513160520311" /></p>
+
+<h4 id="指数阶-o2n-1">指数阶 $O(2^n)$</h4>
+
+<p>指数阶常见于二叉树，层数为 $n$ 的“满二叉树” 的节点数量为 $2^n - 1$，占用 $O(2^n)$ 空间。</p>
+
+<pre><code class="language-cpp">TreeNode* buildTree(int n) {
+	if (n == 0) return nullptr;
+	TreeNode* root = new TreeNode(0);
+	root-&gt;left = buildTree(n - 1);
+	root-&gt;right = buildTree(n - 1);
+	return root;
+}
+</code></pre>
+
+<p><img src="/post-images/古法编程/2026-05-09-alog概述.assets/image-20260513161237185.webp" alt="image-20260513161237185" /></p>
+
+<h4 id="线性对数阶-onlogn-1">线性对数阶 $O(n\log{n})$</h4>
+
+<p>对数阶常见于分治算法，例如归并排序，输入长度为 $n$ 的数组，每轮递归将数组从中点处划分为两半，形成高度为 $logn$的递归树。</p>
+
+<h2 id="权衡时间与空间">权衡时间与空间</h2>
+
+<p>实际生产环境中，<strong>降低时间复杂度通常以牺牲空间复杂度为代价，反之亦然</strong>。通常时间比空间更宝贵，因此<strong>以空间换时间</strong>是很常用的策略。</p>
+
+<p>##</p>
+
+        </article>
+      </div>
+    </div>
+  </main>
+
+  <!-- Right: Category Articles -->
+  <aside class="post-category-sidebar" role="navigation" aria-label="分类文章列表">
+    <div class="category-panel">
+      
+      
+      <div class="category-sidebar-title">
+        <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
+        古法编程
+      </div>
+      <ul class="category-article-list">
+        
+        
+        <li class="">
+          <a href="/2026/07/30/%E5%8F%A4%E6%B3%95%E7%BC%96%E7%A8%8B/%E6%8E%92%E5%BA%8F/" title="排序">
+            <span class="article-title">排序</span>
+            <span class="article-date">07-30</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/07/30/%E5%8F%A4%E6%B3%95%E7%BC%96%E7%A8%8B/%E6%90%9C%E7%B4%A2/" title="搜索">
+            <span class="article-title">搜索</span>
+            <span class="article-date">07-30</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/07/28/%E5%8F%A4%E6%B3%95%E7%BC%96%E7%A8%8B/%E5%9B%BE/" title="图">
+            <span class="article-title">图</span>
+            <span class="article-date">07-28</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/07/28/%E5%8F%A4%E6%B3%95%E7%BC%96%E7%A8%8B/%E5%A0%86/" title="堆">
+            <span class="article-title">堆</span>
+            <span class="article-date">07-28</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/07/23/%E5%8F%A4%E6%B3%95%E7%BC%96%E7%A8%8B/%E4%BA%8C%E5%8F%89%E6%A0%91/" title="二叉树">
+            <span class="article-title">二叉树</span>
+            <span class="article-date">07-23</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/07/07/%E5%8F%A4%E6%B3%95%E7%BC%96%E7%A8%8B/%E5%8F%8C%E5%90%91%E9%98%9F%E5%88%97/" title="双向队列">
+            <span class="article-title">双向队列</span>
+            <span class="article-date">07-07</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/07/07/%E5%8F%A4%E6%B3%95%E7%BC%96%E7%A8%8B/%E5%93%88%E5%B8%8C%E8%A1%A8/" title="哈希表">
+            <span class="article-title">哈希表</span>
+            <span class="article-date">07-07</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/06/30/%E5%8F%A4%E6%B3%95%E7%BC%96%E7%A8%8B/%E9%98%9F%E5%88%97/" title="队列">
+            <span class="article-title">队列</span>
+            <span class="article-date">06-30</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/06/17/%E5%8F%A4%E6%B3%95%E7%BC%96%E7%A8%8B/%E6%A0%88/" title="栈">
+            <span class="article-title">栈</span>
+            <span class="article-date">06-17</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/06/10/%E5%8F%A4%E6%B3%95%E7%BC%96%E7%A8%8B/%E7%BC%93%E5%AD%98%E5%92%8C%E5%86%85%E5%AD%98/" title="缓存和内存">
+            <span class="article-title">缓存和内存</span>
+            <span class="article-date">06-10</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/06/09/%E5%8F%A4%E6%B3%95%E7%BC%96%E7%A8%8B/%E5%88%97%E8%A1%A8/" title="列表">
+            <span class="article-title">列表</span>
+            <span class="article-date">06-09</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/06/02/%E5%8F%A4%E6%B3%95%E7%BC%96%E7%A8%8B/%E9%93%BE%E8%A1%A8/" title="链表">
+            <span class="article-title">链表</span>
+            <span class="article-date">06-02</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/06/02/%E5%8F%A4%E6%B3%95%E7%BC%96%E7%A8%8B/%E6%95%B0%E7%BB%84/" title="数组">
+            <span class="article-title">数组</span>
+            <span class="article-date">06-02</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/05/27/%E5%8F%A4%E6%B3%95%E7%BC%96%E7%A8%8B/%E6%95%B0%E5%AD%97%E7%BC%96%E7%A0%81/" title="数字编码">
+            <span class="article-title">数字编码</span>
+            <span class="article-date">05-27</span>
+          </a>
+        </li>
+        
+        <li class="active">
+          <a href="/2026/05/09/%E5%8F%A4%E6%B3%95%E7%BC%96%E7%A8%8B/alog%E6%A6%82%E8%BF%B0/" title="alog概述">
+            <span class="article-title">alog概述</span>
+            <span class="article-date">05-09</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/05/09/%E5%8F%A4%E6%B3%95%E7%BC%96%E7%A8%8B/%E8%BF%AD%E4%BB%A3%E4%B8%8E%E9%80%92%E5%BD%92/" title="迭代与递归">
+            <span class="article-title">迭代与递归</span>
+            <span class="article-date">05-09</span>
+          </a>
+        </li>
+        
+      </ul>
+      
+    </div>
+  </aside>
+</div>
+
+<!-- Theme Toggle Button -->
+<button type="button" class="theme-toggle" aria-label="Toggle Theme">
+  <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+  </svg>
+  <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="12" cy="12" r="5"></circle>
+    <line x1="12" y1="1" x2="12" y2="3"></line>
+    <line x1="12" y1="21" x2="12" y2="23"></line>
+    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+    <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+    <line x1="1" y1="12" x2="3" y2="12"></line>
+    <line x1="21" y1="12" x2="23" y2="12"></line>
+    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+    <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+  </svg>
+</button>
+
+<!-- Back to Top Button -->
+<button type="button" class="back-to-top" aria-label="Back to Top">
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <polyline points="18 15 12 9 6 15"></polyline>
+  </svg>
+</button>
+
+
+    <!-- Site Footer -->
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-content">
+      <div class="footer-info">
+        <h4>xinfan9's blog</h4>
+        <p>Actually, less is more!</p>
+      </div>
+      <div class="footer-links">
+        <a href="https://github.com/xinfan9/" target="_blank" title="GitHub">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+        </a>
+        <a href="mailto:11411619@qq.com" title="Email">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+        </a>
+        <a href="/feed.xml" title="RSS">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11a9 9 0 0 1 9 9"/><path d="M4 4a16 16 0 0 1 16 16"/><circle cx="5" cy="19" r="1"/></svg>
+        </a>
+      </div>
+      <div class="footer-copyright">
+        <p>&copy; 2026 xinfan9. Built with Jekyll.</p>
+      </div>
+    </div>
+  </div>
+</footer>
+      
+    
+    <!-- Global Buttons (for non-post pages) -->
+    
+  </body>
+</html>

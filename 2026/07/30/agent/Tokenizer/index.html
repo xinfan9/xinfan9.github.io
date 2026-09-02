@@ -1,0 +1,795 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+  <head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="Content-Language" content="zh-CN">
+	<title>Tokenizer - xinfan9's blog</title>
+
+	<link rel="icon" href="/styles/images/favicon.jpg">
+
+	<!-- Preconnect for CDN -->
+	
+	<link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+	<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+	
+
+
+	<!-- Inline Critical Reset (was index.css) -->
+	<style>
+		*,*::before,*::after{box-sizing:border-box}html{-ms-text-size-adjust:100%;-webkit-text-size-adjust:100%;-webkit-tap-highlight-color:rgba(0,0,0,0)}body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Microsoft YaHei",sans-serif;font-size:14px;line-height:1.42857143;color:#333;background-color:#f7f7f7}article,aside,details,figcaption,figure,footer,header,main,nav,section,summary{display:block}a{color:#43759e;text-decoration:none;background:transparent}a:hover,a:focus{color:#2c4d68;text-decoration:underline}a:focus{outline:thin dotted;outline-offset:-2px}img{vertical-align:middle;max-width:100%;height:auto}input,button,select,textarea{font-family:inherit;font-size:inherit;line-height:inherit}h1,h2,h3,h4,h5,h6{margin-top:0}.container{max-width:1200px;margin-left:auto;margin-right:auto;padding-left:15px;padding-right:15px}.clearfix::after{content:"";display:table;clear:both}.text-muted{color:#777}.sr-only{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0,0,0,0);border:0}
+	</style>
+
+	
+	<link rel="prefetch" as="image" href="/styles/images/api/background.webp">
+
+	<!-- Clarity Blog Theme -->
+	<link rel="stylesheet" href="/assets/css/clarity-blog.css?v=1788352046">
+
+	<!-- Prism.js Theme (non-blocking, only needed for code blocks) -->
+	
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" media="print" onload="this.media='all'" onerror="console.warn('Prism CSS load failed')">
+	
+	
+	<link rel="canonical" href="https://xinfang.site/2026/07/30/agent/Tokenizer/">
+	<link rel="alternate" type="application/rss+xml" title="xinfan9's blog" href="https://xinfang.site/feed.xml">
+	
+	<meta name="description" content="1. 背景：为什么需要分词 (Tokenization)？
+">
+
+	<!-- Open Graph for social sharing -->
+	<meta property="og:title" content="Tokenizer">
+	<meta property="og:description" content="1. 背景：为什么需要分词 (Tokenization)？
+">
+	<meta property="og:url" content="https://xinfang.site/2026/07/30/agent/Tokenizer/">
+	<meta property="og:site_name" content="xinfan9's blog">
+	<meta property="og:type" content="article">
+	<meta property="article:published_time" content="2026-07-30T16:50:42+08:00">
+	
+	<meta property="og:image" content="https://xinfang.site/styles/images/api/background.webp">
+	<meta property="og:image:width" content="1200">
+	<meta property="og:image:height" content="630">
+	
+	<meta property="og:locale" content="zh_CN">
+
+	<!-- Twitter Card -->
+	<meta name="twitter:card" content="summary_large_image">
+	<meta name="twitter:title" content="Tokenizer">
+	<meta name="twitter:description" content="1. 背景：为什么需要分词 (Tokenization)？
+">
+	<meta name="twitter:image" content="https://xinfang.site/styles/images/favicon.jpg">
+	
+	<!-- Theme color for mobile browsers -->
+	<meta name="theme-color" content="#0b72d9" media="(prefers-color-scheme: light)">
+	<meta name="theme-color" content="#0f172a" media="(prefers-color-scheme: dark)">
+
+	<!-- Prevent FOUC for theme -->
+	<script>
+		(function() {
+			const savedTheme = localStorage.getItem('theme');
+			const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+			if (savedTheme) {
+				document.documentElement.setAttribute('data-theme', savedTheme);
+			} else if (prefersDark) {
+				document.documentElement.setAttribute('data-theme', 'dark');
+			}
+		})();
+	</script>
+	
+	<!-- Prism.js only on post pages with code blocks -->
+	
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" defer></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js" defer></script>
+	
+
+	<!-- Mermaid.js for diagram rendering (conditional) -->
+	
+
+	<!-- MathJax for LaTeX rendering (conditional) -->
+	
+	<script>
+		MathJax = {
+			tex: { inlineMath: [['$','$'], ['\\(','\\)']], displayMath: [['$$','$$'], ['\\[','\\]']] },
+			svg: { fontCache: 'global' },
+			startup: { typeset: true }
+		};
+	</script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-svg.js" defer></script>
+	
+
+	<!-- Blog Interactive Features -->
+	<script src="/assets/js/blog.js?v=1788352046" defer></script>
+
+	<!-- JSON-LD Structured Data -->
+	
+	<script type="application/ld+json">
+	{
+		"@context": "https://schema.org",
+		"@type": "BlogPosting",
+		"inLanguage": "zh-CN",
+		"headline": "Tokenizer",
+		"image": "https://xinfang.site/styles/images/favicon.jpg",
+		"datePublished": "2026-07-30T16:50:42+08:00",
+		"dateModified": "2026-07-30T16:50:42+08:00",
+		"author": {
+			"@type": "Person",
+			"name": "xinfan9"
+		},
+		"publisher": {
+			"@type": "Organization",
+			"name": "xinfan9's blog",
+			"logo": {
+				"@type": "ImageObject",
+				"url": "https://xinfang.site/styles/images/favicon.jpg"
+			}
+		},
+		"mainEntityOfPage": {
+			"@type": "WebPage",
+			"@id": "https://xinfang.site/2026/07/30/agent/Tokenizer/"
+		},
+		"keywords": "Agent",
+		"articleBody": "1. 背景：为什么需要分词 (Tokenization)？\n",
+		"description": "1. 背景：为什么需要分词 (Tokenization)？\n"
+	}
+	</script>
+	
+</head>
+
+  <body class="index">
+
+    <!-- Reading Progress Bar -->
+<div class="reading-progress" id="reading-progress"></div>
+
+<!-- Page Background -->
+<div class="post-background"></div>
+
+<div class="post-layout">
+  <!-- Left: TOC -->
+  <aside class="post-toc-sidebar" id="post-toc-sidebar" role="navigation" aria-label="文章目录">
+    <div class="toc-panel">
+      <div class="toc-title">
+        <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="12" x2="15" y2="12"></line><line x1="3" y1="18" x2="18" y2="18"></line></svg>
+        目录
+      </div>
+      <ul class="toc-list" id="toc-list"></ul>
+    </div>
+  </aside>
+
+  <!-- Center: Article -->
+  <main class="post-main">
+    <div class="panel docs-content">
+      <div class="wrapper">
+        <header class="post-header" role="banner">
+          <a href="https://xinfang.site/" class="back-home-link">
+            <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+            返回主页
+          </a>
+          <h1 class="post-title">Tokenizer</h1>
+          <div class="post-meta-info">
+            <time class="meta-item meta-date" datetime="2026-07-30T16:50:42+08:00">
+              <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+              2026-07-30
+            </time>
+            
+            <time class="meta-item meta-update" datetime="2026-07-30T16:50:42+08:00">
+              <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 2.2"/></svg>
+              2026-07-30
+            </time>
+            
+            <span class="meta-item meta-author">
+              <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+              xinfan9
+            </span>
+            
+            <span class="meta-item meta-words">
+              <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+              888 字
+            </span>
+            
+            <span class="meta-item meta-reading">
+              <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+              约 9 分钟
+            </span>
+          </div>
+        </header>
+        <article class="post-content" role="article">
+          <h2 id="1-背景为什么需要分词-tokenization">1. 背景：为什么需要分词 (Tokenization)？</h2>
+
+<p>计算机本质上只能理解数字。在将自然语言喂给模型之前，必须将其转换为数字编码格式。这个过程叫<strong>分词 (Tokenization)</strong>，由<strong>分词器 (Tokenizer)</strong> 完成，输出的结果称为<strong>词元 (Token)</strong>。</p>
+
+<p>早期的分词方式存在明显局限：</p>
+<ul>
+  <li><strong>按词分词 (Word-based)</strong>：用空格或符号切分单词。缺点是词表极大、无法处理未登录词 (OOV)，且难以捕捉相近词的语义关系。</li>
+  <li><strong>按字符分词 (Character-based)</strong>：将文本切分为单个字符。优点是能处理 OOV，缺点是序列过长，模型难以捕捉长距离语义依赖。</li>
+</ul>
+
+<p>为了兼顾词表大小和语义表达，现代大模型普遍采用<strong>子词分词 (Subword Tokenization)</strong>：将常见的词保留，将罕见的词拆分为多个有意义的子词（词根）。</p>
+
+<hr />
+
+<h2 id="2-字节对编码算法-bpe">2. 字节对编码算法 (BPE)</h2>
+
+<p><strong>代表模型</strong>：GPT 系列</p>
+
+<h3 id="21-核心思想">2.1 核心思想</h3>
+<p>BPE 是一种基于频率的贪心合并算法：</p>
+<ol>
+  <li>初始化词表为所有语料库中出现的基本字符。</li>
+  <li>统计相邻词元对的出现频率，找到频率最高的一对。</li>
+  <li>将它们合并成一个新词元。</li>
+  <li>重复步骤 2-3，直到词表大小达到预设阈值。</li>
+</ol>
+
+<h3 id="22-代码实现示例">2.2 代码实现示例</h3>
+<pre><code class="language-python">import re
+import collections
+
+def get_stats(vocab):
+    """统计词汇表中所有相邻字符对的出现频率"""
+    pairs = collections.defaultdict(int)
+    for word, freq in vocab.items():
+        symbols = word.split()
+        for i in range(len(symbols) - 1):
+            pairs[symbols[i], symbols[i+1]] += freq
+    return pairs
+
+def merge_vocab(pair, v_in):
+    """将最高频的字符对合并，并更新词汇表"""
+    v_out = {}
+    bigram = re.escape(' '.join(pair))
+    # 确保匹配的是被空格或字符串边界包围的完整 bigram
+    p = re.compile(r'(?&lt;!\S)' + bigram + r'(?!\S)')
+    
+    for word in v_in:
+        w_out = p.sub(''.join(pair), word)
+        v_out[w_out] = v_in[word]
+    return v_out
+
+# 初始化词汇表
+vocab = {
+    'h u g &lt;/w&gt;': 1, 
+    'p u g &lt;/w&gt;': 1, 
+    'p u n &lt;/w&gt;': 1, 
+    'b u n &lt;/w&gt;': 1
+}
+
+num_merges = 4
+for i in range(num_merges):
+    pairs = get_stats(vocab)
+    if not pairs:
+        break
+    best = max(pairs, key=pairs.get)
+    print(f"Merge {i+1}: {best} -&gt; {''.join(best)}")
+    vocab = merge_vocab(best, vocab)
+
+print("\n最终词汇表:")
+for word, freq in vocab.items():
+    print(f"{word}: {freq}")
+</code></pre>
+
+<hr />
+
+<h2 id="3-wordpiece-分词算法">3. WordPiece 分词算法</h2>
+
+<p><strong>代表模型</strong>：Google BERT</p>
+
+<h3 id="31-核心定义">3.1 核心定义</h3>
+<p>WordPiece 基于 BPE 衍生而来，其核心改进在于<strong>合并标准</strong>：从 BPE 的“最高共现频率”改为“最大化提升语料库语言模型概率 (Likelihood)”。</p>
+
+<h3 id="32-与-bpe-的关键差异">3.2 与 BPE 的关键差异</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>维度</th>
+      <th>BPE</th>
+      <th>WordPiece</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>选择依据</strong></td>
+      <td>共现频率最高 $\max \text{count}(ab)$</td>
+      <td>似然增益最大 $\max \Delta \log P$</td>
+    </tr>
+    <tr>
+      <td><strong>数学本质</strong></td>
+      <td>统计学家视角：看谁出现得多</td>
+      <td>信息论专家视角：看谁能最大程度降低不确定性</td>
+    </tr>
+    <tr>
+      <td><strong>子词标记</strong></td>
+      <td>无特殊标记</td>
+      <td>使用 <code>##</code> 标记 continuation（如 <code>playing</code> → <code>play</code> + <code>##ing</code>）</td>
+    </tr>
+    <tr>
+      <td><strong>适用场景</strong></td>
+      <td>GPT 系列（生成式任务）</td>
+      <td>BERT（语言理解/建模任务）</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="33-数学原理最大化似然增益">3.3 数学原理：最大化似然增益</h3>
+
+<p><strong>目标函数</strong>：<br />
+<span class="kdmath">$\Delta \log P = \log P(C_{\text{after}}) - \log P(C_{\text{before}})$</span></p>
+
+<p><strong>近似公式</strong>：<br />
+<span class="kdmath">$\Delta \log P \approx n_{ab} \cdot \log \frac{P(ab)}{P(a) \cdot P(b)} = n_{ab} \cdot \text{PMI}(a, b)$</span></p>
+
+<p>其中 $\text{PMI}(a, b)$ 为点互信息：<br />
+<span class="kdmath">$\text{PMI}(a, b) = \log \frac{P(a, b)}{P(a)P(b)}$</span></p>
+
+<ul>
+  <li><strong>PMI &gt; 0</strong>：正相关（如 <code>q</code> 和 <code>u</code>），一起出现的概率高于随机预期。</li>
+  <li><strong>PMI = 0</strong>：独立。</li>
+  <li><strong>PMI &lt; 0</strong>：负相关。</li>
+</ul>
+
+<p><strong>结论</strong>：WordPiece 优先合并那些<strong>既高频又具有强关联性</strong>的字符对。</p>
+
+<h3 id="34-实例对比">3.4 实例对比</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>Pair</th>
+      <th>共现次数 $n_{ab}$</th>
+      <th>PMI</th>
+      <th>BPE 得分</th>
+      <th>WordPiece 得分</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>(x, y)</td>
+      <td>2,000</td>
+      <td>0.0</td>
+      <td>2,000</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <td>(q, u)</td>
+      <td>800</td>
+      <td>6.8</td>
+      <td>800</td>
+      <td>5,440</td>
+    </tr>
+  </tbody>
+</table>
+
+<ul>
+  <li><strong>BPE</strong> 会选择 <code>(x, y)</code>（频率最高）。</li>
+  <li><strong>WordPiece</strong> 会选择 <code>(q, u)</code>（似然增益最大，因为 <code>qu</code> 几乎总是成对出现，合并后能显著简化编码）。</li>
+</ul>
+
+<hr />
+
+<h3 id="35-wordpiece-实例演示">3.5 WordPiece 实例演示</h3>
+
+<p>假设我们有一个微型语料库，目标是构建一个小型词汇表。</p>
+
+<p><strong>初始状态</strong>：</p>
+<ul>
+  <li><strong>语料</strong>：<code>["hug", "pug", "pun", "bun"]</code>（每个词出现 1 次）</li>
+  <li><strong>初始词汇表 $V_0$</strong>：<code>{h, u, g, p, n, b, &lt;/w&gt;}</code> （<code>&lt;/w&gt;</code> 表示词尾）</li>
+  <li><strong>分词结果</strong>：<code>[h, u, g, &lt;/w&gt;]</code>, <code>[p, u, g, &lt;/w&gt;]</code>, <code>[p, u, n, &lt;/w&gt;]</code>, <code>[b, u, n, &lt;/w&gt;]</code></li>
+</ul>
+
+<h4 id="第一轮迭代">第一轮迭代</h4>
+
+<ol>
+  <li><strong>统计频率与概率</strong>：
+    <ul>
+      <li>总 Token 数 $N = 4 \times 4 = 16$</li>
+      <li>$P(u) = 4/16 = 0.25$, $P(g) = 2/16 = 0.125$, $P(n) = 2/16 = 0.125$</li>
+      <li>Pair <code>(u, g)</code> 出现 2 次，Pair <code>(u, n)</code> 出现 2 次。</li>
+    </ul>
+  </li>
+  <li><strong>计算 PMI 与得分</strong>：
+    <ul>
+      <li><strong>对于 <code>(u, g)</code></strong>：
+        <ul>
+          <li>$P(ug) = 2/16 = 0.125$</li>
+          <li>$\text{PMI}(u, g) = \log \frac{0.125}{0.25 \times 0.125} = \log 4 \approx 1.386$</li>
+          <li><strong>WordPiece 得分</strong>：$2 \times 1.386 = \mathbf{2.772}$</li>
+        </ul>
+      </li>
+      <li><strong>对于 <code>(u, n)</code></strong>：
+        <ul>
+          <li>$P(un) = 2/16 = 0.125$</li>
+          <li>$\text{PMI}(u, n) = \log \frac{0.125}{0.25 \times 0.125} = \log 4 \approx 1.386$</li>
+          <li><strong>WordPiece 得分</strong>：$2 \times 1.386 = \mathbf{2.772}$</li>
+        </ul>
+      </li>
+    </ul>
+
+    <p><em>(注：在此简单例子中两者得分相同，假设我们按字母顺序优先选择 <code>(u, g)</code>)</em></p>
+  </li>
+  <li><strong>执行合并</strong>：
+    <ul>
+      <li>合并 <code>u</code> 和 <code>g</code> 为 <code>ug</code>。</li>
+      <li><strong>新词汇表 $V_1$</strong>：<code>{h, u, g, p, n, b, &lt;/w&gt;, ug}</code></li>
+    </ul>
+  </li>
+  <li><strong>更新语料分词</strong>：
+    <ul>
+      <li><code>"hug"</code> → <code>[h, ug, &lt;/w&gt;]</code></li>
+      <li><code>"pug"</code> → <code>[p, ug, &lt;/w&gt;]</code></li>
+      <li><code>"pun"</code> → <code>[p, u, n, &lt;/w&gt;]</code> (未受影响)</li>
+      <li><code>"bun"</code> → <code>[b, u, n, &lt;/w&gt;]</code> (未受影响)</li>
+    </ul>
+  </li>
+</ol>
+
+<h4 id="第二轮迭代">第二轮迭代</h4>
+
+<ol>
+  <li><strong>重新统计</strong>：
+    <ul>
+      <li>现在 <code>u</code> 的频率降低了（只剩 2 次），<code>ug</code> 的频率为 2 次。</li>
+      <li>新的候选 pair 包括 <code>(p, u)</code>, <code>(p, ug)</code>, <code>(h, ug)</code> 等。</li>
+    </ul>
+  </li>
+  <li><strong>计算得分</strong>：
+    <ul>
+      <li>假设 <code>(p, u)</code> 的共现次数为 2，且 $P(p)$ 较低，其 PMI 可能会非常高。</li>
+      <li>WordPiece 会再次选择得分最高的 pair 进行合并。</li>
+    </ul>
+  </li>
+</ol>
+
+<h4 id="最终效果对比">最终效果对比</h4>
+
+<p>如果继续迭代，WordPiece 生成的词汇表可能包含：<code>{h, p, b, ug, un, &lt;/w&gt;}</code>。</p>
+<ul>
+  <li><strong>&#8220;hug&#8221;</strong> 会被编码为：<code>[h, ug, &lt;/w&gt;]</code></li>
+  <li><strong>&#8220;pug&#8221;</strong> 会被编码为：<code>[p, ug, &lt;/w&gt;]</code></li>
+  <li><strong>&#8220;pun&#8221;</strong> 会被编码为：<code>[p, un, &lt;/w&gt;]</code></li>
+</ul>
+
+<p><strong>关键点</strong>：WordPiece 倾向于将 <code>ug</code> 和 <code>un</code> 这种在特定语境下（如跟在 <code>p</code> 后面）具有强预测性的组合合并在一起，而不仅仅是看谁出现得最多。</p>
+<h3 id="35-wordpiece-实例演示-1">3.5 WordPiece 实例演示</h3>
+
+<p>假设我们有一个微型语料库，目标是构建一个小型词汇表。</p>
+
+<p><strong>初始状态</strong>：</p>
+<ul>
+  <li><strong>语料</strong>：<code>["hug", "pug", "pun", "bun"]</code>（每个词出现 1 次）</li>
+  <li><strong>初始词汇表 $V_0$</strong>：<code>{h, u, g, p, n, b, &lt;/w&gt;}</code> （<code>&lt;/w&gt;</code> 表示词尾）</li>
+  <li><strong>分词结果</strong>：<code>[h, u, g, &lt;/w&gt;]</code>, <code>[p, u, g, &lt;/w&gt;]</code>, <code>[p, u, n, &lt;/w&gt;]</code>, <code>[b, u, n, &lt;/w&gt;]</code></li>
+</ul>
+
+<h4 id="第一轮迭代-1">第一轮迭代</h4>
+
+<ol>
+  <li><strong>统计频率与概率</strong>：
+    <ul>
+      <li>总 Token 数 $N = 4 \times 4 = 16$</li>
+      <li>$P(u) = 4/16 = 0.25$, $P(g) = 2/16 = 0.125$, $P(n) = 2/16 = 0.125$</li>
+      <li>Pair <code>(u, g)</code> 出现 2 次，Pair <code>(u, n)</code> 出现 2 次。</li>
+    </ul>
+  </li>
+  <li><strong>计算 PMI 与得分</strong>：
+    <ul>
+      <li><strong>对于 <code>(u, g)</code></strong>：
+        <ul>
+          <li>$P(ug) = 2/16 = 0.125$</li>
+          <li>$\text{PMI}(u, g) = \log \frac{0.125}{0.25 \times 0.125} = \log 4 \approx 1.386$</li>
+          <li><strong>WordPiece 得分</strong>：$2 \times 1.386 = \mathbf{2.772}$</li>
+        </ul>
+      </li>
+      <li><strong>对于 <code>(u, n)</code></strong>：
+        <ul>
+          <li>$P(un) = 2/16 = 0.125$</li>
+          <li>$\text{PMI}(u, n) = \log \frac{0.125}{0.25 \times 0.125} = \log 4 \approx 1.386$</li>
+          <li><strong>WordPiece 得分</strong>：$2 \times 1.386 = \mathbf{2.772}$</li>
+        </ul>
+      </li>
+    </ul>
+
+    <p><em>(注：在此简单例子中两者得分相同，假设我们按字母顺序优先选择 <code>(u, g)</code>)</em></p>
+  </li>
+  <li><strong>执行合并</strong>：
+    <ul>
+      <li>合并 <code>u</code> 和 <code>g</code> 为 <code>ug</code>。</li>
+      <li><strong>新词汇表 $V_1$</strong>：<code>{h, u, g, p, n, b, &lt;/w&gt;, ug}</code></li>
+    </ul>
+  </li>
+  <li><strong>更新语料分词</strong>：
+    <ul>
+      <li><code>"hug"</code> → <code>[h, ug, &lt;/w&gt;]</code></li>
+      <li><code>"pug"</code> → <code>[p, ug, &lt;/w&gt;]</code></li>
+      <li><code>"pun"</code> → <code>[p, u, n, &lt;/w&gt;]</code> (未受影响)</li>
+      <li><code>"bun"</code> → <code>[b, u, n, &lt;/w&gt;]</code> (未受影响)</li>
+    </ul>
+  </li>
+</ol>
+
+<h4 id="第二轮迭代-1">第二轮迭代</h4>
+
+<ol>
+  <li><strong>重新统计</strong>：
+    <ul>
+      <li>现在 <code>u</code> 的频率降低了（只剩 2 次），<code>ug</code> 的频率为 2 次。</li>
+      <li>新的候选 pair 包括 <code>(p, u)</code>, <code>(p, ug)</code>, <code>(h, ug)</code> 等。</li>
+    </ul>
+  </li>
+  <li><strong>计算得分</strong>：
+    <ul>
+      <li>假设 <code>(p, u)</code> 的共现次数为 2，且 $P(p)$ 较低，其 PMI 可能会非常高。</li>
+      <li>WordPiece 会再次选择得分最高的 pair 进行合并。</li>
+    </ul>
+  </li>
+</ol>
+
+<h4 id="最终效果对比-1">最终效果对比</h4>
+
+<p>如果继续迭代，WordPiece 生成的词汇表可能包含：<code>{h, p, b, ug, un, &lt;/w&gt;}</code>。</p>
+<ul>
+  <li><strong>&#8220;hug&#8221;</strong> 会被编码为：<code>[h, ug, &lt;/w&gt;]</code></li>
+  <li><strong>&#8220;pug&#8221;</strong> 会被编码为：<code>[p, ug, &lt;/w&gt;]</code></li>
+  <li><strong>&#8220;pun&#8221;</strong> 会被编码为：<code>[p, un, &lt;/w&gt;]</code></li>
+</ul>
+
+<p><strong>关键点</strong>：WordPiece 倾向于将 <code>ug</code> 和 <code>un</code> 这种在特定语境下（如跟在 <code>p</code> 后面）具有强预测性的组合合并在一起，而不仅仅是看谁出现得最多。</p>
+
+<h2 id="4-sentencepiece-算法">4. SentencePiece 算法</h2>
+
+<p><strong>代表模型</strong>：Llama, T5</p>
+
+<h3 id="41-核心定义">4.1 核心定义</h3>
+<p>SentencePiece 是一个通用的、语言无关的子词分词框架。其核心创新在于<strong>摒弃了预分词 (Pre-tokenization) 步骤</strong>，将空格视为普通字符处理，从而实现了从原始字节流到 Token 的直接转换，以及从 Token 到原始文本的完全可逆还原。</p>
+
+<h3 id="42-与-bpewordpiece-的关键差异">4.2 与 BPE/WordPiece 的关键差异</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>维度</th>
+      <th>BPE / WordPiece</th>
+      <th>SentencePiece</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>输入预处理</strong></td>
+      <td>需要预分词（按空格切分单词）</td>
+      <td><strong>无需预分词</strong>，直接处理原始字符串</td>
+    </tr>
+    <tr>
+      <td><strong>空格处理</strong></td>
+      <td>丢弃或作为特殊边界符</td>
+      <td><strong>作为普通字符</strong>（通常用 <code>▁</code> 表示）参与训练</td>
+    </tr>
+    <tr>
+      <td><strong>可逆性</strong></td>
+      <td>需额外规则还原空格，可能丢失信息</td>
+      <td><strong>天然完全可逆</strong>，解码即精确还原原文</td>
+    </tr>
+    <tr>
+      <td><strong>语言依赖性</strong></td>
+      <td>依赖特定语言的分词规则</td>
+      <td><strong>语言无关</strong>，对所有语言一视同仁</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="43-两种底层算法模式">4.3 两种底层算法模式</h3>
+<ol>
+  <li><strong>BPE 模式</strong>：逻辑与传统 BPE 一致，但输入是包含空格的原始字符串。</li>
+  <li><strong>Unigram LM 模式（Llama 默认采用）</strong>：
+    <ul>
+      <li>从一个大词汇表开始，迭代删除使语料库似然下降最小的 token。</li>
+      <li>推理时使用 Viterbi 算法寻找最优子词序列，使得总概率最大。</li>
+      <li><strong>优势</strong>：对未登录词更鲁棒，同一个词在不同语境下可能有不同的分割方式。</li>
+    </ul>
+  </li>
+</ol>
+
+<hr />
+
+<h2 id="5-总结对比三大主流分词算法">5. 总结对比：三大主流分词算法</h2>
+
+<p>| 特性         | BPE (GPT)          | WordPiece (BERT)         | SentencePiece (Llama)    |<br />
+| &#8212;&#8212;&#8212;&#8212; | &#8212;&#8212;&#8212;&#8212;&#8212;&#8212; | &#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212; | &#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;&#8212; |<br />
+| <strong>合并标准</strong> | 最高共现频率       | 最大似然增益 (PMI)       | BPE 频率 或 Unigram 概率 |<br />
+| <strong>空格处理</strong> | 预分割             | 预分割/特殊标记          | 普通字符 (<code>▁</code>)           |<br />
+| <strong>子词标记</strong> | 无                 | <code>##</code>                     | <code>▁</code> (前缀空格)           |<br />
+| <strong>主要优势</strong> | 实现简单，生成流畅 | 适合语言建模，语义表达强 | 多语言通用，完全可逆     |</p>
+<h2 id="6-分词器的意义">6. 分词器的意义</h2>
+
+<ul>
+  <li>上下文窗口限制：大模型的上下文窗口是以Token数量计算的，不同分词器下，Token数量相差巨大。</li>
+  <li>API成本：API是以Token数量计费的，了解分词器才能控制成本。</li>
+  <li>模型表现的异常：在设计提示词和解析模型时，要考虑query是否会被模型切分成易于理解的Token。</li>
+</ul>
+
+
+        </article>
+      </div>
+    </div>
+  </main>
+
+  <!-- Right: Category Articles -->
+  <aside class="post-category-sidebar" role="navigation" aria-label="分类文章列表">
+    <div class="category-panel">
+      
+      
+      <div class="category-sidebar-title">
+        <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
+        Agent
+      </div>
+      <ul class="category-article-list">
+        
+        
+        <li class="">
+          <a href="/2026/08/24/agent/%E9%95%BF%E7%A8%8B%E4%BB%BB%E5%8A%A1/" title="长程任务">
+            <span class="article-title">长程任务</span>
+            <span class="article-date">08-24</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/08/21/agent/RAG/" title="RAG">
+            <span class="article-title">RAG</span>
+            <span class="article-date">08-21</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/08/21/agent/%E4%B8%8A%E4%B8%8B%E6%96%87%E5%B7%A5%E7%A8%8B/" title="上下文工程">
+            <span class="article-title">上下文工程</span>
+            <span class="article-date">08-21</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/08/21/agent/%E8%AE%B0%E5%BF%86/" title="记忆">
+            <span class="article-title">记忆</span>
+            <span class="article-date">08-21</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/08/21/agent/Agent-RL/" title="Agent RL">
+            <span class="article-title">Agent RL</span>
+            <span class="article-date">08-21</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/08/21/agent/MCP/" title="MCP">
+            <span class="article-title">MCP</span>
+            <span class="article-date">08-21</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/08/10/agent/Plan-and-Solve/" title="Plan and Solve">
+            <span class="article-title">Plan and Solve</span>
+            <span class="article-date">08-10</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/08/10/agent/Reflection/" title="Reflection">
+            <span class="article-title">Reflection</span>
+            <span class="article-date">08-10</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/07/31/agent/ReAct/" title="ReAct">
+            <span class="article-title">ReAct</span>
+            <span class="article-date">07-31</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/07/30/agent/Scaling-Laws%E4%B8%8E%E6%A8%A1%E5%9E%8B%E5%B9%BB%E8%A7%89/" title="Scaling Laws">
+            <span class="article-title">Scaling Laws</span>
+            <span class="article-date">07-30</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/07/30/agent/%E6%A8%A1%E5%9E%8B%E9%80%89%E6%8B%A9%E7%9A%84%E8%80%83%E9%87%8F/" title="模型选择的考量">
+            <span class="article-title">模型选择的考量</span>
+            <span class="article-date">07-30</span>
+          </a>
+        </li>
+        
+        <li class="active">
+          <a href="/2026/07/30/agent/Tokenizer/" title="Tokenizer">
+            <span class="article-title">Tokenizer</span>
+            <span class="article-date">07-30</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/07/23/agent/%E6%8F%90%E7%A4%BA%E5%B7%A5%E7%A8%8B/" title="提示工程">
+            <span class="article-title">提示工程</span>
+            <span class="article-date">07-23</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/06/09/agent/%E5%A4%A7%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E9%A9%B1%E5%8A%A8%E7%9A%84%E6%99%BA%E8%83%BD%E4%BD%93/" title="初识智能体">
+            <span class="article-title">初识智能体</span>
+            <span class="article-date">06-09</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/04/23/agent/Openclaw/" title="Openclaw">
+            <span class="article-title">Openclaw</span>
+            <span class="article-date">04-23</span>
+          </a>
+        </li>
+        
+      </ul>
+      
+    </div>
+  </aside>
+</div>
+
+<!-- Theme Toggle Button -->
+<button type="button" class="theme-toggle" aria-label="Toggle Theme">
+  <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+  </svg>
+  <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="12" cy="12" r="5"></circle>
+    <line x1="12" y1="1" x2="12" y2="3"></line>
+    <line x1="12" y1="21" x2="12" y2="23"></line>
+    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+    <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+    <line x1="1" y1="12" x2="3" y2="12"></line>
+    <line x1="21" y1="12" x2="23" y2="12"></line>
+    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+    <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+  </svg>
+</button>
+
+<!-- Back to Top Button -->
+<button type="button" class="back-to-top" aria-label="Back to Top">
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <polyline points="18 15 12 9 6 15"></polyline>
+  </svg>
+</button>
+
+
+    <!-- Site Footer -->
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-content">
+      <div class="footer-info">
+        <h4>xinfan9's blog</h4>
+        <p>Actually, less is more!</p>
+      </div>
+      <div class="footer-links">
+        <a href="https://github.com/xinfan9/" target="_blank" title="GitHub">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+        </a>
+        <a href="mailto:11411619@qq.com" title="Email">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+        </a>
+        <a href="/feed.xml" title="RSS">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11a9 9 0 0 1 9 9"/><path d="M4 4a16 16 0 0 1 16 16"/><circle cx="5" cy="19" r="1"/></svg>
+        </a>
+      </div>
+      <div class="footer-copyright">
+        <p>&copy; 2026 xinfan9. Built with Jekyll.</p>
+      </div>
+    </div>
+  </div>
+</footer>
+      
+    
+    <!-- Global Buttons (for non-post pages) -->
+    
+  </body>
+</html>

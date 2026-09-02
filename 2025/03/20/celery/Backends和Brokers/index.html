@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+  <head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="Content-Language" content="zh-CN">
+	<title>Backends和Brokers - xinfan9's blog</title>
+
+	<link rel="icon" href="/styles/images/favicon.jpg">
+
+	<!-- Preconnect for CDN -->
+	
+	<link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+	<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+	
+
+
+	<!-- Inline Critical Reset (was index.css) -->
+	<style>
+		*,*::before,*::after{box-sizing:border-box}html{-ms-text-size-adjust:100%;-webkit-text-size-adjust:100%;-webkit-tap-highlight-color:rgba(0,0,0,0)}body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Microsoft YaHei",sans-serif;font-size:14px;line-height:1.42857143;color:#333;background-color:#f7f7f7}article,aside,details,figcaption,figure,footer,header,main,nav,section,summary{display:block}a{color:#43759e;text-decoration:none;background:transparent}a:hover,a:focus{color:#2c4d68;text-decoration:underline}a:focus{outline:thin dotted;outline-offset:-2px}img{vertical-align:middle;max-width:100%;height:auto}input,button,select,textarea{font-family:inherit;font-size:inherit;line-height:inherit}h1,h2,h3,h4,h5,h6{margin-top:0}.container{max-width:1200px;margin-left:auto;margin-right:auto;padding-left:15px;padding-right:15px}.clearfix::after{content:"";display:table;clear:both}.text-muted{color:#777}.sr-only{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0,0,0,0);border:0}
+	</style>
+
+	
+	<link rel="prefetch" as="image" href="/styles/images/api/background.webp">
+
+	<!-- Clarity Blog Theme -->
+	<link rel="stylesheet" href="/assets/css/clarity-blog.css?v=1788352046">
+
+	<!-- Prism.js Theme (non-blocking, only needed for code blocks) -->
+	
+	
+	<link rel="canonical" href="https://xinfang.site/2025/03/20/celery/Backends%E5%92%8CBrokers/">
+	<link rel="alternate" type="application/rss+xml" title="xinfan9's blog" href="https://xinfang.site/feed.xml">
+	
+	<meta name="description" content="Broker介绍
+">
+
+	<!-- Open Graph for social sharing -->
+	<meta property="og:title" content="Backends和Brokers">
+	<meta property="og:description" content="Broker介绍
+">
+	<meta property="og:url" content="https://xinfang.site/2025/03/20/celery/Backends%E5%92%8CBrokers/">
+	<meta property="og:site_name" content="xinfan9's blog">
+	<meta property="og:type" content="article">
+	<meta property="article:published_time" content="2025-03-20T19:30:05+08:00">
+	
+	<meta property="og:image" content="https://xinfang.site/styles/images/api/background.webp">
+	<meta property="og:image:width" content="1200">
+	<meta property="og:image:height" content="630">
+	
+	<meta property="og:locale" content="zh_CN">
+
+	<!-- Twitter Card -->
+	<meta name="twitter:card" content="summary_large_image">
+	<meta name="twitter:title" content="Backends和Brokers">
+	<meta name="twitter:description" content="Broker介绍
+">
+	<meta name="twitter:image" content="https://xinfang.site/styles/images/favicon.jpg">
+	
+	<!-- Theme color for mobile browsers -->
+	<meta name="theme-color" content="#0b72d9" media="(prefers-color-scheme: light)">
+	<meta name="theme-color" content="#0f172a" media="(prefers-color-scheme: dark)">
+
+	<!-- Prevent FOUC for theme -->
+	<script>
+		(function() {
+			const savedTheme = localStorage.getItem('theme');
+			const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+			if (savedTheme) {
+				document.documentElement.setAttribute('data-theme', savedTheme);
+			} else if (prefersDark) {
+				document.documentElement.setAttribute('data-theme', 'dark');
+			}
+		})();
+	</script>
+	
+	<!-- Prism.js only on post pages with code blocks -->
+	
+
+	<!-- Mermaid.js for diagram rendering (conditional) -->
+	
+
+	<!-- MathJax for LaTeX rendering (conditional) -->
+	
+
+	<!-- Blog Interactive Features -->
+	<script src="/assets/js/blog.js?v=1788352046" defer></script>
+
+	<!-- JSON-LD Structured Data -->
+	
+	<script type="application/ld+json">
+	{
+		"@context": "https://schema.org",
+		"@type": "BlogPosting",
+		"inLanguage": "zh-CN",
+		"headline": "Backends和Brokers",
+		"image": "https://xinfang.site/styles/images/favicon.jpg",
+		"datePublished": "2025-03-20T19:30:05+08:00",
+		"dateModified": "2025-03-20T19:30:05+08:00",
+		"author": {
+			"@type": "Person",
+			"name": "xinfan9"
+		},
+		"publisher": {
+			"@type": "Organization",
+			"name": "xinfan9's blog",
+			"logo": {
+				"@type": "ImageObject",
+				"url": "https://xinfang.site/styles/images/favicon.jpg"
+			}
+		},
+		"mainEntityOfPage": {
+			"@type": "WebPage",
+			"@id": "https://xinfang.site/2025/03/20/celery/Backends%E5%92%8CBrokers/"
+		},
+		"keywords": "Celery",
+		"articleBody": "Broker介绍\n",
+		"description": "Broker介绍\n"
+	}
+	</script>
+	
+</head>
+
+  <body class="index">
+
+    <!-- Reading Progress Bar -->
+<div class="reading-progress" id="reading-progress"></div>
+
+<!-- Page Background -->
+<div class="post-background"></div>
+
+<div class="post-layout">
+  <!-- Left: TOC -->
+  <aside class="post-toc-sidebar" id="post-toc-sidebar" role="navigation" aria-label="文章目录">
+    <div class="toc-panel">
+      <div class="toc-title">
+        <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="12" x2="15" y2="12"></line><line x1="3" y1="18" x2="18" y2="18"></line></svg>
+        目录
+      </div>
+      <ul class="toc-list" id="toc-list"></ul>
+    </div>
+  </aside>
+
+  <!-- Center: Article -->
+  <main class="post-main">
+    <div class="panel docs-content">
+      <div class="wrapper">
+        <header class="post-header" role="banner">
+          <a href="https://xinfang.site/" class="back-home-link">
+            <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+            返回主页
+          </a>
+          <h1 class="post-title">Backends和Brokers</h1>
+          <div class="post-meta-info">
+            <time class="meta-item meta-date" datetime="2025-03-20T19:30:05+08:00">
+              <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+              2025-03-20
+            </time>
+            
+            <time class="meta-item meta-update" datetime="2026-05-08T10:20:40+08:00">
+              <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 2.2"/></svg>
+              2026-05-08
+            </time>
+            
+            <span class="meta-item meta-author">
+              <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+              xinfan9
+            </span>
+            
+            <span class="meta-item meta-words">
+              <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+              66 字
+            </span>
+            
+            <span class="meta-item meta-reading">
+              <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+              约 1 分钟
+            </span>
+          </div>
+        </header>
+        <article class="post-content" role="article">
+          <h1 id="broker介绍">Broker介绍</h1>
+
+<ul>
+  <li><a href="https://docs.celeryq.dev/en/stable/getting-started/backends-and-brokers/rabbitmq.html">Using RabbitMQ</a></li>
+  <li><a href="https://docs.celeryq.dev/en/stable/getting-started/backends-and-brokers/redis.html">Using Redis</a></li>
+  <li><a href="https://docs.celeryq.dev/en/stable/getting-started/backends-and-brokers/sqs.html">Using Amazon SQS</a></li>
+</ul>
+
+<h1 id="broker概览">Broker概览</h1>
+
+<p>这个表格对比了不同传输方式，更多信息请参考每种方式的独立<a href="https://docs.celeryq.dev/en/stable/getting-started/backends-and-brokers/index.html#broker-toc">介绍文档</a>。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>名称</th>
+      <th>状态</th>
+      <th>有无监控</th>
+      <th>支持远程控制</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><em>RabbitMQ</em></td>
+      <td>稳定支持</td>
+      <td>有</td>
+      <td>是</td>
+    </tr>
+    <tr>
+      <td><em>Redis</em></td>
+      <td>稳定支持</td>
+      <td>有</td>
+      <td>是</td>
+    </tr>
+    <tr>
+      <td><em>Amazon SQS</em></td>
+      <td>稳定支持</td>
+      <td>无</td>
+      <td>否</td>
+    </tr>
+    <tr>
+      <td><em>Zookeeper</em></td>
+      <td>试验性支持</td>
+      <td>无</td>
+      <td>否</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>试验性支持代表也许可以运行，但没有专门的维护人员 。</p>
+
+<p>没有监控代表配套的如插件Flower, celery events, celerymon等基于事件监听的监控工具无法使用。</p>
+
+<p>远程控制表示使用<em>celery inspect</em>或者<em>celery control</em>命令或其他工具运行时发现和管理workers的能力。</p>
+
+<h1 id="主要内容">主要内容</h1>
+
+<p>注意：这部分只列举了一部分支持的<em>backends 和 brokers</em>。</p>
+
+<p>Celery能够借助很多不同的backends（结果存储）和Brokers（消息传输）来搭建服务。</p>
+
+<h2 id="redis">Redis</h2>
+
+<p>Redis既可以充当backend，也能充当broker。</p>
+
+<p>当作Broker：Redis非常适合传输短消息，但不适用于长消息。<a href="https://docs.celeryq.dev/en/stable/getting-started/backends-and-brokers/redis.html#broker-redis">详情参照文档</a>。</p>
+
+<p>当作Backend：Redis 是一个非常快的KV存储，它可以十分高效的存取任务结果。但由于它的实现原理，你需要考虑容量限制的问题，以及结果持久化。如果结果持久化很重要，不建议使用redis。</p>
+
+<h2 id="rabbitmq">RabbitMQ</h2>
+
+<p>RabbitMQ可以用作broker。</p>
+
+<p>作为Broker：在长消息方面，RabbitMQ更有优势，但如果消息来的非常快，拥有水平扩容能力的Redis或者SQS更有优势。<a href="https://docs.celeryq.dev/en/stable/getting-started/backends-and-brokers/rabbitmq.html#broker-rabbitmq">详情参照文档</a>。</p>
+
+<p>作为Backend：RabbitMQ也能通过 npc://backend存储信息，这种方式用于为每个客户端创建单独的临时队列。</p>
+
+<p>注意：RabbitMQ（作为Broker）和Redis（作为Backend）是非常常见的一种组合；如果结果存储需要更有保证的长期持久性，考虑使用PostgreSQL或MySQL（通过SQLAlchemy）， Cassandra或自定义Backend。</p>
+
+<h2 id="sqs">SQS</h2>
+
+<p>SQS用作Broker。</p>
+
+<p>如果你已经集成了AWS，并且非常熟悉SQS，那么它将是一个非常合适的Broker选型。它具有极强的可扩展性和完全可管理性，并且拥有RabbitMQ类似地管理任务委派功能。但它缺少RabbitMQ的一些特性，比如worker远程控制命令。</p>
+
+<p><a href="https://docs.celeryq.dev/en/stable/getting-started/backends-and-brokers/sqs.html#broker-sqs">详情参考文档。</a></p>
+
+<h2 id="sqlalchemy">SQLAlchemy</h2>
+
+<p>SQLAlchemy用作Backend。</p>
+
+<p>它允许Celery集成MySQL、PostgreSQL、SQlite等ORM，使用SQL DB作为Backend。</p>
+
+<p><a href="https://docs.celeryq.dev/en/stable/userguide/configuration.html#conf-database-result-backend">详情参考文档。</a></p>
+
+
+        </article>
+      </div>
+    </div>
+  </main>
+
+  <!-- Right: Category Articles -->
+  <aside class="post-category-sidebar" role="navigation" aria-label="分类文章列表">
+    <div class="category-panel">
+      
+      
+      <div class="category-sidebar-title">
+        <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
+        Celery
+      </div>
+      <ul class="category-article-list">
+        
+        
+        <li class="">
+          <a href="/2025/03/25/celery/Google-Pub%E5%92%8CSub/" title="Google-Pub和Sub">
+            <span class="article-title">Google-Pub和Sub</span>
+            <span class="article-date">03-25</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2025/03/24/celery/Kafka/" title="Kafka">
+            <span class="article-title">Kafka</span>
+            <span class="article-date">03-24</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2025/03/23/celery/SQS/" title="SQS">
+            <span class="article-title">SQS</span>
+            <span class="article-date">03-23</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2025/03/22/celery/Redis/" title="Redis">
+            <span class="article-title">Redis</span>
+            <span class="article-date">03-22</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2025/03/21/celery/RabbitMQ/" title="RabbitMQ">
+            <span class="article-title">RabbitMQ</span>
+            <span class="article-date">03-21</span>
+          </a>
+        </li>
+        
+        <li class="active">
+          <a href="/2025/03/20/celery/Backends%E5%92%8CBrokers/" title="Backends和Brokers">
+            <span class="article-title">Backends和Brokers</span>
+            <span class="article-date">03-20</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2025/03/19/celery/Celery%E4%BB%8B%E7%BB%8D/" title="Celery介绍">
+            <span class="article-title">Celery介绍</span>
+            <span class="article-date">03-19</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2025/03/18/celery/%E7%89%88%E6%9D%83/" title="版权">
+            <span class="article-title">版权</span>
+            <span class="article-date">03-18</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2025/03/17/celery/%E5%88%86%E5%B8%83%E5%BC%8F%E4%BB%BB%E5%8A%A1%E9%98%9F%E5%88%97/" title="分布式任务队列">
+            <span class="article-title">分布式任务队列</span>
+            <span class="article-date">03-17</span>
+          </a>
+        </li>
+        
+      </ul>
+      
+    </div>
+  </aside>
+</div>
+
+<!-- Theme Toggle Button -->
+<button type="button" class="theme-toggle" aria-label="Toggle Theme">
+  <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+  </svg>
+  <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="12" cy="12" r="5"></circle>
+    <line x1="12" y1="1" x2="12" y2="3"></line>
+    <line x1="12" y1="21" x2="12" y2="23"></line>
+    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+    <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+    <line x1="1" y1="12" x2="3" y2="12"></line>
+    <line x1="21" y1="12" x2="23" y2="12"></line>
+    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+    <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+  </svg>
+</button>
+
+<!-- Back to Top Button -->
+<button type="button" class="back-to-top" aria-label="Back to Top">
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <polyline points="18 15 12 9 6 15"></polyline>
+  </svg>
+</button>
+
+
+    <!-- Site Footer -->
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-content">
+      <div class="footer-info">
+        <h4>xinfan9's blog</h4>
+        <p>Actually, less is more!</p>
+      </div>
+      <div class="footer-links">
+        <a href="https://github.com/xinfan9/" target="_blank" title="GitHub">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+        </a>
+        <a href="mailto:11411619@qq.com" title="Email">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+        </a>
+        <a href="/feed.xml" title="RSS">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11a9 9 0 0 1 9 9"/><path d="M4 4a16 16 0 0 1 16 16"/><circle cx="5" cy="19" r="1"/></svg>
+        </a>
+      </div>
+      <div class="footer-copyright">
+        <p>&copy; 2026 xinfan9. Built with Jekyll.</p>
+      </div>
+    </div>
+  </div>
+</footer>
+      
+    
+    <!-- Global Buttons (for non-post pages) -->
+    
+  </body>
+</html>

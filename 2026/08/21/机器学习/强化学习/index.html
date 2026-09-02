@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+  <head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="Content-Language" content="zh-CN">
+	<title>强化学习 - xinfan9's blog</title>
+
+	<link rel="icon" href="/styles/images/favicon.jpg">
+
+	<!-- Preconnect for CDN -->
+	
+	<link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+	<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+	
+
+
+	<!-- Inline Critical Reset (was index.css) -->
+	<style>
+		*,*::before,*::after{box-sizing:border-box}html{-ms-text-size-adjust:100%;-webkit-text-size-adjust:100%;-webkit-tap-highlight-color:rgba(0,0,0,0)}body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Microsoft YaHei",sans-serif;font-size:14px;line-height:1.42857143;color:#333;background-color:#f7f7f7}article,aside,details,figcaption,figure,footer,header,main,nav,section,summary{display:block}a{color:#43759e;text-decoration:none;background:transparent}a:hover,a:focus{color:#2c4d68;text-decoration:underline}a:focus{outline:thin dotted;outline-offset:-2px}img{vertical-align:middle;max-width:100%;height:auto}input,button,select,textarea{font-family:inherit;font-size:inherit;line-height:inherit}h1,h2,h3,h4,h5,h6{margin-top:0}.container{max-width:1200px;margin-left:auto;margin-right:auto;padding-left:15px;padding-right:15px}.clearfix::after{content:"";display:table;clear:both}.text-muted{color:#777}.sr-only{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0,0,0,0);border:0}
+	</style>
+
+	
+	<link rel="prefetch" as="image" href="/styles/images/api/background.webp">
+
+	<!-- Clarity Blog Theme -->
+	<link rel="stylesheet" href="/assets/css/clarity-blog.css?v=1788352046">
+
+	<!-- Prism.js Theme (non-blocking, only needed for code blocks) -->
+	
+	
+	<link rel="canonical" href="https://xinfang.site/2026/08/21/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0/">
+	<link rel="alternate" type="application/rss+xml" title="xinfan9's blog" href="https://xinfang.site/feed.xml">
+	
+	<meta name="description" content="前言
+">
+
+	<!-- Open Graph for social sharing -->
+	<meta property="og:title" content="强化学习">
+	<meta property="og:description" content="前言
+">
+	<meta property="og:url" content="https://xinfang.site/2026/08/21/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0/">
+	<meta property="og:site_name" content="xinfan9's blog">
+	<meta property="og:type" content="article">
+	<meta property="article:published_time" content="2026-08-21T21:41:56+08:00">
+	
+	<meta property="og:image" content="https://xinfang.site/styles/images/api/background.webp">
+	<meta property="og:image:width" content="1200">
+	<meta property="og:image:height" content="630">
+	
+	<meta property="og:locale" content="zh_CN">
+
+	<!-- Twitter Card -->
+	<meta name="twitter:card" content="summary_large_image">
+	<meta name="twitter:title" content="强化学习">
+	<meta name="twitter:description" content="前言
+">
+	<meta name="twitter:image" content="https://xinfang.site/styles/images/favicon.jpg">
+	
+	<!-- Theme color for mobile browsers -->
+	<meta name="theme-color" content="#0b72d9" media="(prefers-color-scheme: light)">
+	<meta name="theme-color" content="#0f172a" media="(prefers-color-scheme: dark)">
+
+	<!-- Prevent FOUC for theme -->
+	<script>
+		(function() {
+			const savedTheme = localStorage.getItem('theme');
+			const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+			if (savedTheme) {
+				document.documentElement.setAttribute('data-theme', savedTheme);
+			} else if (prefersDark) {
+				document.documentElement.setAttribute('data-theme', 'dark');
+			}
+		})();
+	</script>
+	
+	<!-- Prism.js only on post pages with code blocks -->
+	
+
+	<!-- Mermaid.js for diagram rendering (conditional) -->
+	
+
+	<!-- MathJax for LaTeX rendering (conditional) -->
+	
+	<script>
+		MathJax = {
+			tex: { inlineMath: [['$','$'], ['\\(','\\)']], displayMath: [['$$','$$'], ['\\[','\\]']] },
+			svg: { fontCache: 'global' },
+			startup: { typeset: true }
+		};
+	</script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-svg.js" defer></script>
+	
+
+	<!-- Blog Interactive Features -->
+	<script src="/assets/js/blog.js?v=1788352046" defer></script>
+
+	<!-- JSON-LD Structured Data -->
+	
+	<script type="application/ld+json">
+	{
+		"@context": "https://schema.org",
+		"@type": "BlogPosting",
+		"inLanguage": "zh-CN",
+		"headline": "强化学习",
+		"image": "https://xinfang.site/styles/images/favicon.jpg",
+		"datePublished": "2026-08-21T21:41:56+08:00",
+		"dateModified": "2026-08-21T21:41:56+08:00",
+		"author": {
+			"@type": "Person",
+			"name": "xinfan9"
+		},
+		"publisher": {
+			"@type": "Organization",
+			"name": "xinfan9's blog",
+			"logo": {
+				"@type": "ImageObject",
+				"url": "https://xinfang.site/styles/images/favicon.jpg"
+			}
+		},
+		"mainEntityOfPage": {
+			"@type": "WebPage",
+			"@id": "https://xinfang.site/2026/08/21/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0/"
+		},
+		"keywords": "机器学习",
+		"articleBody": "前言\n",
+		"description": "前言\n"
+	}
+	</script>
+	
+</head>
+
+  <body class="index">
+
+    <!-- Reading Progress Bar -->
+<div class="reading-progress" id="reading-progress"></div>
+
+<!-- Page Background -->
+<div class="post-background"></div>
+
+<div class="post-layout">
+  <!-- Left: TOC -->
+  <aside class="post-toc-sidebar" id="post-toc-sidebar" role="navigation" aria-label="文章目录">
+    <div class="toc-panel">
+      <div class="toc-title">
+        <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="12" x2="15" y2="12"></line><line x1="3" y1="18" x2="18" y2="18"></line></svg>
+        目录
+      </div>
+      <ul class="toc-list" id="toc-list"></ul>
+    </div>
+  </aside>
+
+  <!-- Center: Article -->
+  <main class="post-main">
+    <div class="panel docs-content">
+      <div class="wrapper">
+        <header class="post-header" role="banner">
+          <a href="https://xinfang.site/" class="back-home-link">
+            <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+            返回主页
+          </a>
+          <h1 class="post-title">强化学习</h1>
+          <div class="post-meta-info">
+            <time class="meta-item meta-date" datetime="2026-08-21T21:41:56+08:00">
+              <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+              2026-08-21
+            </time>
+            
+            <time class="meta-item meta-update" datetime="2026-08-23T18:54:16+08:00">
+              <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 2.2"/></svg>
+              2026-08-23
+            </time>
+            
+            <span class="meta-item meta-author">
+              <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+              xinfan9
+            </span>
+            
+            <span class="meta-item meta-words">
+              <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+              651 字
+            </span>
+            
+            <span class="meta-item meta-reading">
+              <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+              约 7 分钟
+            </span>
+          </div>
+        </header>
+        <article class="post-content" role="article">
+          <h1 id="前言">前言</h1>
+
+<p>每个人在不同的人生阶段做出不同的人生选择，最终拥有不同的人生经历和收获。在机器学习领域，强化学习（reinforcement learning）就是这样一种算法，它针对智能体的状态（当前的人生阶段），做一个动作决策（人生选择），该决策与环境交互返回一个奖励（人生经历与收获）。</p>
+
+<p><img src="/post-images/机器学习/2026-08-21-强化学习.assets/image-20260821165201015.webp" alt="image-20260821165201015" /></p>
+
+<p>基于智能体的三要素</p>
+
+<ul>
+  <li>感知状态（S）。</li>
+  <li>决策动作（A）。</li>
+  <li>奖励（R）。</li>
+</ul>
+
+<p>我们可以推导强化学习的最终目标。</p>
+
+<h2 id="状态转移概率-transition-probability--环境的客观规律"><strong>状态转移概率 (Transition Probability) —— 环境的客观规律</strong></h2>
+
+<div class="kdmath">$$
+S_{t+1}∼P(⋅|S_t,A)
+$$</div>
+
+<ul>
+  <li><strong>$S_{t+1}$</strong> ：表示智能体在时间步 t+1<em>t</em>+1 时所处的状态，是一个随机变量。</li>
+  <li>$∼$ ：表示“服从于”或“采样自”，说明下一状态不是确定性的，而是从某个概率分布中随机抽取的。</li>
+  <li>
+    <table>
+      <tbody>
+        <tr>
+          <td>$P(⋅</td>
+          <td>S_t,A)$：条件概率分布，表示在给定当前状态和智能体的动作前提下,下一状态的概率分布。</td>
+        </tr>
+      </tbody>
+    </table>
+  </li>
+</ul>
+
+<h2 id="奖励信号-reward--及时反馈">奖励信号 (Reward) —— 及时反馈</h2>
+
+<div class="kdmath">$$
+r_{t+1} = R(S_t, A_t, S_{t+1})
+$$</div>
+
+<ul>
+  <li>智能体在状态 $S_t$ 执行动作 $A_t$ 后，环境转移到 $S_{t+1}$，并给出一个<strong>标量（实数）</strong> $r_{t+1}$ 作为即时反馈。</li>
+</ul>
+
+<h2 id="回报-return--累加的整体分数">回报 (Return) —— 累加的整体分数</h2>
+<p><span class="kdmath">$G_t = \sum_{k=0}^{\infty} \gamma^k r_{t+k+1}$</span></p>
+
+<ul>
+  <li>$G_t$ 代表从当前时刻 $t$ 开始，未来所有奖励的总和。整个交互过程的每一轮获得的奖励信号可以进行累加，形成智能体的整体回报（return）。在实际应用中，未来的奖励通常是不确定的，所以我们会乘上一个<strong>折扣因子 $\gamma$</strong>（$0 \le \gamma \le 1$）。</li>
+</ul>
+
+<h2 id="环境的动态性-stochasticity--结果的不确定性">环境的动态性 (Stochasticity) —— 结果的不确定性</h2>
+
+<div class="kdmath">$$
+G_t \sim P(G_t \mid S_t, \pi)
+$$</div>
+
+<ul>
+  <li>
+    <table>
+      <tbody>
+        <tr>
+          <td>$G_t$ 是一个<strong>随机变量</strong>。因为状态转移概率 $P(S_{t+1}</td>
+          <td>S_t, A_t)$ 本身带有随机性，即使每次都采取同样的策略 $\pi$，每次算出来的 $G_t$ 都不一样。</td>
+        </tr>
+      </tbody>
+    </table>
+  </li>
+</ul>
+
+<h2 id="价值-value--真正的优化目标">价值 (Value) —— 真正的优化目标</h2>
+
+<div class="kdmath">$$
+V^{\pi}(s) = \mathbb{E}_{\pi} [G_t \mid S_t = s]= \sum_{s'} \sum_{a} \rho^{\pi}(s', a \mid s) R(s', a)
+$$</div>
+
+<ul>
+  <li>单次回报 $G_t$ 不稳定，因此需要数学期望（平均值）<strong>。</strong>$V^{\pi}(s)$ 叫做<strong>状态价值函数（State-Value Function）</strong>。如果我们把时间轴“压缩”，从空间分布的角度来看，期望回报可以转化为<strong>奖励函数在占用度量上的期望</strong>。占用度量 $\rho^\pi(s, a)$ 描述了在策略 $\pi$ 下，智能体长期访问特定“状态-动作对”的概率分布。因此，价值函数可以等价地写成：</li>
+</ul>
+
+<h2 id="强化学习的终极目标">强化学习的终极目标</h2>
+
+<p>强化学习的终极目标，就是找到一个<strong>最优策略 $\pi^*$</strong>，使得价值函数最大化，而寻找最优策略，等价于寻找最优的占用度量。</p>
+
+<div class="kdmath">$$
+\rho^* = \arg\max_{\pi} V^{\pi}(s)= \arg\max_{\rho} \sum_{s, a} \rho(s, a) R(s, a)
+$$</div>
+
+<blockquote>
+  <p>智能体在环境中通过<strong>奖励 $r$</strong> 获得反馈，计算出总回报 $G$；因为环境有随机性导致 $G$ 不稳定，所以智能体转而追求 $G$ 的数学期望，也就是<strong>价值 $V$</strong>。</p>
+
+  <p>而强化学习的全部意义，就是通过不断试错，在满足环境物理规律（状态转移概率 $P$）的前提下，找到一张最优的<strong>“路线热力图”（最优占用度量 $\rho^*$）</strong>，让智能体尽可能多地停留在高奖励的区域，从而实现<strong>价值 $V$ 的最大化</strong>。</p>
+</blockquote>
+
+<h2 id="强化学习与监督学习的区别">强化学习与监督学习的区别</h2>
+
+<p>监督学习有一个固定的“标准答案（标签）”，监督学习像传统的闭卷考试，每道题都有标准答案。模型的任务就是不断调整自己的参数，让自己的<strong>预测输出</strong>无限逼近这个标准答案。它的数学本质是最小化预测值和真实标签之间的误差（Loss）。</p>
+
+<p>强化学习没有固定的“标准答案”，强化学习像面试，根据你的回答，<strong>临时决定</strong>问你下一个问题。智能体做出的每一个决策（动作），都会影响下一步状态。它的数学本质是当你改变了策略 <em>π</em> ，你就改变了智能体在环境中的行为轨迹，从而改变了它的占用度量 $\rho$。</p>
+
+<h1 id="多臂老虎机multi-armed-banditmab">多臂老虎机(multi-armed bandit，MAB)</h1>
+
+<p>多臂老虎机问题，可以被看作简化版的强化学习，它不考虑状态信息，只有动作和奖励。</p>
+
+<h2 id="问题描述">问题描述</h2>
+
+<p>一个拥有K根拉杆的老虎机，拉动每根拉杆对应关于奖励的概率分布R，每拉动一根拉杆，可以获得实际奖励r。我们希望在奖励分布R未知的情况下，获得T次拉杆的最大累积奖励。</p>
+
+<p><img src="/post-images/机器学习/2026-08-21-强化学习.assets/image-20260821181538484.webp" alt="image-20260821181538484" /></p>
+
+<p>该问题可以表示为一个元组&lt;A,R&gt;：</p>
+
+<ul>
+  <li>A为动作集合，对于K根拉杆，动作空间对应集合${a_1, &#8230;, a_k}$。</li>
+  <li>
+    <table>
+      <tbody>
+        <tr>
+          <td>R为奖励概率分布，拉动每根拉杆的动作对应奖励概率分布 $\mathcal R(r</td>
+          <td>a)$。</td>
+        </tr>
+      </tbody>
+    </table>
+  </li>
+</ul>
+
+<p>整个问题的目标是 $max\sum^T_{t=1}r_t$ 。</p>
+
+<h2 id="累计懊悔">累计懊悔</h2>
+
+<table>
+  <tbody>
+    <tr>
+      <td>对于每一个动作a，我们定义其期望奖励为(Q(a) = \mathbb{E}_{r\sim\mathcal{R}(\cdot</td>
+      <td>a)} \left[r\right])。</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>至少存在一根拉杆，它的期望奖励不小于拉动其他任意一根拉杆，我们将该最优期望奖励表示为 (Q^* = \max_{a\in\mathcal{A}} Q(a))，该值是环境本身固有的真实常量。</p>
+
+<p>引入<strong>懊悔（regret）</strong>概念：懊悔定义为拉动当前拉杆的动作a与最优拉杆的期望奖励差，即 (R(a) = Q^* - Q(a))。</p>
+
+<p><strong>累积懊悔（cumulative regret）</strong>即操作T次拉杆后累积的懊悔总量，对于一次完整的T步决策({a_1,a_2,\dots,a_T})，累积懊悔为 (\sigma_R = \sum_{t=1}^{T} R(a_t))。MAB 问题的目标为最大化累积奖励，等价于最小化累积懊悔。</p>
+
+<h2 id="估计期望奖励">估计期望奖励</h2>
+
+<p>为了计算累积懊悔，我们首先需要估算每个动作的期望奖励 $Q(a)$ 。</p>
+
+<p>在T步决策内，我们将期望奖励设为0，则</p>
+
+<p>对于$\forall a \in \mathcal{A}$，初始化计数器$(N(a)=0)$和期望奖励估值$\hat{Q}(a)=0$</p>
+
+<ul>
+  <li>$\mathbf{for}\ t = 1 \to T\ \mathbf{do}$</li>
+  <li>选取某根拉杆，该动作记为$a_t$</li>
+  <li>得到奖励$r_t$</li>
+  <li>更新计数器: $N(a_t)=N(a_t)+1$</li>
+  <li>更新期望奖励估值: $\hat{Q}(a_t)=\hat{Q}(a_t)+\frac{1}{N(a_t)}\big[r_t-\hat{Q}(a_t)\big]$</li>
+  <li>$\mathbf{end\ for}$</li>
+</ul>
+
+<p>如果将所有数求和再除以次数，其缺点是每次更新的时间复杂度和空间复杂度均为(O(n))。而采用增量式更新，时间复杂度和空间复杂度均为(O(1))，公式如下。 <br />
+<span class="kdmath">$\begin{align*} Q_k &= \frac{1}{k}\sum_{i=1}^{k} r_i \\ &= \frac{1}{k}\left(r_k+\sum_{i=1}^{k-1} r_i\right) \\ &= \frac{1}{k}\big(r_k+(k-1)Q_{k-1}\big) \\ &= \frac{1}{k}\big(r_k+kQ_{k-1}-Q_{k-1}\big) \\ &= Q_{k-1}+\frac{1}{k}\big[r_k-Q_{k-1}\big] \end{align*}$</span><br />
+如果将所有数求和再除以次数，其缺点是每次更新的时间复杂度和空间复杂度均为$(O(n))$。而采用增量式更新，时间复杂度和空间复杂度均为$(O(1))$。</p>
+
+<h2 id="策略设计">策略设计</h2>
+
+<p>接下来，我们需要设计一个策略，来决定选择什么动作。在多臂老虎机问题中，探索（exploration）与利用（exploitation）是非常经典的问题。探索是尝试拉动更多摇杆，摸清所有拉杆的获奖情况。利用是指拉动已知期望奖励最大的摇杆。</p>
+
+<p>设计策略时，我们应该平衡探索与利用，近可能获得准确的摇杆奖励情况，并尽可能拉动奖励最大的摇杆。</p>
+
+<h3 id="epsilon--贪婪算法">(\epsilon)- 贪婪算法</h3>
+
+<p>完全贪婪算法即在每一时刻采取期望奖励估值最大的动作（拉动拉杆），这就是纯粹的利用，而没有探索。(\epsilon)- 贪婪算法在完全贪婪算法的基础上添加了噪声，每次以概率(1-\epsilon)选择以往经验中期望奖励估值最大的那根拉杆（利用），以概率(\epsilon)随机选择一根拉杆（探索），公式如下：</p>
+
+<p>(a_t= \begin{cases} \arg\max_{a\in\mathcal{A}} \hat{Q}(a), &amp; \text{采样概率：}1-\epsilon\ \text{从}\ \mathcal{A}\ \text{中随机选择}, &amp; \text{采样概率：}\epsilon \end{cases})</p>
+
+<p>随着探索次数的不断增加，我们对各个动作的奖励估计得越来越准，此时就没必要继续花大力气进行探索。所以在 (\epsilon)- 贪婪算法的具体实现中， (\epsilon) 随时间衰减，即探索的概率将会不断降低。但是请注意，(\epsilon) 不会在有限的步数内衰减至 0，因为基于有限步数观测的完全贪婪算法仍然是一个局部信息的贪婪算法，永远距离最优解有一个固定的差距。</p>
+
+<p><img src="/post-images/机器学习/2026-08-21-强化学习.assets/image-20260821232546404.webp" alt="image-20260821232546404" /></p>
+
+<ol>
+  <li>
+    <p>对于<strong>固定(\epsilon)的问题</strong>：固定不变的(\epsilon)，会永远保留固定概率去随机乱选动作，所以累积懊悔（Regret）随步数t线性往上涨。(\epsilon)越大，随机瞎选的概率越高，犯错次数越多，懊悔增长速度越快。</p>
+
+    <p><img src="/post-images/机器学习/2026-08-21-强化学习.assets/image-20260821232713980.webp" alt="image-20260821232713980" /></p>
+  </li>
+  <li>
+    <p><strong>衰减(\boldsymbol{\epsilon_t=\frac1t})</strong>：t代表当前时间步。随着迭代步数t变大，探索概率(\epsilon_t)慢慢变小，后期更少做随机探索，更多信任当前学到的最优动作，累计懊悔变成次线性的。</p>
+  </li>
+</ol>
+
+<h3 id="上置信界算法">上置信界算法</h3>
+
+<p>设想这样一种情况：对于一台双臂老虎机，其中第一根拉杆只被拉动过一次，得到的奖励为 0；第二根拉杆被拉动过很多次，我们对它的奖励分布已经有了大致的把握。这时你会怎么做？或许你会进一步尝试拉动第一根拉杆，从而更加确定其奖励分布。这种思路主要是基于不确定性，因为此时第一根拉杆只被拉动过一次，它的不确定性很高。一根拉杆的不确定性越大，它就越具有探索的价值。</p>
+
+<p>在此引入不确定性度量 (U(a))，它会随着一个动作被尝试次数的增加而减小。我们可以使用一种基于不确定性的策略来综合考虑现有的期望奖励估值和不确定性，其核心问题是如何估计不确定性。</p>
+
+<p>上置信界（upper confidence bound，UCB）算法是一种经典的基于不确定性的策略算法，它的思想用到了一个非常著名的数学原理：霍夫丁不等式（Hoeffding&#8217;s inequality）。在霍夫丁不等式中，令 (X_1,\dots,X_n)为n个独立同分布的随机变量，取值范围为([0,1])，其经验期望为(\bar{x}<em>n=\frac{1}{n}\sum</em>{j=1}^{n}X_j)，则有<br />
+<span class="kdmath">$\mathbb{P}\big\{\mathbb{E}[X] \ge \bar{x}_n + u\big\} \le e^{-2nu^2}$</span></p>
+
+<ul>
+  <li>(\mathbb{E}[X])：真实期望，我们不知道真值。</li>
+  <li>(\bar{x}_n)：n次采样算出来的样本平均（多臂老虎机估计的期望奖励(\hat Q)）。</li>
+  <li>(u&gt;0)：我们设置的偏差余量。</li>
+  <li>(e^{-2nu^2})：这个坏事发生的概率上界。</li>
+</ul>
+
+<p>在多臂老虎机问题中，(n=N_t(a))：到时刻t为止，这个拉杆一共被拉过多少次。(\bar{x}_n=\hat Q_t(a))：采样得到的估计期望奖励。(u=\hat U_t(a))：不确定性项（置信宽度）。则公式可以写为：<br />
+<span class="kdmath">$\mathbb{P}\Big\{Q(a) \ge \hat Q_t(a)+\hat U_t(a)\Big\} \le e^{-2N_t(a)\,\hat U_t(a)^2}$</span><br />
+(Q(a))是拉杆真实期望奖励。令右边等于一个很小的真实概率p表示真实期望<strong>超过 (\hat Q+\hat U) 的概率最多是p</strong>。</p>
+
+<p>(p = e^{-2N_t(a)\,\hat U_t(a)^2})</p>
+
+<p>(\boldsymbol{\hat U_t(a)=\sqrt{\frac{-\log p}{2N_t(a)}}})</p>
+
+<p>(Q(a) &lt; \hat Q(a)+\hat U(a))，这件事成立的概率至少是 (1-p)。(\boldsymbol{\hat Q(a)+\hat U(a)}) 就是<strong>上置信界 UCB</strong>：我们以很高概率相信，真实奖励不会超过这个数。</p>
+
+<ol>
+  <li>(N_t(a))越小（拉杆很少被试）(\hat U(a))越大 → <strong>不确定性大，置信区间很宽</strong>，鼓励多探索这个拉杆。</li>
+  <li>(N_t(a))越大（反复拉过很多次）(\hat U(a))变小 → 估计很可靠，不确定性降低。</li>
+</ol>
+
+<p><img src="/post-images/机器学习/2026-08-21-强化学习.assets/image-20260821235000134.webp" alt="image-20260821235000134" /></p>
+
+<p>上置信界算法的累计懊悔也是次线性的。</p>
+
+<h3 id="汤普森采样算法">汤普森采样算法</h3>
+
+<p>汤普森采样算法假设维护每根拉杆的「奖励的概率分布」，不是只维护一个单点平均值(\hat Q(a))​。在采样阶段，对<strong>每一根拉杆各自的分布抽 1 个随机样本</strong>，<strong>选抽样结果最大的那根拉杆执行</strong>。</p>
+
+<ul>
+  <li>如果一个拉杆试得很少：它的分布会很宽，抽样有可能抽到很大的值，就有机会被选中，完成<strong>探索</strong>。</li>
+  <li>如果一个拉杆试很多、表现很好：分布会集中在高数值附近，抽出来的值普遍偏大，更容易被选中，完成<strong>利用</strong>。</li>
+</ul>
+
+<p>它不直接算期望，用采样代替复杂积分计算，属于蒙特卡洛方法。</p>
+
+<p>场景：拉动拉杆，结果只有两种：奖励 = 1（成功），奖励 = 0（失败），也就是伯努利试验。某根拉杆一共拉了 k次</p>
+
+<ul>
+  <li>(m_1)：拿到奖励 1 的次数（成功）</li>
+  <li>(m_2)：拿到奖励 0 的次数（失败）</li>
+  <li>(k=m_1+m_2)</li>
+</ul>
+
+<p>贝叶斯里，伯努利的共轭先验是 Beta 分布。<strong>先验：Beta (1,1)</strong>，等价均匀分布，代表最开始我们对拉杆好坏完全没有先验知识。每次观测到成功就给第一个参数 + 1；观测失败第二个参数 + 1。 所以后验分布：(\text{Beta}(\alpha,\beta)=\text{Beta}(m_1+1,\ m_2+1))。</p>
+
+<p><img src="/post-images/机器学习/2026-08-21-强化学习.assets/image-20260821235719669.webp" alt="image-20260821235719669" /></p>
+
+<ol>
+  <li>如果拉杆几乎全成功：(\alpha\gg\beta)，分布集中靠近 1，抽样大概率抽到高值，经常被选。</li>
+  <li>如果拉杆几乎全失败：(\beta\gg\alpha)，分布集中靠近 0，抽样大多数值低，很少被选。</li>
+  <li>如果拉杆只拉过很少几次：(\alpha,\beta)都很小，分布很宽，抽样可能蹦出很大的数，有机会被拿来探索。</li>
+</ol>
+
+<p><img src="/post-images/机器学习/2026-08-21-强化学习.assets/image-20260822000400104.webp" alt="image-20260822000400104" /></p>
+
+<h1 id="马尔可夫决策过程">马尔可夫决策过程</h1>
+
+<p>如果要用强化学习解决实际问题，第一步就是需要将问题抽象为一个马尔可夫决策过程。与多臂老虎机问题不同，马尔可夫决策过程包含状态信息以及状态的转移机制。</p>
+
+<h2 id="马尔可夫过程">马尔可夫过程</h2>
+
+<p>在随机过程中，随机现象在某时刻的状态表示为 $S_t$ ，在已知历史信息时，下一刻状态为 $S_{t+1}$ 的概率表示为 (P(S_{t+1}|S_1,\dots,S_t))。当且仅当某时刻的状态只取决于上一时刻的状态时，一个随机过程被称为具有马尔可夫性质（Markov property），用公式表示为<br />
+<span class="kdmath">$P(S_{t+1}|S_t) = P(S_{t+1}|S_1,\dots,S_t)。$</span><br />
+马尔可夫过程（Markov process）指具有马尔可夫性质的随机过程，也被称为马尔可夫链（Markov chain）。我们通常用元组(\langle \mathcal{S},\mathcal{P}\rangle)描述一个马尔可夫过程，其中(\mathcal{S})是有限数量的状态集合，(\mathcal{P})是状态转移矩阵（state transition matrix）。假设一共有n个状态，此时(\mathcal{S}={s_1,s_2,\dots,s_n})。状态转移矩阵(\mathcal{P})定义了所有状态对之间的转移概率，即<br />
+<span class="kdmath">$\mathcal{P}= \begin{bmatrix} P(s_1|s_1) & \dots & P(s_n|s_1) \\ \vdots & \ddots & \vdots \\ P(s_1|s_n) & \dots & P(s_n|s_n) \end{bmatrix}$</span><br />
+矩阵(\mathcal{P})中第i行第j列元素(P(s_j|s_i)=P(S_{t+1}=s_j|S_t=s_i))表示从状态(s_i)转移到状态(s_j)的概率，我们称(P(s&#8217;|s))为状态转移函数。从某个状态出发，到达其他状态的概率和必须为 1，即状态转移矩阵(\mathcal{P})的<strong>每一行的和为 1</strong>。</p>
+
+<p>给定一个马尔可夫过程，我们就可以从某个状态出发，根据它的状态转移矩阵生成一个状态序列（episode），这个步骤也被叫做采样（sampling）。</p>
+
+<h2 id="马尔可夫奖励过程">马尔可夫奖励过程</h2>
+
+<p>在马尔可夫过程的基础上加入奖励函数 r 和折扣因子 (\gamma)，就可以得到马尔可夫奖励过程（Markov reward process）。一个马尔可夫奖励过程由 (\langle \mathcal{S}, \mathcal{P}, r, \gamma \rangle) 构成，各个组成元素的含义如下所示。</p>
+
+<ul>
+  <li>(\mathcal{S}) 是有限状态的集合。</li>
+  <li>(\mathcal{P}) 是状态转移矩阵。</li>
+  <li>r 是奖励函数，某个状态s的奖励 (r(s)) 指转移到该状态时可以获得奖励的期望。</li>
+  <li>(\gamma) 是折扣因子（discount factor），(\gamma) 的取值范围为 $</li>
+</ul>
+
+<p>在一个马尔可夫奖励过程中，从第t时刻状态(S_t)开始，直到终止状态时，所有奖励的衰减之和称为回报(G_t)（Return），公式如下：<br />
+<span class="kdmath">$G_t = R_t + \gamma R_{t+1} + \gamma^2 R_{t+2} + \dots = \sum_{k=0}^{\infty}\gamma^k R_{t+k}$</span><br />
+一个状态的期望回报，被称为这个状态的价值，所有状态的价值组成了价值函数：<br />
+<span class="kdmath">$\begin{aligned} V(s)&=\mathbb{E}\left[G_t|S_t=s\right] \\ &=\mathbb{E}\left[R_t+\gamma R_{t+1}+\gamma^2 R_{t+2}+\dots \big|S_t=s\right] \\ &=\mathbb{E}\left[R_t+\gamma\left(R_{t+1}+\gamma R_{t+2}+\dots\right)\big|S_t=s\right] \\ &=\mathbb{E}\left[R_t+\gamma G_{t+1}\big|S_t=s\right] \\ &=\mathbb{E}\left[R_t+\gamma V(S_{t+1})\big|S_t=s\right] \end{aligned}$</span><br />
+在上式的最后一个等号中，一方面，即时奖励的期望正是奖励函数的输出，即(\mathbb{E}[R_t|S_t=s]=r(s))；另一方面，等式中剩余部分(\mathbb{E}\left[\gamma V(S_{t+1})\big|S_t=s\right])可以根据从状态s出发的转移概率得到，即可以得到<br />
+<span class="kdmath">$V(s)=r(s)+\gamma \sum_{s'\in \mathcal{S}} p(s'|s)V(s')$</span><br />
+上式就是马尔可夫奖励过程中非常有名的贝尔曼方程（Bellman equation），对每一个状态都成立。若一个马尔可夫奖励过程一共有n个状态，即(\mathcal{S}={s_1,s_2,\dots,s_n})，我们将所有状态的价值表示成一个列向量(\mathcal{V}=[V(s_1),V(s_2),\dots,V(s_n)]^T)，同理，将奖励函数写成一个列向量(\mathcal{R}=[r(s_1),r(s_2),\dots,r(s_n)]^T)。于是我们可以将贝尔曼方程写成矩阵的形式：</p>
+
+<p><span class="kdmath">$\mathcal{V}=\mathcal{R}+\gamma \mathcal{P}\mathcal{V}=\begin{bmatrix} V(s_1)\\ V(s_2)\\ \cdots\\ V(s_n) \end{bmatrix} = \begin{bmatrix} r(s_1)\\ r(s_2)\\ \cdots\\ r(s_n) \end{bmatrix} +\gamma \begin{bmatrix} P(s_1|s_1) & P(s_2|s_1) & \dots & P(s_n|s_1)\\ P(s_1|s_2) & P(s_2|s_2) & \dots & P(s_n|s_2)\\ \cdots & & &\\ P(s_1|s_n) & P(s_2|s_n) & \dots & P(s_n|s_n) \end{bmatrix} \begin{bmatrix} V(s_1)\\ V(s_2)\\ \cdots\\ V(s_n) \end{bmatrix}$</span><br />
+我们可以直接根据矩阵运算求解，得到以下解析解：<br />
+<span class="kdmath">$\begin{aligned} \mathcal{V}&=\mathcal{R}+\gamma \mathcal{P}\mathcal{V}\\ (I-\gamma \mathcal{P})\mathcal{V}&=\mathcal{R}\\ \mathcal{V}&=(I-\gamma \mathcal{P})^{-1}\mathcal{R} \end{aligned}$</span><br />
+以上解析解的计算复杂度是(O(n^3))，其中n是状态个数，因此这种方法只适用很小的马尔可夫奖励过程。求解较大规模的马尔可夫奖励过程中的价值函数时，可以使用动态规划（dynamic programming）算法、蒙特卡洛方法（Monte‑Carlo method）和时序差分（temporal difference）。</p>
+
+<h2 id="马尔可夫决策过程-1">马尔可夫决策过程</h2>
+
+<p>在马尔可夫奖励过程的基础上，如果有外界刺激改变状态转移方程，则得到了马尔可夫决策过程（Markov decision process，MDP），所谓外界刺激，这里指的则是智能体动作。马尔可夫决策过程由元组(\langle \mathcal{S}, \mathcal{A}, P, r, \gamma \rangle)构成，其中：</p>
+
+<ul>
+  <li>(\mathcal{S})是状态的集合；</li>
+  <li>(\mathcal{A})是动作的集合；</li>
+  <li>(\gamma)是折扣因子；</li>
+  <li>(r(s,a))是奖励函数，此时奖励可以同时取决于状态s和动作a，在奖励函数只取决于状态s时，则退化为(r(s))；</li>
+  <li>
+    <table>
+      <tbody>
+        <tr>
+          <td>(P(s&#8217;</td>
+          <td>s,a))是状态转移函数，表示在状态s执行动作a之后到达状态(s&#8217;)的概率。</td>
+        </tr>
+      </tbody>
+    </table>
+  </li>
+</ul>
+
+<p>智能体根据当前状态(S_t)选择动作(A_t)；对于状态(S_t)和动作(A_t)，MDP 根据奖励函数和状态转移函数得到(S_{t+1})和(R_t)并反馈给智能体。智能体的目标是最大化得到的累计奖励。</p>
+
+<p><img src="/post-images/机器学习/2026-08-21-强化学习.assets/image-20260822004612667.webp" alt="image-20260822004612667" /></p>
+
+<table>
+  <tbody>
+    <tr>
+      <td>智能体根据当前状态从动作的集合(\mathcal{A})中选择一个动作的函数，被称为<strong>策略</strong>。智能体的策略（Policy）通常用字母(\pi)表示。策略(\boldsymbol{\pi(a</td>
+      <td>s)=P(A_t=a</td>
+      <td>S_t=s)})是一个函数，表示在输入状态s情况下采取动作a的概率。</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>当一个策略是确定性策略（deterministic policy）时，它在每个状态时只输出一个确定性的动作，即只有该动作的概率为 1，其他动作的概率为 0；当一个策略是随机性策略（stochastic policy）时，它在每个状态时输出的是关于动作的概率分布，然后根据该分布进行采样就可以得到一个动作。</p>
+
+<p>在 MDP 中，由于马尔可夫性质的存在，策略只需要与当前状态有关，不需要考虑历史状态。对于两个不同的策略来说，它们在同一个状态下的价值也很可能是不同的。因为不同的策略会采取不同的动作，从而之后会遇到不同的状态，以及获得不同的奖励，所以它们的累积奖励的期望也就不同，即状态价值不同。</p>
+
+<p><strong>状态价值(V_\pi(s))</strong>：从状态s，遵循策略(\pi)得到的期望回报<br />
+<span class="kdmath">$V_\pi(s)=\mathbb{E}_\pi\left[G_t \mid S_t=s\right]$</span><br />
+不同于MRP，在MDP中，需要额外定义一个动作价值函数。</p>
+
+<p><strong>动作价值（Q 值）(Q_\pi(s,a))</strong>：在状态s执行动作a，之后遵循策略(\pi)得到的期望回报<br />
+<span class="kdmath">$\Q_\pi(s,a)=\mathbb{E}_\pi\left[G_t \mid S_t=s,A_t=a\right]$</span><br />
+在使用策略(\pi)中，状态s的价值等于在该状态下基于策略(\pi)采取所有动作的概率与相应的价值相乘再求和的结果：<br />
+<span class="kdmath">$Q^{\pi}(s,a) = r(s,a) + \gamma \sum_{s'\in \mathcal{S}} P(s'|s,a)V^{\pi}(s')$</span><br />
+加上 “期望”，用来和<strong>贝尔曼最优方程</strong>区分，描述<strong>固定策略(\boldsymbol{\pi})</strong>下价值函数的递推关系，使用<strong>贝尔曼期望方程</strong>（Bellman Expectation Equation）。</p>
+
+<h3 id="状态价值的贝尔曼期望方程-vpis">状态价值的贝尔曼期望方程 (V^\pi(s))</h3>
+
+<div class="kdmath">$$
+\begin{aligned} V^{\pi}(s) &= \mathbb{E}_{\pi}\big[R_t + \gamma V^{\pi}(S_{t+1}) \mid S_t = s\big] \\ &= \sum_{a\in \mathcal{A}} \pi(a|s) \left( r(s,a) + \gamma \sum_{s'\in \mathcal{S}} p(s'|s,a)V^{\pi}(s') \right) \end{aligned}
+$$</div>
+
+<p><strong>含义：</strong> 从状态s，按策略(\pi)对动作求期望；做动作a拿到即时奖励(r(s,a))，环境按转移概率跳转到(s&#8217;)，再加上折扣后的下一状态价值(V^\pi(s&#8217;))。</p>
+
+<h3 id="动作价值-q-的贝尔曼期望方程-qpisa">动作价值 (Q) 的贝尔曼期望方程 (Q^\pi(s,a))</h3>
+
+<div class="kdmath">$$
+\begin{aligned} Q^{\pi}(s,a) &= \mathbb{E}_{\pi}\big[R_t + \gamma Q^{\pi}(S_{t+1},A_{t+1}) \mid S_t = s,A_t = a\big] \\ &= r(s,a) + \gamma \sum_{s'\in \mathcal{S}} p(s'|s,a) \sum_{a'\in \mathcal{A}} \pi(a'|s')Q^{\pi}(s',a') \end{aligned}
+$$</div>
+
+<p><strong>含义：</strong> 在s执行动作a，得到即时奖励(r(s,a))；环境跳转到(s&#8217;)；到达(s&#8217;)之后又按策略(\pi)选择后续动作(a&#8217;)，对后续(Q^\pi(s&#8217;,a&#8217;))求期望，乘以折扣(\gamma)。</p>
+
+        </article>
+      </div>
+    </div>
+  </main>
+
+  <!-- Right: Category Articles -->
+  <aside class="post-category-sidebar" role="navigation" aria-label="分类文章列表">
+    <div class="category-panel">
+      
+      
+      <div class="category-sidebar-title">
+        <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
+        机器学习
+      </div>
+      <ul class="category-article-list">
+        
+        
+        <li class="">
+          <a href="/2026/08/21/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/LLM-%E8%AE%AD%E7%BB%83/" title="LLM 训练">
+            <span class="article-title">LLM 训练</span>
+            <span class="article-date">08-21</span>
+          </a>
+        </li>
+        
+        <li class="active">
+          <a href="/2026/08/21/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0/" title="强化学习">
+            <span class="article-title">强化学习</span>
+            <span class="article-date">08-21</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/06/17/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/transformer/" title="transformer">
+            <span class="article-title">transformer</span>
+            <span class="article-date">06-17</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/05/08/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E6%A2%AF%E5%BA%A6%E4%B8%8B%E9%99%8D/" title="梯度下降">
+            <span class="article-title">梯度下降</span>
+            <span class="article-date">05-08</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/05/08/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E7%99%BE%E9%9D%A2%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" title="百面机器学习">
+            <span class="article-title">百面机器学习</span>
+            <span class="article-date">05-08</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/04/23/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E6%96%AF%E5%9D%A6%E7%A6%8F-CS224N-NLP%E8%AF%BE%E7%A8%8B/" title="斯坦福-CS224N-NLP课程">
+            <span class="article-title">斯坦福-CS224N-NLP课程</span>
+            <span class="article-date">04-23</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/04/09/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E6%AF%94%E8%BE%83%E6%A3%80%E9%AA%8C/" title="比较检验">
+            <span class="article-title">比较检验</span>
+            <span class="article-date">04-09</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/01/22/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/TitanicTutorial/" title="TitanicTutorial">
+            <span class="article-title">TitanicTutorial</span>
+            <span class="article-date">01-22</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2025/11/06/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/MLP/" title="MLP">
+            <span class="article-title">MLP</span>
+            <span class="article-date">11-06</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2025/08/15/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E7%BA%BF%E6%80%A7%E5%9B%9E%E5%BD%92/" title="线性回归">
+            <span class="article-title">线性回归</span>
+            <span class="article-date">08-15</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2025/03/13/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E5%BC%95%E8%A8%80/" title="引言">
+            <span class="article-title">引言</span>
+            <span class="article-date">03-13</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2025/02/26/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E6%80%A7%E8%83%BD%E5%BA%A6%E9%87%8F/" title="性能度量">
+            <span class="article-title">性能度量</span>
+            <span class="article-date">02-26</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2025/02/25/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E8%AF%84%E4%BC%B0%E6%96%B9%E6%B3%95/" title="评估方法">
+            <span class="article-title">评估方法</span>
+            <span class="article-date">02-25</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2025/02/24/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E7%BB%8F%E9%AA%8C%E8%AF%AF%E5%B7%AE%E4%B8%8E%E8%BF%87%E6%8B%9F%E5%90%88/" title="经验误差与过拟合">
+            <span class="article-title">经验误差与过拟合</span>
+            <span class="article-date">02-24</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2025/02/23/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E5%81%87%E8%AE%BE%E7%A9%BA%E9%97%B4/" title="假设空间">
+            <span class="article-title">假设空间</span>
+            <span class="article-date">02-23</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2025/02/22/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E5%9F%BA%E6%9C%AC%E6%9C%AF%E8%AF%AD/" title="基本术语">
+            <span class="article-title">基本术语</span>
+            <span class="article-date">02-22</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2025/02/21/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E5%BD%92%E7%BA%B3%E5%81%8F%E5%A5%BD/" title="归纳偏好">
+            <span class="article-title">归纳偏好</span>
+            <span class="article-date">02-21</span>
+          </a>
+        </li>
+        
+      </ul>
+      
+    </div>
+  </aside>
+</div>
+
+<!-- Theme Toggle Button -->
+<button type="button" class="theme-toggle" aria-label="Toggle Theme">
+  <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+  </svg>
+  <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="12" cy="12" r="5"></circle>
+    <line x1="12" y1="1" x2="12" y2="3"></line>
+    <line x1="12" y1="21" x2="12" y2="23"></line>
+    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+    <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+    <line x1="1" y1="12" x2="3" y2="12"></line>
+    <line x1="21" y1="12" x2="23" y2="12"></line>
+    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+    <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+  </svg>
+</button>
+
+<!-- Back to Top Button -->
+<button type="button" class="back-to-top" aria-label="Back to Top">
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <polyline points="18 15 12 9 6 15"></polyline>
+  </svg>
+</button>
+
+
+    <!-- Site Footer -->
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-content">
+      <div class="footer-info">
+        <h4>xinfan9's blog</h4>
+        <p>Actually, less is more!</p>
+      </div>
+      <div class="footer-links">
+        <a href="https://github.com/xinfan9/" target="_blank" title="GitHub">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+        </a>
+        <a href="mailto:11411619@qq.com" title="Email">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+        </a>
+        <a href="/feed.xml" title="RSS">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11a9 9 0 0 1 9 9"/><path d="M4 4a16 16 0 0 1 16 16"/><circle cx="5" cy="19" r="1"/></svg>
+        </a>
+      </div>
+      <div class="footer-copyright">
+        <p>&copy; 2026 xinfan9. Built with Jekyll.</p>
+      </div>
+    </div>
+  </div>
+</footer>
+      
+    
+    <!-- Global Buttons (for non-post pages) -->
+    
+  </body>
+</html>

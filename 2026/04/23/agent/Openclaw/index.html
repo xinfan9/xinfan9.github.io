@@ -1,0 +1,888 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+  <head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="Content-Language" content="zh-CN">
+	<title>Openclaw - xinfan9's blog</title>
+
+	<link rel="icon" href="/styles/images/favicon.jpg">
+
+	<!-- Preconnect for CDN -->
+	
+	<link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+	<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+	
+
+
+	<!-- Inline Critical Reset (was index.css) -->
+	<style>
+		*,*::before,*::after{box-sizing:border-box}html{-ms-text-size-adjust:100%;-webkit-text-size-adjust:100%;-webkit-tap-highlight-color:rgba(0,0,0,0)}body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Microsoft YaHei",sans-serif;font-size:14px;line-height:1.42857143;color:#333;background-color:#f7f7f7}article,aside,details,figcaption,figure,footer,header,main,nav,section,summary{display:block}a{color:#43759e;text-decoration:none;background:transparent}a:hover,a:focus{color:#2c4d68;text-decoration:underline}a:focus{outline:thin dotted;outline-offset:-2px}img{vertical-align:middle;max-width:100%;height:auto}input,button,select,textarea{font-family:inherit;font-size:inherit;line-height:inherit}h1,h2,h3,h4,h5,h6{margin-top:0}.container{max-width:1200px;margin-left:auto;margin-right:auto;padding-left:15px;padding-right:15px}.clearfix::after{content:"";display:table;clear:both}.text-muted{color:#777}.sr-only{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0,0,0,0);border:0}
+	</style>
+
+	
+	<link rel="prefetch" as="image" href="/styles/images/api/background.webp">
+
+	<!-- Clarity Blog Theme -->
+	<link rel="stylesheet" href="/assets/css/clarity-blog.css?v=1788352046">
+
+	<!-- Prism.js Theme (non-blocking, only needed for code blocks) -->
+	
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" media="print" onload="this.media='all'" onerror="console.warn('Prism CSS load failed')">
+	
+	
+	<link rel="canonical" href="https://xinfang.site/2026/04/23/agent/Openclaw/">
+	<link rel="alternate" type="application/rss+xml" title="xinfan9's blog" href="https://xinfang.site/feed.xml">
+	
+	<meta name="description" content="一、认识 OpenClaw
+">
+
+	<!-- Open Graph for social sharing -->
+	<meta property="og:title" content="Openclaw">
+	<meta property="og:description" content="一、认识 OpenClaw
+">
+	<meta property="og:url" content="https://xinfang.site/2026/04/23/agent/Openclaw/">
+	<meta property="og:site_name" content="xinfan9's blog">
+	<meta property="og:type" content="article">
+	<meta property="article:published_time" content="2026-04-23T19:44:09+08:00">
+	
+	<meta property="og:image" content="https://xinfang.site/styles/images/api/background.webp">
+	<meta property="og:image:width" content="1200">
+	<meta property="og:image:height" content="630">
+	
+	<meta property="og:locale" content="zh_CN">
+
+	<!-- Twitter Card -->
+	<meta name="twitter:card" content="summary_large_image">
+	<meta name="twitter:title" content="Openclaw">
+	<meta name="twitter:description" content="一、认识 OpenClaw
+">
+	<meta name="twitter:image" content="https://xinfang.site/styles/images/favicon.jpg">
+	
+	<!-- Theme color for mobile browsers -->
+	<meta name="theme-color" content="#0b72d9" media="(prefers-color-scheme: light)">
+	<meta name="theme-color" content="#0f172a" media="(prefers-color-scheme: dark)">
+
+	<!-- Prevent FOUC for theme -->
+	<script>
+		(function() {
+			const savedTheme = localStorage.getItem('theme');
+			const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+			if (savedTheme) {
+				document.documentElement.setAttribute('data-theme', savedTheme);
+			} else if (prefersDark) {
+				document.documentElement.setAttribute('data-theme', 'dark');
+			}
+		})();
+	</script>
+	
+	<!-- Prism.js only on post pages with code blocks -->
+	
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" defer></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js" defer></script>
+	
+
+	<!-- Mermaid.js for diagram rendering (conditional) -->
+	
+	<script defer src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+	
+
+	<!-- MathJax for LaTeX rendering (conditional) -->
+	
+
+	<!-- Blog Interactive Features -->
+	<script src="/assets/js/blog.js?v=1788352046" defer></script>
+
+	<!-- JSON-LD Structured Data -->
+	
+	<script type="application/ld+json">
+	{
+		"@context": "https://schema.org",
+		"@type": "BlogPosting",
+		"inLanguage": "zh-CN",
+		"headline": "Openclaw",
+		"image": "https://xinfang.site/styles/images/favicon.jpg",
+		"datePublished": "2026-04-23T19:44:09+08:00",
+		"dateModified": "2026-04-23T19:44:09+08:00",
+		"author": {
+			"@type": "Person",
+			"name": "xinfan9"
+		},
+		"publisher": {
+			"@type": "Organization",
+			"name": "xinfan9's blog",
+			"logo": {
+				"@type": "ImageObject",
+				"url": "https://xinfang.site/styles/images/favicon.jpg"
+			}
+		},
+		"mainEntityOfPage": {
+			"@type": "WebPage",
+			"@id": "https://xinfang.site/2026/04/23/agent/Openclaw/"
+		},
+		"keywords": "Agent",
+		"articleBody": "一、认识 OpenClaw\n",
+		"description": "一、认识 OpenClaw\n"
+	}
+	</script>
+	
+</head>
+
+  <body class="index">
+
+    <!-- Reading Progress Bar -->
+<div class="reading-progress" id="reading-progress"></div>
+
+<!-- Page Background -->
+<div class="post-background"></div>
+
+<div class="post-layout">
+  <!-- Left: TOC -->
+  <aside class="post-toc-sidebar" id="post-toc-sidebar" role="navigation" aria-label="文章目录">
+    <div class="toc-panel">
+      <div class="toc-title">
+        <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="12" x2="15" y2="12"></line><line x1="3" y1="18" x2="18" y2="18"></line></svg>
+        目录
+      </div>
+      <ul class="toc-list" id="toc-list"></ul>
+    </div>
+  </aside>
+
+  <!-- Center: Article -->
+  <main class="post-main">
+    <div class="panel docs-content">
+      <div class="wrapper">
+        <header class="post-header" role="banner">
+          <a href="https://xinfang.site/" class="back-home-link">
+            <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+            返回主页
+          </a>
+          <h1 class="post-title">Openclaw</h1>
+          <div class="post-meta-info">
+            <time class="meta-item meta-date" datetime="2026-04-23T19:44:09+08:00">
+              <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+              2026-04-23
+            </time>
+            
+            <time class="meta-item meta-update" datetime="2026-05-08T10:20:38+08:00">
+              <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 2.2"/></svg>
+              2026-05-08
+            </time>
+            
+            <span class="meta-item meta-author">
+              <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+              xinfan9
+            </span>
+            
+            <span class="meta-item meta-words">
+              <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+              562 字
+            </span>
+            
+            <span class="meta-item meta-reading">
+              <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+              约 6 分钟
+            </span>
+          </div>
+        </header>
+        <article class="post-content" role="article">
+          <h1 id="一认识-openclaw">一、认识 OpenClaw</h1>
+
+<blockquote>
+  <p>参考书目：</p>
+
+  <p><a href="https://yeasy.gitbook.io/openclaw_guide">《Openclaw 从入门到精通》</a></p>
+</blockquote>
+
+<p>大语言模型在被应用的过程中，需要与实际任务发生互动才能解决实际问题，因此，需要一套集成<strong>服务调度、工具管理、设备交互</strong>等功能的系统框架——OpenClaw即此类框架。</p>
+
+<hr />
+
+<p><strong>OpenClaw的核心机制</strong></p>
+
+<pre><code class="language-mermaid">graph TD
+    %% 1. 定义节点 (使用 &lt;br&gt; 进行换行)
+    User[用户消息&lt;br/&gt;Telegram / WhatsApp / WebChat]
+    Gateway[Gateway 网关&lt;br/&gt;鉴权 · 路由 · 会话接入]
+    Agent[Agent 智能体&lt;br/&gt;推理 · 决策 · 调度]
+    Tool[Tool 工具&lt;br/&gt;文件 · 浏览器 · Shell · HTTP]
+    Session[Session 会话&lt;br/&gt;历史记忆 · 上下文]
+    Node[Node 节点&lt;br/&gt;配对设备 · 远端执行 · 外设能力]
+
+    %% 2. 定义连接关系
+    User &lt;--&gt; Gateway
+    Gateway --&gt; Agent
+    Agent &lt;--&gt; Tool
+    Agent &lt;--&gt; Session
+    Agent &lt;--&gt; Node
+
+    %% 3. 定义样式 (简单的紫色边框和浅色背景)
+    classDef mainStyle fill:#f9f9ff,stroke:#9370db,stroke-width:2px,color:#333;
+    
+    %% 4. 应用样式
+    class User,Gateway,Agent,Tool,Session,Node mainStyle
+</code></pre>
+
+<table>
+  <thead>
+    <tr>
+      <th>概念</th>
+      <th>含义</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>gateway</td>
+      <td>负责统一各渠道消息格式、身份验证、维护连接状态。</td>
+    </tr>
+    <tr>
+      <td>Agent</td>
+      <td>执行任务的单元，可以有多个，不同Agent有工具、权限、记忆。</td>
+    </tr>
+    <tr>
+      <td>Tool</td>
+      <td>可以提高Agent效率的已有工具</td>
+    </tr>
+    <tr>
+      <td>Session</td>
+      <td>用户级别隔离的长短期记忆</td>
+    </tr>
+    <tr>
+      <td>Node</td>
+      <td>通过WebSocket接入Gateway的输出设备或执行终端都可以叫Node。</td>
+    </tr>
+  </tbody>
+</table>
+
+<hr />
+
+<p><strong>一条消息的完整流程</strong></p>
+
+<ol>
+  <li>消息到达gateway，进行鉴权</li>
+  <li>鉴权通过后，路由到合适的agent，并挂载对应的session上下文。</li>
+  <li>Agent利用session上下文进行tools调用</li>
+  <li>tool返回结果，Agent整合结果，通过node返回给用户。</li>
+</ol>
+
+<blockquote>
+  <p>[!CAUTION]</p>
+
+  <p>值得注意的是，Agent可以通过配置调用其他agent，所以一次对话不止一次调用agent。</p>
+</blockquote>
+
+<h1 id="二安装配置卸载-openclaw">二、安装、配置、卸载 Openclaw</h1>
+
+<p><strong>物料清单</strong></p>
+
+<ul>
+  <li>LLM API Key</li>
+  <li>Channel 聊天软件凭证</li>
+</ul>
+
+<hr />
+
+<h2 id="21-常用命令">2.1 常用命令</h2>
+
+<p><strong>安装脚本</strong></p>
+
+<pre><code class="language-shell"># Works everywhere. Installs everything. You're welcome. 🦞
+# macOS/Linux
+ curl -fsSL https://openclaw.ai/install.sh | bash
+ # Windows
+  iwr -useb https://openclaw.ai/install.ps1 | iex
+  
+</code></pre>
+
+<hr />
+
+<p><strong>配置引导</strong></p>
+
+<pre><code class="language-shell"># 配置引导， --install-daemon 参数会在配置完成后启动服务并生成一个后台守护进程，保障机器即使重启后，守护进行也会在后台持续运行。
+openclaw onboard --install-daemon
+</code></pre>
+
+<p><strong>启动命令</strong></p>
+
+<pre><code class="language-shell">#前台运行
+openclaw gateway run
+#后台运行
+openclaw gateway start
+#后台重启
+openclaw gateway restart
+#停止服务
+openclaw gateway stop
+</code></pre>
+
+<hr />
+
+<p><strong>卸载命令</strong></p>
+
+<pre><code class="language-shell"># step 1: 卸载服务
+openclaw uninstall --all --yes --non-interactive
+# step 2: 清理残留文件
+rm -rf ~/.openclaw &amp;&amp; rm -rf ~/.clawdbot ~/.moltbot ~/.molthub
+# step 3: 卸载命令行工具
+npm uninstall -g openclaw
+</code></pre>
+
+<hr />
+
+<h2 id="22-工作区">2.2 工作区</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>文件名/目录名</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>AGENTS.md</code></td>
+      <td>工作区启动清单行为准则</td>
+    </tr>
+    <tr>
+      <td><code>SOUL.md</code></td>
+      <td>定义智能体人格及沟通风格</td>
+    </tr>
+    <tr>
+      <td><code>USER.md</code></td>
+      <td>用户个人画像</td>
+    </tr>
+    <tr>
+      <td><code>IDENTITY.md</code></td>
+      <td>智能体元数据，如昵称、头像等</td>
+    </tr>
+    <tr>
+      <td><code>HEARTBEAT.md</code></td>
+      <td>Heartbeat巡检清单</td>
+    </tr>
+    <tr>
+      <td><code>BOOT.md</code></td>
+      <td>启动内部Hook且Gateway重启时的启动清单</td>
+    </tr>
+    <tr>
+      <td><code>memory/YYYY-MM-DD.md</code></td>
+      <td>分日期记忆日志</td>
+    </tr>
+    <tr>
+      <td><code>MEMORY.md</code></td>
+      <td>长期记忆索引</td>
+    </tr>
+    <tr>
+      <td><code>skills/</code></td>
+      <td>技能目录</td>
+    </tr>
+    <tr>
+      <td><code>canvas/</code></td>
+      <td>节点UI或可视化文件</td>
+    </tr>
+  </tbody>
+</table>
+
+<h1 id="三-openclaw-工作原理">三、 OpenClaw 工作原理</h1>
+
+<p>在Openclaw 工作的过程中，模型负责提出意图，而出色完成指定任务，则是依靠工具、技能及优秀的记忆管理。</p>
+
+<hr />
+
+<h2 id="31-工具">3.1 工具</h2>
+
+<p>工具需要具有明确输入、明确输出、明确异常处理。</p>
+
+<hr />
+
+<p><strong>结果的回注原则</strong></p>
+
+<p>为避免上下文爆炸，一般来说，模型的原始输出不会直接引入上下文，而是划分为三部分，作为具有不同生命周期的状态引入到系统中。</p>
+
+<ol>
+  <li>结论摘要：本次工具得到的关键信息总结，生命周期持续最久。</li>
+  <li>证据引用：关键信息最相关的原始来源，生命周期适中。</li>
+  <li>原始输出：全部原始输出，生命周期最短。</li>
+</ol>
+
+<p>一个标准的回注示例：</p>
+
+<pre><code class="language-json">{
+  "summary":"",
+  "evidence": {
+    "account_id":"joy",
+    "status":"active",
+    "last_login":"YYYY-MM-DDTHH:mm:SSZ"
+  },
+  "raw_output":"{\"xxx...\"}"
+}
+</code></pre>
+
+<p><strong>一次工具调用的完整生命周期</strong></p>
+
+<pre><code class="language-mermaid">graph TD
+    %% 定义节点
+    A[模型推理]
+    C[提议: tool_name + params]
+    D{策略校验}
+    E[执行工具]
+    F[拒绝 + 原因回注]
+    G{执行结果}
+    H[结构化回注]
+    I[有界重试]
+    J[失败回注 + 告警]
+    K[模型继续推理]
+    
+    %% 流程连接
+    A -- 输出工具调用意图 --&gt; C
+    C --&gt; D
+    
+    %% 策略校验分支
+    D -- allow 命中 --&gt; E
+    D -- deny 命中 --&gt; F
+    
+    %% 执行工具分支
+    E --&gt; G
+    
+    %% 执行结果分支
+    G -- 成功 --&gt; H
+    G -- 可重试错误 --&gt; I
+    G -- 致命错误 --&gt; J
+    
+    %% 回流路径
+    I --&gt; E
+    H --&gt; K
+    J --&gt; K
+    F --&gt; K
+</code></pre>
+
+<p>工具调用的核心工程要点。</p>
+
+<ul>
+  <li>输入摘要：从上下文中提取输入的参数字段</li>
+  <li>策略校验：判断执行权限</li>
+  <li>执行结果：成功、失败、异常处理的原始输出。</li>
+  <li>回注：将工具的输出整合成状态后进行状态传递。</li>
+</ul>
+
+<hr />
+
+<p><strong>链式任务（多个工具串行执行）的完整周期</strong></p>
+
+<pre><code class="language-mermaid">graph TD
+    %% 定义节点
+    Start[开始：链式任务]
+    ExecA[工具 A 执行]
+    RetryA[有界重试 A]
+    FailA[中止链：回注 A 的失败原因]
+
+    ExecB[工具 B 执行]
+    RetryB[有界重试 B]
+    Success[链完成：合并结果回注]
+    Partial[部分完成：回注 A 结果 + B 失败原因]
+
+    Decision[模型决策：降级/上报/跳过]
+
+    %% 流程连接
+    Start --&gt; ExecA
+
+    %% 工具 A 的逻辑分支
+    ExecA -- 可重试错误 --&gt; RetryA
+    RetryA --&gt; ExecA
+    ExecA -- 致命错误 --&gt; FailA
+    ExecA -- 成功 --&gt; ExecB
+
+    %% 工具 B 的逻辑分支
+    ExecB -- 可重试错误 --&gt; RetryB
+    RetryB --&gt; ExecB
+    ExecB -- 成功 --&gt; Success
+    ExecB -- 致命错误 --&gt; Partial
+
+    %% 最终汇聚
+    FailA --&gt; Decision
+    Partial --&gt; Decision
+</code></pre>
+
+<p>链式编排的工程要点。</p>
+
+<ul>
+  <li>状态收集：每一步的回注记录下来，避免失败时丢失已完成工作。</li>
+  <li>状态传递：明确不同节点的回注的生命周期，哪些状态可以传递到哪个节点。</li>
+  <li>失败隔离：模型可以基于已成功节点的上下文做出降级决策（重试、继续回答）。</li>
+</ul>
+
+<hr />
+
+<h2 id="32-技能">3.2 技能</h2>
+
+<p>有了工具，相当于一个厨师获得了锅碗瓢盆，刀叉杯筷，但是这不意味着可以做出好吃的菜，因为还需要按照菜谱去一步步执行。而技能，就相当于Agent的菜谱。</p>
+
+<p>技能本质上是<strong>一个说明文件（md）+ 资源包，它固化了任务的执行意图、指令步骤、验收标准</strong>，指导模型该技能的效果、使用方式。</p>
+
+<p>对比Prompt，技能的核心优势是：<strong>让模型按需主动调用，不受上下文影响。</strong></p>
+
+<h2 id="33-上下文管理">3.3 上下文管理</h2>
+
+<p>对于LLM而言，输入的上下文直接决定了它的输出质量。合理的管理上下文，是衡量一个Agent能否称为<strong>私人助手</strong>的关键。</p>
+
+<hr />
+
+<p><strong>上下文的构成</strong></p>
+
+<p>一次模型的上下文按注入顺序可划分为以下四部分：</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>层级</th>
+      <th>来源</th>
+      <th>长度（token）</th>
+      <th>生命周期</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>系统知识</td>
+      <td><code>SOUL.md</code>、<code>USER.md</code>、技能指令</td>
+      <td>几k</td>
+      <td>整个会话不变</td>
+    </tr>
+    <tr>
+      <td>工作区知识</td>
+      <td><code>MEMORY.md</code>、每日日志、检索记忆</td>
+      <td>几k，小于系统知识</td>
+      <td>按检索结果和对话动态更新</td>
+    </tr>
+    <tr>
+      <td>对话历史</td>
+      <td>用户与助手本次session的对话历史</td>
+      <td>随会话增长</td>
+      <td>受裁减和压缩</td>
+    </tr>
+    <tr>
+      <td>工具回注</td>
+      <td>工具调用原始返回</td>
+      <td>单次最高可达几十k</td>
+      <td>每次工具调用结束后及被裁减</td>
+    </tr>
+  </tbody>
+</table>
+
+<blockquote>
+  <p>[!NOTE]</p>
+
+  <p>根据经验，系统身份的上下文长度占 10%-15%，工作区 5%，其余的由对话历史和工具回注构成。</p>
+</blockquote>
+
+<hr />
+
+<p><strong>记忆存储</strong></p>
+
+<p>OpenClaw的长期记忆以工作区文件为中心，配套向量索引实现高效的记忆管理。</p>
+
+<p>OpenCalw基于“文件即真相(files are the source of truth)”的思想,将记忆以文件的形式存储在工作区，主要包括长期记忆的<code>memory.md</code> 和 一定周期内的每日日志<code>memory/YYYY-MM-DD.md</code>。系统会在遇到高价值用户偏好、重要决策或者稳定状态配置时，自动更新记忆文件。</p>
+
+<blockquote>
+  <p>[!IMPORTANT]</p>
+
+  <p>记忆的需要具有以下标准：</p>
+
+  <ul>
+    <li>
+      <p>稳定：可跨对话服用，过期时间可控</p>
+    </li>
+    <li>
+      <p>可追溯：内容来自工具的回注或用户的输入，而非大模型的推测。</p>
+    </li>
+    <li>
+      <p>可纠错：允许随时更改错误记忆，避免错误信息持久化。</p>
+    </li>
+  </ul>
+
+</blockquote>
+
+<p>这种分两部分存储的形式，将<strong>可复用事实</strong>和<strong>过程噪声</strong>隔离，能有效提高上下文检索效率。</p>
+
+<hr />
+
+<p><strong>记忆检索</strong></p>
+
+<p>官方提供了两种检索方案。</p>
+
+<p><code>memory_search</code>采用向量检索为主、BM25为辅的混合检索架构，向量检索负责解决语义问题（比如搜“无人驾驶”能联想到“自动驾驶”），BM25解决精确匹配问题。</p>
+
+<blockquote>
+  <p>[!CAUTION]</p>
+
+  <p>Openclaw中，使用 <code>const tokens = raw.match(/[\p{L}\p{N}_]+/gu);</code>的正则完成分词，因而不支持中文。但对实际效果的影响很小，因为主要检索还是依赖向量。</p>
+
+  <p>使用记忆的向量检索需要配置Embedding API key，否则不具有语义检索功能。</p>
+</blockquote>
+
+<p><code>memory_get</code>基于已有依据直接读取内容，精确命中某块记忆。</p>
+
+<p>索引的延迟在上下文记忆写到磁盘约2s生效。</p>
+
+<hr />
+
+<p><strong>记忆索引</strong></p>
+
+<p>检索的前提是索引。索引是在OpenClaw在文件落盘后自动运行的，无需手动触发。Openclaw将<strong>约400个token分块成一个doc</strong>，两个相邻doc各保持80个token的重叠区域。embedding默认基于1536维 <code>text-embedding-3-small</code> 模型生成，不配置Embedding API key则不生效。最终，会在本地的SQLite数据库存入以下内容：chunks(原始文本与位置)、embedings（向量）、fts（BM25倒排索引）、vector_cache（哈希表，用来避免重复生成已有内容的embedding）。</p>
+
+<hr />
+
+<p><strong>记忆失效</strong></p>
+
+<p>长期系统一定会遇到“事实过期”的情况，因此，记忆的元数据需要维护来源、更新时间、过期时间。</p>
+
+<p>同一来源的新记忆覆盖旧记忆，过期条目准时清除。</p>
+
+<hr />
+
+<p><strong>记忆压缩与裁剪</strong></p>
+
+<p>压缩和裁剪并不是同样的概念，OpenClaw提供了两套方案，分别面向不同场景。</p>
+
+<ul>
+  <li>
+    <p>上下文裁剪：主要面向工具结果，大语言模型调用前，系统会在内存中临时舍弃一些老旧的工具执行结果，从而减轻单词请求的负荷，该过程不涉及磁盘历史文件的更改。</p>
+
+    <blockquote>
+      <p>[!WARNING]</p>
+
+      <p>有三个关键内容不会被裁减：</p>
+
+      <ul>
+        <li>包含图片内容的工具结果</li>
+        <li>第一条用户消息之前的系统上下文</li>
+        <li>被配置强行指定不裁减的工具内容</li>
+      </ul>
+    </blockquote>
+  </li>
+  <li>
+    <p>会话压缩：主要面向对话，在会话上下文接口容积上限后，系统会把更早的对话进行总结，并持久化写到磁盘中，旧记忆进索引，新记忆继续滚动。对于过长的对话，系统会分割成多段进行滚动。</p>
+  </li>
+</ul>
+
+<p>记忆遵循先裁剪工具，再压缩对话的方式，流程如下：</p>
+
+<pre><code class="language-mermaid">graph TD
+    %% 定义节点
+    A[组装上下文] --&gt; B[检查输入体积]
+
+    %% 左侧分支：工具结果过大
+    B -- 工具结果过大&lt;br/&gt;(cache-ttl 模式, Anthropic API) --&gt; C[contextPruning 裁剪]
+    C --&gt; D[发送给模型]
+
+    %% 右侧分支：会话接近阈值
+    B -- 会话接近阈值 --&gt; E[compaction 压缩摘要]
+    E --&gt; F[必要时 memoryFlush]
+
+    %% 循环回路
+    F --&gt; A
+
+    %% 样式美化 (可选，为了更像原图)
+    style A fill:#f0f0ff,stroke:#9370db
+    style B fill:#f0f0ff,stroke:#9370db
+    style C fill:#f0f0ff,stroke:#9370db
+    style D fill:#f0f0ff,stroke:#9370db
+    style E fill:#f0f0ff,stroke:#9370db
+    style F fill:#f0f0ff,stroke:#9370db
+</code></pre>
+
+<h1 id="四附录">四、附录</h1>
+
+<h2 id="成本控制">成本控制</h2>
+
+<ul>
+  <li>只挂在需要的工具</li>
+  <li>合理使用会话重置，避免短期记忆混合。</li>
+  <li>简单任务使用轻量模型、复杂任务使用大型模型。</li>
+  <li>尽量简化大模型的单任务复杂度和不确定性。</li>
+</ul>
+
+
+        </article>
+      </div>
+    </div>
+  </main>
+
+  <!-- Right: Category Articles -->
+  <aside class="post-category-sidebar" role="navigation" aria-label="分类文章列表">
+    <div class="category-panel">
+      
+      
+      <div class="category-sidebar-title">
+        <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
+        Agent
+      </div>
+      <ul class="category-article-list">
+        
+        
+        <li class="">
+          <a href="/2026/08/24/agent/%E9%95%BF%E7%A8%8B%E4%BB%BB%E5%8A%A1/" title="长程任务">
+            <span class="article-title">长程任务</span>
+            <span class="article-date">08-24</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/08/21/agent/RAG/" title="RAG">
+            <span class="article-title">RAG</span>
+            <span class="article-date">08-21</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/08/21/agent/%E4%B8%8A%E4%B8%8B%E6%96%87%E5%B7%A5%E7%A8%8B/" title="上下文工程">
+            <span class="article-title">上下文工程</span>
+            <span class="article-date">08-21</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/08/21/agent/%E8%AE%B0%E5%BF%86/" title="记忆">
+            <span class="article-title">记忆</span>
+            <span class="article-date">08-21</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/08/21/agent/Agent-RL/" title="Agent RL">
+            <span class="article-title">Agent RL</span>
+            <span class="article-date">08-21</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/08/21/agent/MCP/" title="MCP">
+            <span class="article-title">MCP</span>
+            <span class="article-date">08-21</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/08/10/agent/Plan-and-Solve/" title="Plan and Solve">
+            <span class="article-title">Plan and Solve</span>
+            <span class="article-date">08-10</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/08/10/agent/Reflection/" title="Reflection">
+            <span class="article-title">Reflection</span>
+            <span class="article-date">08-10</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/07/31/agent/ReAct/" title="ReAct">
+            <span class="article-title">ReAct</span>
+            <span class="article-date">07-31</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/07/30/agent/Scaling-Laws%E4%B8%8E%E6%A8%A1%E5%9E%8B%E5%B9%BB%E8%A7%89/" title="Scaling Laws">
+            <span class="article-title">Scaling Laws</span>
+            <span class="article-date">07-30</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/07/30/agent/%E6%A8%A1%E5%9E%8B%E9%80%89%E6%8B%A9%E7%9A%84%E8%80%83%E9%87%8F/" title="模型选择的考量">
+            <span class="article-title">模型选择的考量</span>
+            <span class="article-date">07-30</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/07/30/agent/Tokenizer/" title="Tokenizer">
+            <span class="article-title">Tokenizer</span>
+            <span class="article-date">07-30</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/07/23/agent/%E6%8F%90%E7%A4%BA%E5%B7%A5%E7%A8%8B/" title="提示工程">
+            <span class="article-title">提示工程</span>
+            <span class="article-date">07-23</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/06/09/agent/%E5%A4%A7%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E9%A9%B1%E5%8A%A8%E7%9A%84%E6%99%BA%E8%83%BD%E4%BD%93/" title="初识智能体">
+            <span class="article-title">初识智能体</span>
+            <span class="article-date">06-09</span>
+          </a>
+        </li>
+        
+        <li class="active">
+          <a href="/2026/04/23/agent/Openclaw/" title="Openclaw">
+            <span class="article-title">Openclaw</span>
+            <span class="article-date">04-23</span>
+          </a>
+        </li>
+        
+      </ul>
+      
+    </div>
+  </aside>
+</div>
+
+<!-- Theme Toggle Button -->
+<button type="button" class="theme-toggle" aria-label="Toggle Theme">
+  <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+  </svg>
+  <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="12" cy="12" r="5"></circle>
+    <line x1="12" y1="1" x2="12" y2="3"></line>
+    <line x1="12" y1="21" x2="12" y2="23"></line>
+    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+    <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+    <line x1="1" y1="12" x2="3" y2="12"></line>
+    <line x1="21" y1="12" x2="23" y2="12"></line>
+    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+    <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+  </svg>
+</button>
+
+<!-- Back to Top Button -->
+<button type="button" class="back-to-top" aria-label="Back to Top">
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <polyline points="18 15 12 9 6 15"></polyline>
+  </svg>
+</button>
+
+
+    <!-- Site Footer -->
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-content">
+      <div class="footer-info">
+        <h4>xinfan9's blog</h4>
+        <p>Actually, less is more!</p>
+      </div>
+      <div class="footer-links">
+        <a href="https://github.com/xinfan9/" target="_blank" title="GitHub">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+        </a>
+        <a href="mailto:11411619@qq.com" title="Email">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+        </a>
+        <a href="/feed.xml" title="RSS">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11a9 9 0 0 1 9 9"/><path d="M4 4a16 16 0 0 1 16 16"/><circle cx="5" cy="19" r="1"/></svg>
+        </a>
+      </div>
+      <div class="footer-copyright">
+        <p>&copy; 2026 xinfan9. Built with Jekyll.</p>
+      </div>
+    </div>
+  </div>
+</footer>
+      
+    
+    <!-- Global Buttons (for non-post pages) -->
+    
+  </body>
+</html>

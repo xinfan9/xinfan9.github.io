@@ -1,0 +1,777 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+  <head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="Content-Language" content="zh-CN">
+	<title>Celery介绍 - xinfan9's blog</title>
+
+	<link rel="icon" href="/styles/images/favicon.jpg">
+
+	<!-- Preconnect for CDN -->
+	
+	<link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+	<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+	
+
+
+	<!-- Inline Critical Reset (was index.css) -->
+	<style>
+		*,*::before,*::after{box-sizing:border-box}html{-ms-text-size-adjust:100%;-webkit-text-size-adjust:100%;-webkit-tap-highlight-color:rgba(0,0,0,0)}body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Microsoft YaHei",sans-serif;font-size:14px;line-height:1.42857143;color:#333;background-color:#f7f7f7}article,aside,details,figcaption,figure,footer,header,main,nav,section,summary{display:block}a{color:#43759e;text-decoration:none;background:transparent}a:hover,a:focus{color:#2c4d68;text-decoration:underline}a:focus{outline:thin dotted;outline-offset:-2px}img{vertical-align:middle;max-width:100%;height:auto}input,button,select,textarea{font-family:inherit;font-size:inherit;line-height:inherit}h1,h2,h3,h4,h5,h6{margin-top:0}.container{max-width:1200px;margin-left:auto;margin-right:auto;padding-left:15px;padding-right:15px}.clearfix::after{content:"";display:table;clear:both}.text-muted{color:#777}.sr-only{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0,0,0,0);border:0}
+	</style>
+
+	
+	<link rel="prefetch" as="image" href="/styles/images/api/background.webp">
+
+	<!-- Clarity Blog Theme -->
+	<link rel="stylesheet" href="/assets/css/clarity-blog.css?v=1788352046">
+
+	<!-- Prism.js Theme (non-blocking, only needed for code blocks) -->
+	
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" media="print" onload="this.media='all'" onerror="console.warn('Prism CSS load failed')">
+	
+	
+	<link rel="canonical" href="https://xinfang.site/2025/03/19/celery/Celery%E4%BB%8B%E7%BB%8D/">
+	<link rel="alternate" type="application/rss+xml" title="xinfan9's blog" href="https://xinfang.site/feed.xml">
+	
+	<meta name="description" content="什么是任务队列
+">
+
+	<!-- Open Graph for social sharing -->
+	<meta property="og:title" content="Celery介绍">
+	<meta property="og:description" content="什么是任务队列
+">
+	<meta property="og:url" content="https://xinfang.site/2025/03/19/celery/Celery%E4%BB%8B%E7%BB%8D/">
+	<meta property="og:site_name" content="xinfan9's blog">
+	<meta property="og:type" content="article">
+	<meta property="article:published_time" content="2025-03-19T19:30:05+08:00">
+	
+	<meta property="og:image" content="https://xinfang.site/styles/images/api/background.webp">
+	<meta property="og:image:width" content="1200">
+	<meta property="og:image:height" content="630">
+	
+	<meta property="og:locale" content="zh_CN">
+
+	<!-- Twitter Card -->
+	<meta name="twitter:card" content="summary_large_image">
+	<meta name="twitter:title" content="Celery介绍">
+	<meta name="twitter:description" content="什么是任务队列
+">
+	<meta name="twitter:image" content="https://xinfang.site/styles/images/favicon.jpg">
+	
+	<!-- Theme color for mobile browsers -->
+	<meta name="theme-color" content="#0b72d9" media="(prefers-color-scheme: light)">
+	<meta name="theme-color" content="#0f172a" media="(prefers-color-scheme: dark)">
+
+	<!-- Prevent FOUC for theme -->
+	<script>
+		(function() {
+			const savedTheme = localStorage.getItem('theme');
+			const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+			if (savedTheme) {
+				document.documentElement.setAttribute('data-theme', savedTheme);
+			} else if (prefersDark) {
+				document.documentElement.setAttribute('data-theme', 'dark');
+			}
+		})();
+	</script>
+	
+	<!-- Prism.js only on post pages with code blocks -->
+	
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" defer></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js" defer></script>
+	
+
+	<!-- Mermaid.js for diagram rendering (conditional) -->
+	
+
+	<!-- MathJax for LaTeX rendering (conditional) -->
+	
+
+	<!-- Blog Interactive Features -->
+	<script src="/assets/js/blog.js?v=1788352046" defer></script>
+
+	<!-- JSON-LD Structured Data -->
+	
+	<script type="application/ld+json">
+	{
+		"@context": "https://schema.org",
+		"@type": "BlogPosting",
+		"inLanguage": "zh-CN",
+		"headline": "Celery介绍",
+		"image": "https://xinfang.site/styles/images/favicon.jpg",
+		"datePublished": "2025-03-19T19:30:05+08:00",
+		"dateModified": "2025-03-19T19:30:05+08:00",
+		"author": {
+			"@type": "Person",
+			"name": "xinfan9"
+		},
+		"publisher": {
+			"@type": "Organization",
+			"name": "xinfan9's blog",
+			"logo": {
+				"@type": "ImageObject",
+				"url": "https://xinfang.site/styles/images/favicon.jpg"
+			}
+		},
+		"mainEntityOfPage": {
+			"@type": "WebPage",
+			"@id": "https://xinfang.site/2025/03/19/celery/Celery%E4%BB%8B%E7%BB%8D/"
+		},
+		"keywords": "Celery",
+		"articleBody": "什么是任务队列\n",
+		"description": "什么是任务队列\n"
+	}
+	</script>
+	
+</head>
+
+  <body class="index">
+
+    <!-- Reading Progress Bar -->
+<div class="reading-progress" id="reading-progress"></div>
+
+<!-- Page Background -->
+<div class="post-background"></div>
+
+<div class="post-layout">
+  <!-- Left: TOC -->
+  <aside class="post-toc-sidebar" id="post-toc-sidebar" role="navigation" aria-label="文章目录">
+    <div class="toc-panel">
+      <div class="toc-title">
+        <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="12" x2="15" y2="12"></line><line x1="3" y1="18" x2="18" y2="18"></line></svg>
+        目录
+      </div>
+      <ul class="toc-list" id="toc-list"></ul>
+    </div>
+  </aside>
+
+  <!-- Center: Article -->
+  <main class="post-main">
+    <div class="panel docs-content">
+      <div class="wrapper">
+        <header class="post-header" role="banner">
+          <a href="https://xinfang.site/" class="back-home-link">
+            <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+            返回主页
+          </a>
+          <h1 class="post-title">Celery介绍</h1>
+          <div class="post-meta-info">
+            <time class="meta-item meta-date" datetime="2025-03-19T19:30:05+08:00">
+              <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+              2025-03-19
+            </time>
+            
+            <time class="meta-item meta-update" datetime="2026-05-08T10:20:39+08:00">
+              <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 2.2"/></svg>
+              2026-05-08
+            </time>
+            
+            <span class="meta-item meta-author">
+              <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+              xinfan9
+            </span>
+            
+            <span class="meta-item meta-words">
+              <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+              638 字
+            </span>
+            
+            <span class="meta-item meta-reading">
+              <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+              约 7 分钟
+            </span>
+          </div>
+        </header>
+        <article class="post-content" role="article">
+          <h1 id="什么是任务队列">什么是任务队列</h1>
+
+<p>任务队列是一种用来跨线程或机器调度任务的组件。</p>
+
+<p>任务队列的输入是一种叫做task的工作单元。worker持续监控并完成队列中的新任务。</p>
+
+<p>Celery借助message进行通信，通常使用broker来实现客户端和worker之间的交流。初始化一个任务，依赖客户端发送一条message到broker，随后broker将它传递给worker。</p>
+
+<p>一个Celery系统可以用包含很多worker和broker的方式来提高自己的高可用性和水平扩展。</p>
+
+<p>Celery是用python实现的，但是它的协议可以用任何编程语言实现。这里补充几个实现方案：<a href="https://github.com/mher/node-celery">Node.js客户端</a>、<a href="https://github.com/node-celery-ts/node-celery-ts">Node.js客户端type-script版本</a>以及<a href="https://github.com/gjedeer/celery-php">PHP客户端</a>。</p>
+
+<p>跨语言调用的问题同样可以通过HTTP通信来解决(webhooks)。</p>
+
+<h1 id="我需要准备什么">我需要准备什么</h1>
+
+<p>Celery需要消息Broker来收发消息。完全支持RabbitMQ和Redis 作为中间件，也支持其他很多的实验性方案，包括使用SQLite等进行本地开发的方式。</p>
+
+<blockquote>
+  <p>[!NOTE]</p>
+
+  <p>Celery 5.3 版本：</p>
+
+  <ul>
+    <li>Python ❨3.8, 3.9, 3.10, 3.11❩</li>
+    <li>PyPy3.8+ ❨v7.3.11+❩</li>
+  </ul>
+
+  <p>Celery 4.x 是支持 Python 2.7的最后一个版本， Celery 5.x 要求 Python 3.6 或者更晚， Celery 5.2.x 要求 Python 3.7 或者更晚。</p>
+
+  <p>如果你在使用更旧版本的Celery，你需要更旧版本的Python</p>
+
+  <ul>
+    <li>Python 2.7 or Python 3.5: Celery series 4.4 或者更早.</li>
+    <li>Python 2.6: Celery series 3.1 或者更早.</li>
+    <li>Python 2.5: Celery series 3.0 或者更早.</li>
+    <li>Python 2.4 was Celery series 2.2 或者更早.</li>
+  </ul>
+
+  <p>Celery是一个资金很少的项目，所以我们不支持微软Windows。请不要提问任何与该平台相关的问题。</p>
+</blockquote>
+
+<h1 id="入门">入门</h1>
+
+<p>如果这是你第一次使用Celery，或者你没有在3.1版本开发过而是来自更早的版本，你可以阅读入门教程：</p>
+
+<ul>
+  <li><a href="https://docs.celeryq.dev/en/stable/getting-started/first-steps-with-celery.html#first-steps">Celery第一步</a></li>
+  <li><a href="https://docs.celeryq.dev/en/stable/getting-started/next-steps.html#next-steps">第二步</a></li>
+</ul>
+
+<h1 id="celery特性">Celery特性</h1>
+
+<ul>
+  <li>
+    <p><strong>简单</strong></p>
+
+    <p>Celery易用易维护，并且不需要配置文件。</p>
+
+    <p>它有活跃、友好的社区，在那里你可以通过交流获得帮助，包括邮件组和IRC channel。</p>
+
+    <p>这里有一个极简的示例：</p>
+
+    <pre><code class="language-python">from celery import Celery
+  
+app = Celery('hello', broker='amqp://guest@localhost//')
+  
+@app.task
+def hello():
+	return "hello world"
+</code></pre>
+  </li>
+  <li>
+    <p>高可用</p>
+
+    <p>worker和客户端会在连接失败或丢失的情况下自动重试，并且一些中间件支持主从复制和主主复制的方式来实现高可用。</p>
+  </li>
+  <li>
+    <p>快速</p>
+
+    <p>一个单Celery节点可以在亚ms级别的往返延时条件下处理百万任务。（借助RabbitMQ、librabbitmq和优化设置的方式）。</p>
+  </li>
+  <li>
+    <p>灵活</p>
+
+    <p>几乎Celery架构中的任意一个部分都可以单独扩展或单独使用，自定义实现池、序列化器、压缩协议、日志、调度器、消费者、生产者、传输介质等。</p>
+  </li>
+  <li>
+    <p>它支持：</p>
+
+    <ul>
+      <li>Broker
+        <ul>
+          <li>RabbitMQ</li>
+          <li>Redis</li>
+          <li>Amazon SQS</li>
+          <li>等等</li>
+        </ul>
+      </li>
+      <li>并发
+        <ul>
+          <li>prefork（多进程）</li>
+          <li>Eventlet，gevent</li>
+          <li>thread（多线程）</li>
+          <li>solo（单线程）</li>
+        </ul>
+      </li>
+      <li>Backend
+        <ul>
+          <li>AMQP, Redis</li>
+          <li>Memcached,</li>
+          <li>SQLAlchemy, Django ORM</li>
+          <li>Apache Cassandra, Elasticsearch, Riak</li>
+          <li>MongoDB, CouchDB, Couchbase, ArangoDB</li>
+          <li>Amazon DynamoDB, Amazon S3</li>
+          <li>Microsoft Azure Block Blob, Microsoft Azure Cosmos DB</li>
+          <li>Google Cloud Storage</li>
+          <li>File system</li>
+        </ul>
+      </li>
+      <li>序列化
+        <ul>
+          <li><em>pickle</em>, <em>json</em>, <em>yaml</em>, <em>msgpack</em>.</li>
+          <li><em>zlib</em>, <em>bzip2</em> compression.</li>
+          <li>Cryptographic message signing.</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+<h1 id="功能">功能</h1>
+
+<ul>
+  <li>
+    <p>监控</p>
+
+    <p>worker产出监控事件流，并通过内置或外部工具告诉你集群的实时状态。<a href="https://docs.celeryq.dev/en/stable/userguide/monitoring.html#guide-monitoring">了解更多</a>。</p>
+  </li>
+  <li>
+    <p>工作流</p>
+
+    <p>简单和复杂的工作可用用一种被我们称为“canvas”的语法进行描述，包括分组、连接、分块等等。<a href="https://docs.celeryq.dev/en/stable/userguide/canvas.html#guide-canvas">了解更多</a>。</p>
+  </li>
+  <li>
+    <p>耗时&amp;频率控制</p>
+
+    <p>你可以控制任意一种任务类型或任意高一个worker的执行频率及执行时间。<a href="https://docs.celeryq.dev/en/stable/userguide/workers.html#worker-time-limits">了解更多</a>。</p>
+  </li>
+  <li>
+    <p>调度</p>
+
+    <p>你可以通过简单指令或者Crontab表达式来定制秒级限时任务或分钟级、小时级、天级、周级、月级周期性任务。<a href="https://docs.celeryq.dev/en/stable/userguide/periodic-tasks.html#guide-beat">了解更多</a>。</p>
+  </li>
+  <li>
+    <p>资源泄漏保护</p>
+
+    <p><code>—max-tasks-per-child</code>指令可以用来避免资源泄漏，如不受控的文件描述符或内存。<a href="https://docs.celeryq.dev/en/stable/userguide/workers.html#worker-max-tasks-per-child">了解更多</a>。</p>
+  </li>
+  <li>
+    <p>用户组件</p>
+
+    <p>每个worker组件都是自定义的，用户还可以定义其他组件。worker是使用“引导步骤”构建的——一个可以对worker的内部进行细粒度控制的依赖关系图。</p>
+  </li>
+</ul>
+
+<h1 id="框架集成">框架集成</h1>
+
+<p>Celery很容易与web框架集成，其中一些甚至有集成包：</p>
+
+<blockquote>
+  <table>
+    <thead>
+      <tr>
+        <th><a href="http://docs.pylonsproject.org/en/latest/docs/pyramid.html">Pyramid</a></th>
+        <th>https://pypi.org/project/pyramid_celery/</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a href="http://pylonshq.com/">Pylons</a></td>
+        <td>https://pypi.org/project/celery-pylons/</td>
+      </tr>
+      <tr>
+        <td><a href="http://flask.pocoo.org/">Flask</a></td>
+        <td>不需要</td>
+      </tr>
+      <tr>
+        <td><a href="http://web2py.com/">web2py</a></td>
+        <td>https://pypi.org/project/web2py-celery/</td>
+      </tr>
+      <tr>
+        <td><a href="http://www.tornadoweb.org/">Tornado</a></td>
+        <td>https://pypi.org/project/tornado-celery/</td>
+      </tr>
+      <tr>
+        <td><a href="http://www.tryton.org/">Tryton</a></td>
+        <td>https://pypi.org/project/celery_tryton/</td>
+      </tr>
+    </tbody>
+  </table>
+</blockquote>
+
+<p>对于 <a href="https://djangoproject.com/">Django</a> 请看 <a href="https://docs.celeryq.dev/en/stable/django/first-steps-with-django.html#django-first-steps">First steps with Django</a>.</p>
+
+<p>集成包并不是绝对必要的，但它们可以使开发变得更容易，有时它们会添加重要的工具，比如关闭数据库连接。</p>
+
+<h1 id="快捷跳转">快捷跳转</h1>
+
+<ul>
+  <li><a href="https://docs.celeryq.dev/en/stable/userguide/tasks.html#task-states">get the return value of a task</a></li>
+  <li><a href="https://docs.celeryq.dev/en/stable/userguide/tasks.html#task-logging">use logging from my task</a></li>
+  <li><a href="https://docs.celeryq.dev/en/stable/userguide/tasks.html#task-best-practices">learn about best practices</a></li>
+  <li><a href="https://docs.celeryq.dev/en/stable/userguide/tasks.html#task-custom-classes">create a custom task base class</a></li>
+  <li><a href="https://docs.celeryq.dev/en/stable/userguide/canvas.html#canvas-chord">add a callback to a group of tasks</a></li>
+  <li><a href="https://docs.celeryq.dev/en/stable/userguide/canvas.html#canvas-chunks">split a task into several chunks</a></li>
+  <li><a href="https://docs.celeryq.dev/en/stable/userguide/optimizing.html#guide-optimizing">optimize the worker</a></li>
+  <li><a href="https://docs.celeryq.dev/en/stable/userguide/tasks.html#task-builtin-states">see a list of built-in task states</a></li>
+  <li><a href="https://docs.celeryq.dev/en/stable/userguide/tasks.html#custom-states">create custom task states</a></li>
+  <li><a href="https://docs.celeryq.dev/en/stable/userguide/tasks.html#task-names">set a custom task name</a></li>
+  <li><a href="https://docs.celeryq.dev/en/stable/userguide/tasks.html#task-track-started">track when a task starts</a></li>
+  <li><a href="https://docs.celeryq.dev/en/stable/userguide/tasks.html#task-retry">retry a task when it fails</a></li>
+  <li><a href="https://docs.celeryq.dev/en/stable/userguide/tasks.html#task-request-info">get the id of the current task</a></li>
+  <li><a href="https://docs.celeryq.dev/en/stable/userguide/tasks.html#task-request-info">know what queue a task was delivered to</a></li>
+  <li><a href="https://docs.celeryq.dev/en/stable/userguide/monitoring.html#monitoring-control">see a list of running workers</a></li>
+  <li><a href="https://docs.celeryq.dev/en/stable/userguide/monitoring.html#monitoring-control">purge all messages</a></li>
+  <li><a href="https://docs.celeryq.dev/en/stable/userguide/monitoring.html#monitoring-control">inspect what the workers are doing</a></li>
+  <li><a href="https://docs.celeryq.dev/en/stable/userguide/monitoring.html#monitoring-control">see what tasks a worker has registered</a></li>
+  <li><a href="https://docs.celeryq.dev/en/stable/userguide/monitoring.html#monitoring-control">migrate tasks to a new broker</a></li>
+  <li><a href="https://docs.celeryq.dev/en/stable/userguide/monitoring.html#event-reference">see a list of event message types</a></li>
+  <li><a href="https://docs.celeryq.dev/en/stable/contributing.html#contributing">contribute to Celery</a></li>
+  <li><a href="https://docs.celeryq.dev/en/stable/userguide/configuration.html#configuration">learn about available configuration settings</a></li>
+  <li><a href="https://docs.celeryq.dev/en/stable/community.html#res-using-celery">get a list of people and companies using Celery</a></li>
+  <li><a href="https://docs.celeryq.dev/en/stable/userguide/workers.html#worker-custom-control-commands">write my own remote control command</a></li>
+  <li>
+    <p><a href="https://docs.celeryq.dev/en/stable/userguide/workers.html#worker-queues">change worker queues at runtime</a></p>
+  </li>
+  <li><a href="https://docs.celeryq.dev/en/stable/getting-started/backends-and-brokers/index.html#brokers">Brokers</a></li>
+  <li><a href="https://docs.celeryq.dev/en/stable/userguide/workers.html#guide-workers">Workers</a></li>
+  <li><a href="https://docs.celeryq.dev/en/stable/userguide/security.html#guide-security">Security</a></li>
+  <li><a href="https://docs.celeryq.dev/en/stable/contributing.html#contributing">Contributing</a></li>
+  <li><a href="https://docs.celeryq.dev/en/stable/userguide/application.html#guide-app">Applications</a></li>
+  <li><a href="https://docs.celeryq.dev/en/stable/userguide/daemonizing.html#daemonizing">Daemonizing</a></li>
+  <li><a href="https://docs.celeryq.dev/en/stable/userguide/routing.html#guide-routing">Routing</a></li>
+  <li><a href="https://docs.celeryq.dev/en/stable/userguide/signals.html#signals">Signals</a></li>
+  <li><a href="https://docs.celeryq.dev/en/stable/userguide/tasks.html#guide-tasks">Tasks</a></li>
+  <li><a href="https://docs.celeryq.dev/en/stable/userguide/monitoring.html#guide-monitoring">Monitoring</a></li>
+  <li><a href="https://docs.celeryq.dev/en/stable/userguide/configuration.html#configuration">Configuration</a></li>
+  <li><a href="https://docs.celeryq.dev/en/stable/faq.html#faq">FAQ</a></li>
+  <li><a href="https://docs.celeryq.dev/en/stable/userguide/calling.html#guide-calling">Calling</a></li>
+  <li><a href="https://docs.celeryq.dev/en/stable/userguide/optimizing.html#guide-optimizing">Optimizing</a></li>
+  <li><a href="https://docs.celeryq.dev/en/stable/django/index.html#django">Django</a></li>
+  <li><a href="https://docs.celeryq.dev/en/stable/reference/index.html#apiref">API Reference</a></li>
+</ul>
+
+<h1 id="安装">安装</h1>
+
+<p>你可以通过源码或者python包的方式安装Celery。</p>
+
+<p><strong>pip方式</strong></p>
+
+<pre><code class="language-shell">pip install -U Celery
+</code></pre>
+
+<p><strong>合集</strong></p>
+
+<p>Celery还定义了一组合集，可用于安装给定特性的依赖项。</p>
+
+<p>您可以在需求中或在pip命令行中使用括号指定这些参数。可以通过逗号分隔多个合集来指定它们。</p>
+
+<pre><code>pip install "celery[librabbitmq]"
+
+$ pip install "celery[librabbitmq,redis,auth,msgpack]"
+</code></pre>
+
+<p>这些合集包括：</p>
+
+<p>Serializers</p>
+
+<ul>
+  <li>
+    <p><code>celery[auth]</code>:</p>
+
+    <p>for using the <code>auth</code> security serializer.</p>
+  </li>
+  <li>
+    <p><code>celery[msgpack]</code>:</p>
+
+    <p>for using the msgpack serializer.</p>
+  </li>
+  <li>
+    <p><code>celery[yaml]</code>:</p>
+
+    <p>for using the yaml serializer.</p>
+  </li>
+</ul>
+
+<p>Concurrency</p>
+
+<ul>
+  <li>
+    <p><code>celery[eventlet]</code>:</p>
+
+    <p>for using the https://pypi.org/project/eventlet/ pool.</p>
+  </li>
+  <li>
+    <p><code>celery[gevent]</code>:</p>
+
+    <p>for using the https://pypi.org/project/gevent/ pool.</p>
+  </li>
+</ul>
+
+<p>Transports and Backends</p>
+
+<ul>
+  <li>
+    <p><code>celery[librabbitmq]</code>:</p>
+
+    <p>for using the librabbitmq C library.</p>
+  </li>
+  <li>
+    <p><code>celery[redis]</code>:</p>
+
+    <p>for using Redis as a message transport or as a result backend.</p>
+  </li>
+  <li>
+    <p><code>celery[sqs]</code>:</p>
+
+    <p>for using Amazon SQS as a message transport (<em>experimental</em>).</p>
+  </li>
+  <li>
+    <p><code>celery[tblib]</code>:</p>
+
+    <p>for using the <a href="https://docs.celeryq.dev/en/stable/userguide/configuration.html#std-setting-task_remote_tracebacks"><code>task_remote_tracebacks</code></a> feature.</p>
+  </li>
+  <li>
+    <p><code>celery[memcache]</code>:</p>
+
+    <p>for using Memcached as a result backend (using https://pypi.org/project/pylibmc/)</p>
+  </li>
+  <li>
+    <p><code>celery[pymemcache]</code>:</p>
+
+    <p>for using Memcached as a result backend (pure-Python implementation).</p>
+  </li>
+  <li>
+    <p><code>celery[cassandra]</code>:</p>
+
+    <p>for using Apache Cassandra/Astra DB as a result backend with DataStax driver.</p>
+  </li>
+  <li>
+    <p><code>celery[couchbase]</code>:</p>
+
+    <p>for using Couchbase as a result backend.</p>
+  </li>
+  <li>
+    <p><code>celery[arangodb]</code>:</p>
+
+    <p>for using ArangoDB as a result backend.</p>
+  </li>
+  <li>
+    <p><code>celery[elasticsearch]</code>:</p>
+
+    <p>for using Elasticsearch as a result backend.</p>
+  </li>
+  <li>
+    <p><code>celery[riak]</code>:</p>
+
+    <p>for using Riak as a result backend.</p>
+  </li>
+  <li>
+    <p><code>celery[dynamodb]</code>:</p>
+
+    <p>for using AWS DynamoDB as a result backend.</p>
+  </li>
+  <li>
+    <p><code>celery[zookeeper]</code>:</p>
+
+    <p>for using Zookeeper as a message transport.</p>
+  </li>
+  <li>
+    <p><code>celery[sqlalchemy]</code>:</p>
+
+    <p>for using SQLAlchemy as a result backend (<em>supported</em>).</p>
+  </li>
+  <li>
+    <p><code>celery[pyro]</code>:</p>
+
+    <p>for using the Pyro4 message transport (<em>experimental</em>).</p>
+  </li>
+  <li>
+    <p><code>celery[slmq]</code>:</p>
+
+    <p>for using the SoftLayer Message Queue transport (<em>experimental</em>).</p>
+  </li>
+  <li>
+    <p><code>celery[consul]</code>:</p>
+
+    <p>for using the Consul.io Key/Value store as a message transport or result backend (<em>experimental</em>).</p>
+  </li>
+  <li>
+    <p><code>celery[django]</code>:</p>
+
+    <p>specifies the lowest version possible for Django support.You should probably not use this in your requirements, it’s here for informational purposes only.</p>
+  </li>
+  <li>
+    <p><code>celery[gcs]</code>:</p>
+
+    <p>for using the Google Cloud Storage as a result backend (<em>experimental</em>).</p>
+  </li>
+</ul>
+
+<p><strong>从源码下载</strong></p>
+
+<p>从pypi下载最新版Celery：https://pypi.org/project/celery/</p>
+
+<p>安装方法：</p>
+
+<pre><code class="language-shell">tar xvfz celery-0.0.0.tar.gz
+cd celery-0.0.0
+python setup.py build
+python setup.py install
+</code></pre>
+
+<p>如果你的当前环境不是虚拟环境，最后一个命令必须在管理员身份下执行。</p>
+
+<p><strong>使用开发版本</strong></p>
+
+<p>使用pip</p>
+
+<p>Celery开发版要求其配套组件也必须是开发版。</p>
+
+<p>包括https://pypi.org/project/kombu/, https://pypi.org/project/amqp/, https://pypi.org/project/billiard/,  https://pypi.org/project/vine/.</p>
+
+<p>你可以使用以下命令进行安装：</p>
+
+<pre><code>pip install https://github.com/celery/celery/zipball/main#egg=celery
+pip install https://github.com/celery/billiard/zipball/main#egg=billiard
+pip install https://github.com/celery/py-amqp/zipball/main#egg=amqp
+pip install https://github.com/celery/kombu/zipball/main#egg=kombu
+pip install https://github.com/celery/vine/zipball/main#egg=vine
+</code></pre>
+
+<p>使用git</p>
+
+<p>请看<a href="https://docs.celeryq.dev/en/stable/contributing.html#contributing">贡献</a>部分。</p>
+
+        </article>
+      </div>
+    </div>
+  </main>
+
+  <!-- Right: Category Articles -->
+  <aside class="post-category-sidebar" role="navigation" aria-label="分类文章列表">
+    <div class="category-panel">
+      
+      
+      <div class="category-sidebar-title">
+        <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
+        Celery
+      </div>
+      <ul class="category-article-list">
+        
+        
+        <li class="">
+          <a href="/2025/03/25/celery/Google-Pub%E5%92%8CSub/" title="Google-Pub和Sub">
+            <span class="article-title">Google-Pub和Sub</span>
+            <span class="article-date">03-25</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2025/03/24/celery/Kafka/" title="Kafka">
+            <span class="article-title">Kafka</span>
+            <span class="article-date">03-24</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2025/03/23/celery/SQS/" title="SQS">
+            <span class="article-title">SQS</span>
+            <span class="article-date">03-23</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2025/03/22/celery/Redis/" title="Redis">
+            <span class="article-title">Redis</span>
+            <span class="article-date">03-22</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2025/03/21/celery/RabbitMQ/" title="RabbitMQ">
+            <span class="article-title">RabbitMQ</span>
+            <span class="article-date">03-21</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2025/03/20/celery/Backends%E5%92%8CBrokers/" title="Backends和Brokers">
+            <span class="article-title">Backends和Brokers</span>
+            <span class="article-date">03-20</span>
+          </a>
+        </li>
+        
+        <li class="active">
+          <a href="/2025/03/19/celery/Celery%E4%BB%8B%E7%BB%8D/" title="Celery介绍">
+            <span class="article-title">Celery介绍</span>
+            <span class="article-date">03-19</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2025/03/18/celery/%E7%89%88%E6%9D%83/" title="版权">
+            <span class="article-title">版权</span>
+            <span class="article-date">03-18</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2025/03/17/celery/%E5%88%86%E5%B8%83%E5%BC%8F%E4%BB%BB%E5%8A%A1%E9%98%9F%E5%88%97/" title="分布式任务队列">
+            <span class="article-title">分布式任务队列</span>
+            <span class="article-date">03-17</span>
+          </a>
+        </li>
+        
+      </ul>
+      
+    </div>
+  </aside>
+</div>
+
+<!-- Theme Toggle Button -->
+<button type="button" class="theme-toggle" aria-label="Toggle Theme">
+  <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+  </svg>
+  <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="12" cy="12" r="5"></circle>
+    <line x1="12" y1="1" x2="12" y2="3"></line>
+    <line x1="12" y1="21" x2="12" y2="23"></line>
+    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+    <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+    <line x1="1" y1="12" x2="3" y2="12"></line>
+    <line x1="21" y1="12" x2="23" y2="12"></line>
+    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+    <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+  </svg>
+</button>
+
+<!-- Back to Top Button -->
+<button type="button" class="back-to-top" aria-label="Back to Top">
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <polyline points="18 15 12 9 6 15"></polyline>
+  </svg>
+</button>
+
+
+    <!-- Site Footer -->
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-content">
+      <div class="footer-info">
+        <h4>xinfan9's blog</h4>
+        <p>Actually, less is more!</p>
+      </div>
+      <div class="footer-links">
+        <a href="https://github.com/xinfan9/" target="_blank" title="GitHub">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+        </a>
+        <a href="mailto:11411619@qq.com" title="Email">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+        </a>
+        <a href="/feed.xml" title="RSS">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11a9 9 0 0 1 9 9"/><path d="M4 4a16 16 0 0 1 16 16"/><circle cx="5" cy="19" r="1"/></svg>
+        </a>
+      </div>
+      <div class="footer-copyright">
+        <p>&copy; 2026 xinfan9. Built with Jekyll.</p>
+      </div>
+    </div>
+  </div>
+</footer>
+      
+    
+    <!-- Global Buttons (for non-post pages) -->
+    
+  </body>
+</html>

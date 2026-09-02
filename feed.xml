@@ -1,0 +1,723 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>xinfan9&apos;s blog</title>
+    <description>Actually, less is more!</description>
+    <link>https://xinfang.site/</link>
+    <atom:link href="https://xinfang.site/feed.xml" rel="self" type="application/rss+xml"/>
+    <pubDate>Wed, 02 Sep 2026 20:27:26 +0800</pubDate>
+    <lastBuildDate>Mon, 24 Aug 2026 17:53:23 +0800</lastBuildDate>
+    <generator>Jekyll v4.4.1</generator>
+    <language>zh-cn</language>
+    <ttl>3600</ttl>
+    
+      <item>
+        <title>Redis</title>
+        <description><![CDATA[<p>https://www.xiaolincoding.com/redis/base/redis_interview.html#redis-%E4%BD%BF%E7%94%A8%E7%9A%84%E8%BF%87%E6%9C%9F%E5%88%A0%E9%99%A4%E7%AD%96%E7%95%A5%E6%98%AF%E4%BB%80%E4%B9%88</p>
+]]></description>
+        <pubDate>Mon, 24 Aug 2026 17:53:23 +0800</pubDate>
+        <link>https://xinfang.site/2026/08/24/%E4%B8%AD%E9%97%B4%E4%BB%B6/Redis/</link>
+        <guid isPermaLink="true">https://xinfang.site/2026/08/24/%E4%B8%AD%E9%97%B4%E4%BB%B6/Redis/</guid>
+        <author>xinfan9</author>
+        
+        
+        <category>中间件</category>
+        
+      </item>
+    
+      <item>
+        <title>MySQL</title>
+        <description><![CDATA[<h1 id="为什么-mysql-更适合保存运行状态">为什么 MySQL 更适合保存运行状态</h1>
+]]></description>
+        <pubDate>Mon, 24 Aug 2026 17:53:23 +0800</pubDate>
+        <link>https://xinfang.site/2026/08/24/%E4%B8%AD%E9%97%B4%E4%BB%B6/MySQL/</link>
+        <guid isPermaLink="true">https://xinfang.site/2026/08/24/%E4%B8%AD%E9%97%B4%E4%BB%B6/MySQL/</guid>
+        <author>xinfan9</author>
+        
+        
+        <category>中间件</category>
+        
+      </item>
+    
+      <item>
+        <title>MQ</title>
+        <description><![CDATA[<h1 id="异步任务">异步任务</h1>
+]]></description>
+        <pubDate>Mon, 24 Aug 2026 17:53:22 +0800</pubDate>
+        <link>https://xinfang.site/2026/08/24/%E4%B8%AD%E9%97%B4%E4%BB%B6/MQ/</link>
+        <guid isPermaLink="true">https://xinfang.site/2026/08/24/%E4%B8%AD%E9%97%B4%E4%BB%B6/MQ/</guid>
+        <author>xinfan9</author>
+        
+        
+        <category>中间件</category>
+        
+      </item>
+    
+      <item>
+        <title>长程任务</title>
+        <description><![CDATA[<p>长程任务的实现核心挑战在于异步回调和故障恢复。它们可能运行几十秒甚至几分钟。请求提交后，原始节点不一定一直存活，回调也不一定返回原节点，还可能出现：</p>
+]]></description>
+        <pubDate>Mon, 24 Aug 2026 17:53:20 +0800</pubDate>
+        <link>https://xinfang.site/2026/08/24/agent/%E9%95%BF%E7%A8%8B%E4%BB%BB%E5%8A%A1/</link>
+        <guid isPermaLink="true">https://xinfang.site/2026/08/24/agent/%E9%95%BF%E7%A8%8B%E4%BB%BB%E5%8A%A1/</guid>
+        <author>xinfan9</author>
+        
+        
+        <category>Agent</category>
+        
+      </item>
+    
+      <item>
+        <title>强化学习</title>
+        <description><![CDATA[<h1 id="前言">前言</h1>
+]]></description>
+        <pubDate>Fri, 21 Aug 2026 21:41:56 +0800</pubDate>
+        <link>https://xinfang.site/2026/08/21/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0/</link>
+        <guid isPermaLink="true">https://xinfang.site/2026/08/21/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0/</guid>
+        <author>xinfan9</author>
+        
+        
+        <category>机器学习</category>
+        
+      </item>
+    
+      <item>
+        <title>LLM 训练</title>
+        <description><![CDATA[<p><img src="/post-images/机器学习/2026-08-21-LLM 训练.assets/image-20260813170557145.webp" alt="image-20260813170557145" /></p>
+]]></description>
+        <pubDate>Fri, 21 Aug 2026 21:41:56 +0800</pubDate>
+        <link>https://xinfang.site/2026/08/21/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/LLM-%E8%AE%AD%E7%BB%83/</link>
+        <guid isPermaLink="true">https://xinfang.site/2026/08/21/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/LLM-%E8%AE%AD%E7%BB%83/</guid>
+        <author>xinfan9</author>
+        
+        
+        <category>机器学习</category>
+        
+      </item>
+    
+      <item>
+        <title>记忆</title>
+        <description><![CDATA[<p>在构建智能体记忆系统前，我们需要系统性了解人类的记忆系统。</p>
+]]></description>
+        <pubDate>Fri, 21 Aug 2026 21:41:47 +0800</pubDate>
+        <link>https://xinfang.site/2026/08/21/agent/%E8%AE%B0%E5%BF%86/</link>
+        <guid isPermaLink="true">https://xinfang.site/2026/08/21/agent/%E8%AE%B0%E5%BF%86/</guid>
+        <author>xinfan9</author>
+        
+        
+        <category>Agent</category>
+        
+      </item>
+    
+      <item>
+        <title>上下文工程</title>
+        <description><![CDATA[<p>上下文工程关注每一次模型调用前，如何以可复用、可度量、可迭代的方式拼装上下文，所谓上下文。区别于提示工程，提示工程聚焦于如何写出好的prompt，而上下文工程需要管理prompt、每次调用的tool、MCP、外部数据、记忆等整个上下文策略。</p>
+]]></description>
+        <pubDate>Fri, 21 Aug 2026 21:41:47 +0800</pubDate>
+        <link>https://xinfang.site/2026/08/21/agent/%E4%B8%8A%E4%B8%8B%E6%96%87%E5%B7%A5%E7%A8%8B/</link>
+        <guid isPermaLink="true">https://xinfang.site/2026/08/21/agent/%E4%B8%8A%E4%B8%8B%E6%96%87%E5%B7%A5%E7%A8%8B/</guid>
+        <author>xinfan9</author>
+        
+        
+        <category>Agent</category>
+        
+      </item>
+    
+      <item>
+        <title>RAG</title>
+        <description><![CDATA[<p>RAG（<code>Retrieval-Augmented Generation</code>）是一种结合了信息检索和文本生成的技术，在生成回答之前，系统去外部知识库检索相关内容，然后将检索到的信息作为上下文提供给大模型。</p>
+]]></description>
+        <pubDate>Fri, 21 Aug 2026 21:41:47 +0800</pubDate>
+        <link>https://xinfang.site/2026/08/21/agent/RAG/</link>
+        <guid isPermaLink="true">https://xinfang.site/2026/08/21/agent/RAG/</guid>
+        <author>xinfan9</author>
+        
+        
+        <category>Agent</category>
+        
+      </item>
+    
+      <item>
+        <title>MCP</title>
+        <description><![CDATA[<p>MCP协议是Anthropic团队提出的一种智能体与外部工具/资源通信的通信方式，允许智能体与工具之间“<strong>上下文共享</strong>”。</p>
+]]></description>
+        <pubDate>Fri, 21 Aug 2026 21:41:46 +0800</pubDate>
+        <link>https://xinfang.site/2026/08/21/agent/MCP/</link>
+        <guid isPermaLink="true">https://xinfang.site/2026/08/21/agent/MCP/</guid>
+        <author>xinfan9</author>
+        
+        
+        <category>Agent</category>
+        
+      </item>
+    
+      <item>
+        <title>Agent RL</title>
+        <description><![CDATA[<p><img src="/post-images/Agent/2026-08-21-Agent RL.assets/image-20260813170541364.webp" alt="image-20260813170541364" /></p>
+]]></description>
+        <pubDate>Fri, 21 Aug 2026 21:41:46 +0800</pubDate>
+        <link>https://xinfang.site/2026/08/21/agent/Agent-RL/</link>
+        <guid isPermaLink="true">https://xinfang.site/2026/08/21/agent/Agent-RL/</guid>
+        <author>xinfan9</author>
+        
+        
+        <category>Agent</category>
+        
+      </item>
+    
+      <item>
+        <title>Reflection</title>
+        <description><![CDATA[<p>Reflection 机制的灵感来源于人类的学习过程—— <strong>执行-&gt;反思-&gt;优化</strong>。它为智能体引入了一种事后(post-hoc)的自我校正循环。</p>
+]]></description>
+        <pubDate>Mon, 10 Aug 2026 20:22:08 +0800</pubDate>
+        <link>https://xinfang.site/2026/08/10/agent/Reflection/</link>
+        <guid isPermaLink="true">https://xinfang.site/2026/08/10/agent/Reflection/</guid>
+        <author>xinfan9</author>
+        
+        
+        <category>Agent</category>
+        
+      </item>
+    
+      <item>
+        <title>Plan and Solve</title>
+        <description><![CDATA[<p>ReAct是一种反应式的、步进决策的智能体，而Plan-and-Solve则是在动工之前则完成所有的规划，它的整个流程可以解耦成两个阶段：</p>
+]]></description>
+        <pubDate>Mon, 10 Aug 2026 20:22:08 +0800</pubDate>
+        <link>https://xinfang.site/2026/08/10/agent/Plan-and-Solve/</link>
+        <guid isPermaLink="true">https://xinfang.site/2026/08/10/agent/Plan-and-Solve/</guid>
+        <author>xinfan9</author>
+        
+        
+        <category>Agent</category>
+        
+      </item>
+    
+      <item>
+        <title>ReAct</title>
+        <description><![CDATA[<p>ReAct(Reasoning and Acting) 是一种思考与行动紧密结合的范式，让智能体边想边做，动态调整。</p>
+]]></description>
+        <pubDate>Fri, 31 Jul 2026 17:57:58 +0800</pubDate>
+        <link>https://xinfang.site/2026/07/31/agent/ReAct/</link>
+        <guid isPermaLink="true">https://xinfang.site/2026/07/31/agent/ReAct/</guid>
+        <author>xinfan9</author>
+        
+        
+        <category>Agent</category>
+        
+      </item>
+    
+      <item>
+        <title>Scaling Laws</title>
+        <description><![CDATA[<h1 id="缩放法则">缩放法则</h1>
+]]></description>
+        <pubDate>Thu, 30 Jul 2026 17:41:54 +0800</pubDate>
+        <link>https://xinfang.site/2026/07/30/agent/Scaling-Laws%E4%B8%8E%E6%A8%A1%E5%9E%8B%E5%B9%BB%E8%A7%89/</link>
+        <guid isPermaLink="true">https://xinfang.site/2026/07/30/agent/Scaling-Laws%E4%B8%8E%E6%A8%A1%E5%9E%8B%E5%B9%BB%E8%A7%89/</guid>
+        <author>xinfan9</author>
+        
+        
+        <category>Agent</category>
+        
+      </item>
+    
+      <item>
+        <title>模型选择的考量</title>
+        <description><![CDATA[<p>为智能体选择大模型，主要考量指标。</p>
+]]></description>
+        <pubDate>Thu, 30 Jul 2026 17:41:52 +0800</pubDate>
+        <link>https://xinfang.site/2026/07/30/agent/%E6%A8%A1%E5%9E%8B%E9%80%89%E6%8B%A9%E7%9A%84%E8%80%83%E9%87%8F/</link>
+        <guid isPermaLink="true">https://xinfang.site/2026/07/30/agent/%E6%A8%A1%E5%9E%8B%E9%80%89%E6%8B%A9%E7%9A%84%E8%80%83%E9%87%8F/</guid>
+        <author>xinfan9</author>
+        
+        
+        <category>Agent</category>
+        
+      </item>
+    
+      <item>
+        <title>搜索</title>
+        <description><![CDATA[<h1 id="二分查找binary-search">二分查找（binary search）</h1>
+]]></description>
+        <pubDate>Thu, 30 Jul 2026 16:50:49 +0800</pubDate>
+        <link>https://xinfang.site/2026/07/30/%E5%8F%A4%E6%B3%95%E7%BC%96%E7%A8%8B/%E6%90%9C%E7%B4%A2/</link>
+        <guid isPermaLink="true">https://xinfang.site/2026/07/30/%E5%8F%A4%E6%B3%95%E7%BC%96%E7%A8%8B/%E6%90%9C%E7%B4%A2/</guid>
+        <author>xinfan9</author>
+        
+        
+        <category>古法编程</category>
+        
+      </item>
+    
+      <item>
+        <title>排序</title>
+        <description><![CDATA[<h1 id="排序算法的评价指标">排序算法的评价指标</h1>
+]]></description>
+        <pubDate>Thu, 30 Jul 2026 16:50:49 +0800</pubDate>
+        <link>https://xinfang.site/2026/07/30/%E5%8F%A4%E6%B3%95%E7%BC%96%E7%A8%8B/%E6%8E%92%E5%BA%8F/</link>
+        <guid isPermaLink="true">https://xinfang.site/2026/07/30/%E5%8F%A4%E6%B3%95%E7%BC%96%E7%A8%8B/%E6%8E%92%E5%BA%8F/</guid>
+        <author>xinfan9</author>
+        
+        
+        <category>古法编程</category>
+        
+      </item>
+    
+      <item>
+        <title>Tokenizer</title>
+        <description><![CDATA[<h2 id="1-背景为什么需要分词-tokenization">1. 背景：为什么需要分词 (Tokenization)？</h2>
+]]></description>
+        <pubDate>Thu, 30 Jul 2026 16:50:42 +0800</pubDate>
+        <link>https://xinfang.site/2026/07/30/agent/Tokenizer/</link>
+        <guid isPermaLink="true">https://xinfang.site/2026/07/30/agent/Tokenizer/</guid>
+        <author>xinfan9</author>
+        
+        
+        <category>Agent</category>
+        
+      </item>
+    
+      <item>
+        <title>图</title>
+        <description><![CDATA[<p>图是由顶点(vertex)和边(edge)组成的非线性数据结构，$G={V, E}$。</p>
+]]></description>
+        <pubDate>Tue, 28 Jul 2026 14:30:52 +0800</pubDate>
+        <link>https://xinfang.site/2026/07/28/%E5%8F%A4%E6%B3%95%E7%BC%96%E7%A8%8B/%E5%9B%BE/</link>
+        <guid isPermaLink="true">https://xinfang.site/2026/07/28/%E5%8F%A4%E6%B3%95%E7%BC%96%E7%A8%8B/%E5%9B%BE/</guid>
+        <author>xinfan9</author>
+        
+        
+        <category>古法编程</category>
+        
+      </item>
+    
+      <item>
+        <title>堆</title>
+        <description><![CDATA[<p>堆(heap) 是一种满足特定条件的完全二叉树。</p>
+]]></description>
+        <pubDate>Tue, 28 Jul 2026 11:50:48 +0800</pubDate>
+        <link>https://xinfang.site/2026/07/28/%E5%8F%A4%E6%B3%95%E7%BC%96%E7%A8%8B/%E5%A0%86/</link>
+        <guid isPermaLink="true">https://xinfang.site/2026/07/28/%E5%8F%A4%E6%B3%95%E7%BC%96%E7%A8%8B/%E5%A0%86/</guid>
+        <author>xinfan9</author>
+        
+        
+        <category>古法编程</category>
+        
+      </item>
+    
+      <item>
+        <title>二叉树</title>
+        <description><![CDATA[<p>二叉树（binary tree）是一种非线性数据结构，代表祖先与后代的派生关系，体现了<strong>分治思想</strong>。</p>
+]]></description>
+        <pubDate>Thu, 23 Jul 2026 17:40:21 +0800</pubDate>
+        <link>https://xinfang.site/2026/07/23/%E5%8F%A4%E6%B3%95%E7%BC%96%E7%A8%8B/%E4%BA%8C%E5%8F%89%E6%A0%91/</link>
+        <guid isPermaLink="true">https://xinfang.site/2026/07/23/%E5%8F%A4%E6%B3%95%E7%BC%96%E7%A8%8B/%E4%BA%8C%E5%8F%89%E6%A0%91/</guid>
+        <author>xinfan9</author>
+        
+        
+        <category>古法编程</category>
+        
+      </item>
+    
+      <item>
+        <title>提示工程</title>
+        <description><![CDATA[<p><strong>提示（Prompt）</strong>是我们与LLM沟通的语言。<strong>自然语言文本</strong>和<strong>模型采样参数</strong>两者构成了提示工程的重要部分。</p>
+]]></description>
+        <pubDate>Thu, 23 Jul 2026 17:40:15 +0800</pubDate>
+        <link>https://xinfang.site/2026/07/23/agent/%E6%8F%90%E7%A4%BA%E5%B7%A5%E7%A8%8B/</link>
+        <guid isPermaLink="true">https://xinfang.site/2026/07/23/agent/%E6%8F%90%E7%A4%BA%E5%B7%A5%E7%A8%8B/</guid>
+        <author>xinfan9</author>
+        
+        
+        <category>Agent</category>
+        
+      </item>
+    
+      <item>
+        <title>随笔1</title>
+        <description><![CDATA[<p>孤本愚陋，始举孝廉。后值天下大乱，筑精舍于谯东五十里，欲春夏读书，秋冬射猎，以待天下清平，方出仕耳。不意朝廷征孤为典军校尉，遂更其意，专欲为国家讨贼立功，图死后得题墓道日：“汉故征西将军曹侯之墓”，平生愿足矣。念自讨董卓，剿黄巾以来，除袁术、破吕布、灭袁绍、定刘表，遂平天下。身为宰相，人臣之贵已极，又复何望哉?如国家无孤一人，正不知几人称帝，几人称王。或见孤权重，妄相忖度，疑孤有异心，此大谬也。孤常念孔子称文王之至德，此言耿耿在心。但欲孤委捐兵众，归就所封武平侯之国，实不可耳。诚恐一解兵柄，为人所害；孤败则国家倾危，是以不得慕虚名而处实祸也。</p>
+]]></description>
+        <pubDate>Tue, 07 Jul 2026 15:00:07 +0800</pubDate>
+        <link>https://xinfang.site/2026/07/07/%E5%85%B6%E4%BB%96/%E9%9A%8F%E7%AC%941/</link>
+        <guid isPermaLink="true">https://xinfang.site/2026/07/07/%E5%85%B6%E4%BB%96/%E9%9A%8F%E7%AC%941/</guid>
+        <author>xinfan9</author>
+        
+        
+        <category>其他</category>
+        
+      </item>
+    
+      <item>
+        <title>哈希表</title>
+        <description><![CDATA[<p>哈希表（hash table），又成散列表，它通过建立key与value之间的映射关系，实现高效($O(1)$ )元素查询。</p>
+]]></description>
+        <pubDate>Tue, 07 Jul 2026 15:00:03 +0800</pubDate>
+        <link>https://xinfang.site/2026/07/07/%E5%8F%A4%E6%B3%95%E7%BC%96%E7%A8%8B/%E5%93%88%E5%B8%8C%E8%A1%A8/</link>
+        <guid isPermaLink="true">https://xinfang.site/2026/07/07/%E5%8F%A4%E6%B3%95%E7%BC%96%E7%A8%8B/%E5%93%88%E5%B8%8C%E8%A1%A8/</guid>
+        <author>xinfan9</author>
+        
+        
+        <category>古法编程</category>
+        
+      </item>
+    
+      <item>
+        <title>双向队列</title>
+        <description><![CDATA[<p>双向队列是一种特殊的队列，允许在头部和尾部执行元素添加和删除操作</p>
+]]></description>
+        <pubDate>Tue, 07 Jul 2026 15:00:03 +0800</pubDate>
+        <link>https://xinfang.site/2026/07/07/%E5%8F%A4%E6%B3%95%E7%BC%96%E7%A8%8B/%E5%8F%8C%E5%90%91%E9%98%9F%E5%88%97/</link>
+        <guid isPermaLink="true">https://xinfang.site/2026/07/07/%E5%8F%A4%E6%B3%95%E7%BC%96%E7%A8%8B/%E5%8F%8C%E5%90%91%E9%98%9F%E5%88%97/</guid>
+        <author>xinfan9</author>
+        
+        
+        <category>古法编程</category>
+        
+      </item>
+    
+      <item>
+        <title>队列</title>
+        <description><![CDATA[<p>队列（queue）是一种先进先出的线性数据结构，它模拟了排队现象，新加入元素在队尾，率先处理的元素在队头。</p>
+]]></description>
+        <pubDate>Tue, 30 Jun 2026 14:39:31 +0800</pubDate>
+        <link>https://xinfang.site/2026/06/30/%E5%8F%A4%E6%B3%95%E7%BC%96%E7%A8%8B/%E9%98%9F%E5%88%97/</link>
+        <guid isPermaLink="true">https://xinfang.site/2026/06/30/%E5%8F%A4%E6%B3%95%E7%BC%96%E7%A8%8B/%E9%98%9F%E5%88%97/</guid>
+        <author>xinfan9</author>
+        
+        
+        <category>古法编程</category>
+        
+      </item>
+    
+      <item>
+        <title>transformer</title>
+        <description><![CDATA[<h2 id="整体架构">整体架构</h2>
+]]></description>
+        <pubDate>Wed, 17 Jun 2026 11:30:54 +0800</pubDate>
+        <link>https://xinfang.site/2026/06/17/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/transformer/</link>
+        <guid isPermaLink="true">https://xinfang.site/2026/06/17/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/transformer/</guid>
+        <author>xinfan9</author>
+        
+        
+        <category>机器学习</category>
+        
+      </item>
+    
+      <item>
+        <title>栈</title>
+        <description><![CDATA[<p>栈（stack）是一种先进后出的线性数据结构。</p>
+]]></description>
+        <pubDate>Wed, 17 Jun 2026 11:30:51 +0800</pubDate>
+        <link>https://xinfang.site/2026/06/17/%E5%8F%A4%E6%B3%95%E7%BC%96%E7%A8%8B/%E6%A0%88/</link>
+        <guid isPermaLink="true">https://xinfang.site/2026/06/17/%E5%8F%A4%E6%B3%95%E7%BC%96%E7%A8%8B/%E6%A0%88/</guid>
+        <author>xinfan9</author>
+        
+        
+        <category>古法编程</category>
+        
+      </item>
+    
+      <item>
+        <title>缓存和内存</title>
+        <description><![CDATA[<p>物理结构很大程度上决定了程序对内存和缓存的使用效率。</p>
+]]></description>
+        <pubDate>Wed, 10 Jun 2026 16:46:11 +0800</pubDate>
+        <link>https://xinfang.site/2026/06/10/%E5%8F%A4%E6%B3%95%E7%BC%96%E7%A8%8B/%E7%BC%93%E5%AD%98%E5%92%8C%E5%86%85%E5%AD%98/</link>
+        <guid isPermaLink="true">https://xinfang.site/2026/06/10/%E5%8F%A4%E6%B3%95%E7%BC%96%E7%A8%8B/%E7%BC%93%E5%AD%98%E5%92%8C%E5%86%85%E5%AD%98/</guid>
+        <author>xinfan9</author>
+        
+        
+        <category>古法编程</category>
+        
+      </item>
+    
+      <item>
+        <title>列表</title>
+        <description><![CDATA[<p>列表是一个抽象的数据结构概念，它表示元素的有序集合，并且支持增删改查，无须考虑容量。链表、数组都可以看作列表。长度不可变的列表实用性会变低，因此很多编程语言的列表都是基于动态数组实现。</p>
+]]></description>
+        <pubDate>Tue, 09 Jun 2026 16:15:50 +0800</pubDate>
+        <link>https://xinfang.site/2026/06/09/%E5%8F%A4%E6%B3%95%E7%BC%96%E7%A8%8B/%E5%88%97%E8%A1%A8/</link>
+        <guid isPermaLink="true">https://xinfang.site/2026/06/09/%E5%8F%A4%E6%B3%95%E7%BC%96%E7%A8%8B/%E5%88%97%E8%A1%A8/</guid>
+        <author>xinfan9</author>
+        
+        
+        <category>古法编程</category>
+        
+      </item>
+    
+      <item>
+        <title>初识智能体</title>
+        <description><![CDATA[<p>智能体通常被定义为：<strong>通过 Sensors 感知环境 Environment，并通过 Actuators 行动以达成特定任务的实体</strong>。为了理解智能体如何运作，我们首先要理解它的任务环境。在人工智能领域，常用 <strong>PEAS</strong> 模型来描述任务环境。</p>
+]]></description>
+        <pubDate>Tue, 09 Jun 2026 16:15:46 +0800</pubDate>
+        <link>https://xinfang.site/2026/06/09/agent/%E5%A4%A7%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E9%A9%B1%E5%8A%A8%E7%9A%84%E6%99%BA%E8%83%BD%E4%BD%93/</link>
+        <guid isPermaLink="true">https://xinfang.site/2026/06/09/agent/%E5%A4%A7%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E9%A9%B1%E5%8A%A8%E7%9A%84%E6%99%BA%E8%83%BD%E4%BD%93/</guid>
+        <author>xinfan9</author>
+        
+        
+        <category>Agent</category>
+        
+      </item>
+    
+      <item>
+        <title>链表</title>
+        <description><![CDATA[<p>链表是一种线性数据结构，各个元素节点通过记录下一节点地址的引用（指针）连接，内存无需连续。由于保存了引用，在相同数据量下，链表比数组占用更多的内存空间。</p>
+]]></description>
+        <pubDate>Tue, 02 Jun 2026 15:03:23 +0800</pubDate>
+        <link>https://xinfang.site/2026/06/02/%E5%8F%A4%E6%B3%95%E7%BC%96%E7%A8%8B/%E9%93%BE%E8%A1%A8/</link>
+        <guid isPermaLink="true">https://xinfang.site/2026/06/02/%E5%8F%A4%E6%B3%95%E7%BC%96%E7%A8%8B/%E9%93%BE%E8%A1%A8/</guid>
+        <author>xinfan9</author>
+        
+        
+        <category>古法编程</category>
+        
+      </item>
+    
+      <item>
+        <title>数组</title>
+        <description><![CDATA[<p>数组是一种线性数据结构，<strong>将相同类型的元素存储在连续内存空间中</strong>。元素在数组中的位置被称为索引。</p>
+]]></description>
+        <pubDate>Tue, 02 Jun 2026 11:09:45 +0800</pubDate>
+        <link>https://xinfang.site/2026/06/02/%E5%8F%A4%E6%B3%95%E7%BC%96%E7%A8%8B/%E6%95%B0%E7%BB%84/</link>
+        <guid isPermaLink="true">https://xinfang.site/2026/06/02/%E5%8F%A4%E6%B3%95%E7%BC%96%E7%A8%8B/%E6%95%B0%E7%BB%84/</guid>
+        <author>xinfan9</author>
+        
+        
+        <category>古法编程</category>
+        
+      </item>
+    
+      <item>
+        <title>数字编码</title>
+        <description><![CDATA[<h1 id="整数编码">整数编码</h1>
+]]></description>
+        <pubDate>Wed, 27 May 2026 15:54:04 +0800</pubDate>
+        <link>https://xinfang.site/2026/05/27/%E5%8F%A4%E6%B3%95%E7%BC%96%E7%A8%8B/%E6%95%B0%E5%AD%97%E7%BC%96%E7%A0%81/</link>
+        <guid isPermaLink="true">https://xinfang.site/2026/05/27/%E5%8F%A4%E6%B3%95%E7%BC%96%E7%A8%8B/%E6%95%B0%E5%AD%97%E7%BC%96%E7%A0%81/</guid>
+        <author>xinfan9</author>
+        
+        
+        <category>古法编程</category>
+        
+      </item>
+    
+      <item>
+        <title>函数的渐进上界</title>
+        <description><![CDATA[<p>若存在正实数$c$和实数$n_0$，使得对于所有的$n &gt; n_0$，均有$T(n) \leq c \cdot f(n)$，则可认为$f(n)$给出了$T(n)$的一个渐近上界，记为$T(n) = O(f(n))$。</p>
+]]></description>
+        <pubDate>Wed, 13 May 2026 16:17:41 +0800</pubDate>
+        <link>https://xinfang.site/2026/05/13/math/%E5%87%BD%E6%95%B0%E7%9A%84%E6%B8%90%E8%BF%9B%E4%B8%8A%E7%95%8C/</link>
+        <guid isPermaLink="true">https://xinfang.site/2026/05/13/math/%E5%87%BD%E6%95%B0%E7%9A%84%E6%B8%90%E8%BF%9B%E4%B8%8A%E7%95%8C/</guid>
+        <author>xinfan9</author>
+        
+        
+        <category>Math</category>
+        
+      </item>
+    
+      <item>
+        <title>迭代与递归</title>
+        <description><![CDATA[<p>重复执行某个任务在计算机中很常见。<strong>迭代和递归是两种基本的重复程序控制结构</strong>。</p>
+]]></description>
+        <pubDate>Sat, 09 May 2026 11:49:14 +0800</pubDate>
+        <link>https://xinfang.site/2026/05/09/%E5%8F%A4%E6%B3%95%E7%BC%96%E7%A8%8B/%E8%BF%AD%E4%BB%A3%E4%B8%8E%E9%80%92%E5%BD%92/</link>
+        <guid isPermaLink="true">https://xinfang.site/2026/05/09/%E5%8F%A4%E6%B3%95%E7%BC%96%E7%A8%8B/%E8%BF%AD%E4%BB%A3%E4%B8%8E%E9%80%92%E5%BD%92/</guid>
+        <author>xinfan9</author>
+        
+        
+        <category>古法编程</category>
+        
+      </item>
+    
+      <item>
+        <title>alog概述</title>
+        <description><![CDATA[<blockquote>
+  <p>为什么要学习算法？</p>
+
+  <p>学算法并非为了工作中实现它，而是面对实际问题善于找到最优解。</p>
+
+  <p>人的知识越完备，经验越多，分析问题就越深入。</p>
+
+  <p>参考书目：<a href="https://www.hello-algo.com/">《Hello algo》</a></p>
+</blockquote>
+]]></description>
+        <pubDate>Sat, 09 May 2026 11:49:14 +0800</pubDate>
+        <link>https://xinfang.site/2026/05/09/%E5%8F%A4%E6%B3%95%E7%BC%96%E7%A8%8B/alog%E6%A6%82%E8%BF%B0/</link>
+        <guid isPermaLink="true">https://xinfang.site/2026/05/09/%E5%8F%A4%E6%B3%95%E7%BC%96%E7%A8%8B/alog%E6%A6%82%E8%BF%B0/</guid>
+        <author>xinfan9</author>
+        
+        
+        <category>古法编程</category>
+        
+      </item>
+    
+      <item>
+        <title>百面机器学习</title>
+        <description><![CDATA[<h1 id="特征工程">特征工程</h1>
+]]></description>
+        <pubDate>Fri, 08 May 2026 10:18:23 +0800</pubDate>
+        <link>https://xinfang.site/2026/05/08/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E7%99%BE%E9%9D%A2%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/</link>
+        <guid isPermaLink="true">https://xinfang.site/2026/05/08/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E7%99%BE%E9%9D%A2%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/</guid>
+        <author>xinfan9</author>
+        
+        
+        <category>机器学习</category>
+        
+      </item>
+    
+      <item>
+        <title>梯度下降</title>
+        <description><![CDATA[<p>##</p>
+]]></description>
+        <pubDate>Fri, 08 May 2026 10:18:23 +0800</pubDate>
+        <link>https://xinfang.site/2026/05/08/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E6%A2%AF%E5%BA%A6%E4%B8%8B%E9%99%8D/</link>
+        <guid isPermaLink="true">https://xinfang.site/2026/05/08/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E6%A2%AF%E5%BA%A6%E4%B8%8B%E9%99%8D/</guid>
+        <author>xinfan9</author>
+        
+        
+        <category>机器学习</category>
+        
+      </item>
+    
+      <item>
+        <title>泰勒级数、泰勒公式、泰勒展开式</title>
+        <description><![CDATA[<h1 id="泰勒级数">泰勒级数</h1>
+]]></description>
+        <pubDate>Fri, 08 May 2026 10:18:19 +0800</pubDate>
+        <link>https://xinfang.site/2026/05/08/math/%E6%B3%B0%E5%8B%92%E7%BA%A7%E6%95%B0-%E6%B3%B0%E5%8B%92%E5%85%AC%E5%BC%8F-%E6%B3%B0%E5%8B%92%E5%B1%95%E5%BC%80%E5%BC%8F/</link>
+        <guid isPermaLink="true">https://xinfang.site/2026/05/08/math/%E6%B3%B0%E5%8B%92%E7%BA%A7%E6%95%B0-%E6%B3%B0%E5%8B%92%E5%85%AC%E5%BC%8F-%E6%B3%B0%E5%8B%92%E5%B1%95%E5%BC%80%E5%BC%8F/</guid>
+        <author>xinfan9</author>
+        
+        
+        <category>Math</category>
+        
+      </item>
+    
+      <item>
+        <title>CPP常见问题</title>
+        <description><![CDATA[<h1 id="cpp常见问题">CPP常见问题</h1>
+]]></description>
+        <pubDate>Tue, 28 Apr 2026 11:46:27 +0800</pubDate>
+        <link>https://xinfang.site/2026/04/28/c++/CPP%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98/</link>
+        <guid isPermaLink="true">https://xinfang.site/2026/04/28/c++/CPP%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98/</guid>
+        <author>xinfan9</author>
+        
+        
+        <category>C++</category>
+        
+      </item>
+    
+      <item>
+        <title>斯坦福-CS224N-NLP课程</title>
+        <description><![CDATA[<h1 id="前言">前言</h1>
+]]></description>
+        <pubDate>Thu, 23 Apr 2026 19:50:38 +0800</pubDate>
+        <link>https://xinfang.site/2026/04/23/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E6%96%AF%E5%9D%A6%E7%A6%8F-CS224N-NLP%E8%AF%BE%E7%A8%8B/</link>
+        <guid isPermaLink="true">https://xinfang.site/2026/04/23/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E6%96%AF%E5%9D%A6%E7%A6%8F-CS224N-NLP%E8%AF%BE%E7%A8%8B/</guid>
+        <author>xinfan9</author>
+        
+        
+        <category>机器学习</category>
+        
+      </item>
+    
+      <item>
+        <title>Openclaw</title>
+        <description><![CDATA[<h1 id="一认识-openclaw">一、认识 OpenClaw</h1>
+]]></description>
+        <pubDate>Thu, 23 Apr 2026 19:44:09 +0800</pubDate>
+        <link>https://xinfang.site/2026/04/23/agent/Openclaw/</link>
+        <guid isPermaLink="true">https://xinfang.site/2026/04/23/agent/Openclaw/</guid>
+        <author>xinfan9</author>
+        
+        
+        <category>Agent</category>
+        
+      </item>
+    
+      <item>
+        <title>我的买入方案</title>
+        <description><![CDATA[<h1 id="一交易纪律"><strong>一、交易纪律</strong></h1>
+]]></description>
+        <pubDate>Wed, 15 Apr 2026 14:50:44 +0800</pubDate>
+        <link>https://xinfang.site/2026/04/15/%E7%90%86%E8%B4%A2/%E6%88%91%E7%9A%84%E4%B9%B0%E5%85%A5%E6%96%B9%E6%A1%88/</link>
+        <guid isPermaLink="true">https://xinfang.site/2026/04/15/%E7%90%86%E8%B4%A2/%E6%88%91%E7%9A%84%E4%B9%B0%E5%85%A5%E6%96%B9%E6%A1%88/</guid>
+        <author>xinfan9</author>
+        
+        
+        <category>理财</category>
+        
+      </item>
+    
+      <item>
+        <title>clarity-demo</title>
+        <description><![CDATA[<h1 id="h1-一级标题">H1 一级标题</h1>
+]]></description>
+        <pubDate>Thu, 09 Apr 2026 19:00:01 +0800</pubDate>
+        <link>https://xinfang.site/2026/04/09/%E5%85%B6%E4%BB%96/clarity-demo/</link>
+        <guid isPermaLink="true">https://xinfang.site/2026/04/09/%E5%85%B6%E4%BB%96/clarity-demo/</guid>
+        <author>xinfan9</author>
+        
+        
+        <category>其他</category>
+        
+      </item>
+    
+      <item>
+        <title>比较检验</title>
+        <description><![CDATA[<h2 id="两种基本假设检验">两种基本假设检验</h2>
+]]></description>
+        <pubDate>Thu, 09 Apr 2026 11:26:03 +0800</pubDate>
+        <link>https://xinfang.site/2026/04/09/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E6%AF%94%E8%BE%83%E6%A3%80%E9%AA%8C/</link>
+        <guid isPermaLink="true">https://xinfang.site/2026/04/09/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E6%AF%94%E8%BE%83%E6%A3%80%E9%AA%8C/</guid>
+        <author>xinfan9</author>
+        
+        
+        <category>机器学习</category>
+        
+      </item>
+    
+      <item>
+        <title>git</title>
+        <description><![CDATA[<h1 id="git-安装">git 安装</h1>
+]]></description>
+        <pubDate>Tue, 07 Apr 2026 16:07:24 +0800</pubDate>
+        <link>https://xinfang.site/2026/04/07/%E5%B0%8F%E5%B7%A5%E5%85%B7/git/</link>
+        <guid isPermaLink="true">https://xinfang.site/2026/04/07/%E5%B0%8F%E5%B7%A5%E5%85%B7/git/</guid>
+        <author>xinfan9</author>
+        
+        
+        <category>小工具</category>
+        
+      </item>
+    
+      <item>
+        <title>core排查</title>
+        <description><![CDATA[<h3 id="第一阶段现场还原加载与定位">第一阶段：现场还原（加载与定位）</h3>
+]]></description>
+        <pubDate>Tue, 07 Apr 2026 16:02:14 +0800</pubDate>
+        <link>https://xinfang.site/2026/04/07/%E5%B0%8F%E5%B7%A5%E5%85%B7/core%E6%8E%92%E6%9F%A5/</link>
+        <guid isPermaLink="true">https://xinfang.site/2026/04/07/%E5%B0%8F%E5%B7%A5%E5%85%B7/core%E6%8E%92%E6%9F%A5/</guid>
+        <author>xinfan9</author>
+        
+        
+        <category>小工具</category>
+        
+      </item>
+    
+      <item>
+        <title>OpenClaw</title>
+        <description><![CDATA[<h1 id="卸载openclaw">卸载OpenClaw</h1>
+]]></description>
+        <pubDate>Thu, 02 Apr 2026 14:15:54 +0800</pubDate>
+        <link>https://xinfang.site/2026/04/02/%E5%B0%8F%E5%B7%A5%E5%85%B7/OpenClaw/</link>
+        <guid isPermaLink="true">https://xinfang.site/2026/04/02/%E5%B0%8F%E5%B7%A5%E5%85%B7/OpenClaw/</guid>
+        <author>xinfan9</author>
+        
+        
+        <category>小工具</category>
+        
+      </item>
+    
+  </channel>
+</rss>

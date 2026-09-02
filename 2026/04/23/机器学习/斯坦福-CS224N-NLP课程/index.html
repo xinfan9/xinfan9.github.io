@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+  <head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="Content-Language" content="zh-CN">
+	<title>斯坦福-CS224N-NLP课程 - xinfan9's blog</title>
+
+	<link rel="icon" href="/styles/images/favicon.jpg">
+
+	<!-- Preconnect for CDN -->
+	
+	<link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+	<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+	
+
+
+	<!-- Inline Critical Reset (was index.css) -->
+	<style>
+		*,*::before,*::after{box-sizing:border-box}html{-ms-text-size-adjust:100%;-webkit-text-size-adjust:100%;-webkit-tap-highlight-color:rgba(0,0,0,0)}body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Microsoft YaHei",sans-serif;font-size:14px;line-height:1.42857143;color:#333;background-color:#f7f7f7}article,aside,details,figcaption,figure,footer,header,main,nav,section,summary{display:block}a{color:#43759e;text-decoration:none;background:transparent}a:hover,a:focus{color:#2c4d68;text-decoration:underline}a:focus{outline:thin dotted;outline-offset:-2px}img{vertical-align:middle;max-width:100%;height:auto}input,button,select,textarea{font-family:inherit;font-size:inherit;line-height:inherit}h1,h2,h3,h4,h5,h6{margin-top:0}.container{max-width:1200px;margin-left:auto;margin-right:auto;padding-left:15px;padding-right:15px}.clearfix::after{content:"";display:table;clear:both}.text-muted{color:#777}.sr-only{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0,0,0,0);border:0}
+	</style>
+
+	
+	<link rel="prefetch" as="image" href="/styles/images/api/background.webp">
+
+	<!-- Clarity Blog Theme -->
+	<link rel="stylesheet" href="/assets/css/clarity-blog.css?v=1788352046">
+
+	<!-- Prism.js Theme (non-blocking, only needed for code blocks) -->
+	
+	
+	<link rel="canonical" href="https://xinfang.site/2026/04/23/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E6%96%AF%E5%9D%A6%E7%A6%8F-CS224N-NLP%E8%AF%BE%E7%A8%8B/">
+	<link rel="alternate" type="application/rss+xml" title="xinfan9's blog" href="https://xinfang.site/feed.xml">
+	
+	<meta name="description" content="前言
+">
+
+	<!-- Open Graph for social sharing -->
+	<meta property="og:title" content="斯坦福-CS224N-NLP课程">
+	<meta property="og:description" content="前言
+">
+	<meta property="og:url" content="https://xinfang.site/2026/04/23/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E6%96%AF%E5%9D%A6%E7%A6%8F-CS224N-NLP%E8%AF%BE%E7%A8%8B/">
+	<meta property="og:site_name" content="xinfan9's blog">
+	<meta property="og:type" content="article">
+	<meta property="article:published_time" content="2026-04-23T19:50:38+08:00">
+	
+	<meta property="og:image" content="https://xinfang.site/styles/images/api/background.webp">
+	<meta property="og:image:width" content="1200">
+	<meta property="og:image:height" content="630">
+	
+	<meta property="og:locale" content="zh_CN">
+
+	<!-- Twitter Card -->
+	<meta name="twitter:card" content="summary_large_image">
+	<meta name="twitter:title" content="斯坦福-CS224N-NLP课程">
+	<meta name="twitter:description" content="前言
+">
+	<meta name="twitter:image" content="https://xinfang.site/styles/images/favicon.jpg">
+	
+	<!-- Theme color for mobile browsers -->
+	<meta name="theme-color" content="#0b72d9" media="(prefers-color-scheme: light)">
+	<meta name="theme-color" content="#0f172a" media="(prefers-color-scheme: dark)">
+
+	<!-- Prevent FOUC for theme -->
+	<script>
+		(function() {
+			const savedTheme = localStorage.getItem('theme');
+			const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+			if (savedTheme) {
+				document.documentElement.setAttribute('data-theme', savedTheme);
+			} else if (prefersDark) {
+				document.documentElement.setAttribute('data-theme', 'dark');
+			}
+		})();
+	</script>
+	
+	<!-- Prism.js only on post pages with code blocks -->
+	
+
+	<!-- Mermaid.js for diagram rendering (conditional) -->
+	
+
+	<!-- MathJax for LaTeX rendering (conditional) -->
+	
+	<script>
+		MathJax = {
+			tex: { inlineMath: [['$','$'], ['\\(','\\)']], displayMath: [['$$','$$'], ['\\[','\\]']] },
+			svg: { fontCache: 'global' },
+			startup: { typeset: true }
+		};
+	</script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-svg.js" defer></script>
+	
+
+	<!-- Blog Interactive Features -->
+	<script src="/assets/js/blog.js?v=1788352046" defer></script>
+
+	<!-- JSON-LD Structured Data -->
+	
+	<script type="application/ld+json">
+	{
+		"@context": "https://schema.org",
+		"@type": "BlogPosting",
+		"inLanguage": "zh-CN",
+		"headline": "斯坦福-CS224N-NLP课程",
+		"image": "https://xinfang.site/styles/images/favicon.jpg",
+		"datePublished": "2026-04-23T19:50:38+08:00",
+		"dateModified": "2026-04-23T19:50:38+08:00",
+		"author": {
+			"@type": "Person",
+			"name": "xinfan9"
+		},
+		"publisher": {
+			"@type": "Organization",
+			"name": "xinfan9's blog",
+			"logo": {
+				"@type": "ImageObject",
+				"url": "https://xinfang.site/styles/images/favicon.jpg"
+			}
+		},
+		"mainEntityOfPage": {
+			"@type": "WebPage",
+			"@id": "https://xinfang.site/2026/04/23/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E6%96%AF%E5%9D%A6%E7%A6%8F-CS224N-NLP%E8%AF%BE%E7%A8%8B/"
+		},
+		"keywords": "机器学习",
+		"articleBody": "前言\n",
+		"description": "前言\n"
+	}
+	</script>
+	
+</head>
+
+  <body class="index">
+
+    <!-- Reading Progress Bar -->
+<div class="reading-progress" id="reading-progress"></div>
+
+<!-- Page Background -->
+<div class="post-background"></div>
+
+<div class="post-layout">
+  <!-- Left: TOC -->
+  <aside class="post-toc-sidebar" id="post-toc-sidebar" role="navigation" aria-label="文章目录">
+    <div class="toc-panel">
+      <div class="toc-title">
+        <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="12" x2="15" y2="12"></line><line x1="3" y1="18" x2="18" y2="18"></line></svg>
+        目录
+      </div>
+      <ul class="toc-list" id="toc-list"></ul>
+    </div>
+  </aside>
+
+  <!-- Center: Article -->
+  <main class="post-main">
+    <div class="panel docs-content">
+      <div class="wrapper">
+        <header class="post-header" role="banner">
+          <a href="https://xinfang.site/" class="back-home-link">
+            <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+            返回主页
+          </a>
+          <h1 class="post-title">斯坦福-CS224N-NLP课程</h1>
+          <div class="post-meta-info">
+            <time class="meta-item meta-date" datetime="2026-04-23T19:50:38+08:00">
+              <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+              2026-04-23
+            </time>
+            
+            <time class="meta-item meta-update" datetime="2026-05-08T10:20:44+08:00">
+              <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 2.2"/></svg>
+              2026-05-08
+            </time>
+            
+            <span class="meta-item meta-author">
+              <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+              xinfan9
+            </span>
+            
+            <span class="meta-item meta-words">
+              <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+              221 字
+            </span>
+            
+            <span class="meta-item meta-reading">
+              <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+              约 3 分钟
+            </span>
+          </div>
+        </header>
+        <article class="post-content" role="article">
+          <h1 id="前言">前言</h1>
+
+<p>本文主要介绍一些自然语言处理基础知识，涉及RNN、LSTM、CNN、transformer、bert等模型以及一些常见的问答、摘要、文本生成等典型应用场景。</p>
+
+<h1 id="早期语言表示的两种范式概念驱动wordnet与符号驱动独热编码">早期语言表示的两种范式：概念驱动（WordNet）与符号驱动（独热编码）</h1>
+
+<p>早期自然语言处理（NLP）中存在两种基础且截然不同的词语表示方法：<strong>WordNet</strong>，它代表着强调人工语义结构的<strong>知识驱动/概念驱动</strong>范式；以及<strong>独热编码（One-Hot Encoding）</strong>，它标志着将词视为离散符号的<strong>数据驱动</strong>范式开端。</p>
+
+<h2 id="一知识驱动范式基于概念的语义网络-wordnet">一、知识驱动范式：基于概念的语义网络 (WordNet)</h2>
+
+<p><strong>WordNet</strong> 是一个<strong>以“概念”为核心</strong>构建的英语词汇语义网络（lexical semantic database）。其核心思想源于认知科学：人类组织语言知识的基础是<strong>概念</strong>，而非孤立的词汇。</p>
+
+<h3 id="11-wordnet-的工作原理">1.1 WordNet 的工作原理</h3>
+
+<p>WordNet 将语义相同或相近的一组词（即<strong>同义词</strong>）归入一个称为 <strong>同义词集（Synset）</strong> 的单元中。</p>
+
+<ul>
+  <li><strong>唯一标识</strong>：一个词的具体含义可通过其所属的 Synset 唯一标识，格式为 <code>{$词}.{$词性}.{$同义词集编号}</code>。</li>
+  <li><strong>示例</strong>：
+    <ul>
+      <li>“I ate a red <strong>apple</strong>.” 中的水果“apple”表示为 <code>apple.n.01</code>。</li>
+      <li>“I bought the new <strong>Apple</strong>.” 中的科技公司“Apple”表示为 <code>Apple.n.02</code>。</li>
+    </ul>
+
+    <p>这种基于 Synset 的表示方法，本质上实现了<strong>词义消歧</strong>。</p>
+  </li>
+</ul>
+
+<h3 id="12-wordnet-的固有局限性">1.2 WordNet 的固有局限性</h3>
+
+<p>WordNet 虽语义清晰，但作为人工知识库存在固有缺陷：</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>局限性</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>高度依赖人工构建</strong></td>
+      <td>词义标注与网络扩展成本高、效率低，且带有主观性。</td>
+    </tr>
+    <tr>
+      <td><strong>覆盖范围静态且有限</strong></td>
+      <td>仅收录已有词形，难以涵盖新兴词汇、网络用语或领域特定术语（如 “ikun”）。</td>
+    </tr>
+    <tr>
+      <td><strong>缺乏上下文感知能力</strong></td>
+      <td>每个词义是<strong>静态固定</strong>的，无法根据具体语境动态调整；语义相似度基于人工结构，而非真实语言使用中的上下文统计。</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="二数据驱动范式基于符号的局部表示-独热编码">二、数据驱动范式：基于符号的局部表示 (独热编码)</h2>
+
+<p><strong>独热编码（One-Hot Encoding）思想将词语视为离散的符号</strong>（discrete symbols），而非连续的语义实体。这种方法被称为<strong>局部表示（Localist Representation）</strong>。它是现代深度学习语言模型的起点。</p>
+
+<h3 id="21-独热编码的工作原理">2.1 独热编码的工作原理</h3>
+
+<p>在独热编码体系中，每个词在词汇表中占据一个独立位置。它将每一个单词表示为一个<strong>高维稀疏向量</strong>，其中只有一个元素为 <strong>1</strong>（对应其在词汇表中的索引），其余均为 <strong>0</strong>。</p>
+
+<ul>
+  <li><strong>词汇表</strong>：假设 <code>['apple', 'banana', 'cherry', 'dog', 'cat']</code></li>
+  <li><strong>编码示例</strong>：
+    <ul>
+      <li><code>apple</code> = <code>[1, 0, 0, 0, 0]</code></li>
+      <li><code>banana</code> = <code>[0, 1, 0, 0, 0]</code></li>
+    </ul>
+  </li>
+  <li><strong>向量特性</strong>：向量维度等于词汇表大小（N），因此是 <strong>N 维极度稀疏</strong>的向量。</li>
+</ul>
+
+<h3 id="22-独热编码的根本缺陷">2.2 独热编码的根本缺陷</h3>
+
+<p>独热编码的“符号性”带来了结构上的简单性，但也导致了无法克服的缺陷：</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>缺陷</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>维度灾难 (Curse of Dimensionality)</strong></td>
+      <td>向量长度与词汇量成正比。当词汇量达数十万时，计算成本和存储效率急剧恶化。</td>
+    </tr>
+    <tr>
+      <td><strong>无法捕捉语义关系</strong></td>
+      <td>任意两个不同词的向量<strong>彼此正交</strong>（点积为 0，余弦相似度为 0），即模型认为“hotel”和“motel”的相似度等同于“hotel”和“cat”的相似度。</td>
+    </tr>
+  </tbody>
+</table>
+
+<h1 id="现代统计nlp最成功的理念基于上下文的分布表示">现代统计NLP最成功的理念：基于上下文的分布表示</h1>
+
+<p>早期表示方法（WordNet 的人工概念和独热编码的孤立符号）的局限性，促使研究人员寻求一种<strong>数据驱动</strong>且能捕捉<strong>语义连续性</strong>的新方法。现代统计自然语言处理（NLP）最成功的理念基于一个核心假设：“一个单词的语义是由经常出现在它周围的单词给出的。”</p>
+
+<p>因此，我们不再将词语视为孤立的符号，而是用一个词的<strong>上下文</strong>来构建它的语义表示，这种表示也叫<strong>分布式表示（Distributional Representation）</strong>。<strong>Word2Vec</strong> 是将分布式表示理念成功应用并推广的关键技术，它为后续的深度学习语言模型奠定了基础。</p>
+
+<h2 id="三word2vec分布式表示的开创性工作">三、Word2Vec：分布式表示的开创性工作</h2>
+
+<h3 id="31-word2vec-的核心训练流程">3.1 Word2Vec 的核心训练流程</h3>
+
+<p>Word2Vec 通过<strong>无监督方式</strong>从大规模<strong>未标注文本语料</strong>中学习词的语义向量表示，即<strong>词嵌入（Word Embedding）</strong>。其训练流程主要包括以下三个步骤：</p>
+
+<ol>
+  <li>
+    <p><strong>语料准备与预处理</strong>  <br />
+模型以海量原始文本作为输入，无需人工标注。系统首先对文本进行分词、去噪等预处理，构建一个由所有唯一词组成的<strong>词汇表</strong>（vocabulary）。</p>
+  </li>
+  <li>
+    <p><strong>初始化词向量</strong>  <br />
+词汇表中的每个词被赋予一个<strong>可学习的低维稠密向量</strong>（通常维度为 100–300），作为模型参数的一部分。这些向量在训练开始时随机初始化，最终通过优化过程获得具有语义意义的嵌入表示。</p>
+  </li>
+  <li>
+    <p><strong>建模上下文关系并优化概率分布</strong>  <br />
+对于语料中任意位置  $t$ ，设中心词为  $w_t$ ，其上下文由窗口大小  $C$  内的邻近词  ${w_{t+j} \mid -C \leq j \leq C, j \neq 0}$  构成。Word2Vec 通过中心词与上下文词，计算条件概率，并使用 <strong>Softmax 函数</strong>进行归一化，从而建模词语间的共现统计规律。</p>
+  </li>
+</ol>
+
+<hr />
+
+<h3 id="32-两种概率模型架构与目标函数">3.2 两种概率模型架构与目标函数</h3>
+
+<p>Word2Vec 提出两种对称但方向相反的概率模型，均以<strong>最小化平均负对数似然</strong>为优化目标：</p>
+
+<h4 id="skip-gramsg模型">Skip-Gram（SG）模型</h4>
+
+<p><img src="/post-images/机器学习/2026-04-09-斯坦福-CS224N-NLP课程.assets/image-20250928163140592-9048304-7000905.webp" alt="image-20250928163140592-9048304" /></p>
+
+<ul>
+  <li>
+    <p><strong>建模方向</strong>：以<strong>中心词预测上下文</strong>。</p>
+  </li>
+  <li>
+    <p><strong>目标</strong>：给定中心词  $w_t$ ，最大化其在窗口内所有上下文词的联合条件概率。</p>
+  </li>
+  <li>
+    <p><strong>似然函数</strong>：<br />
+<span class="kdmath">$L(\theta) = \prod_{t=1}^{T} \prod_{\substack{-C \leq j \leq C \\ j \neq 0}} P(w_{t+j} \mid w_t; \theta)$</span></p>
+  </li>
+  <li>
+    <p><strong>损失函数（平均负对数似然）</strong>：<br />
+<span class="kdmath">$J_{\text{SG}}(\theta) = -\frac{1}{T} \sum_{t=1}^{T} \sum_{\substack{-C \leq j \leq C \\ j \neq 0}} \log P(w_{t+j} \mid w_t; \theta)$</span></p>
+  </li>
+</ul>
+
+<h4 id="continuous-bag-of-wordscbow模型">Continuous Bag-of-Words（CBOW）模型</h4>
+
+<p><img src="/post-images/机器学习/2026-04-09-斯坦福-CS224N-NLP课程.assets/image-20250928163157416-9048319-7000667-7000868-7000871-7000872.webp" alt="image-20250928163157416-9048319-7000667" /></p>
+
+<ul>
+  <li>
+    <p><strong>建模方向</strong>：以<strong>上下文预测中心词</strong>。</p>
+  </li>
+  <li>
+    <p><strong>目标</strong>：利用窗口内所有上下文词（通常取其向量的平均或求和）预测中间的中心词  $w_t$ 。</p>
+  </li>
+  <li>
+    <p><strong>似然函数</strong>：<br />
+<span class="kdmath">$L(\theta) = \prod_{t=1}^{T} P\big(w_t \mid w_{t-C}, \dots, w_{t-1}, w_{t+1}, \dots, w_{t+C}; \theta\big)$</span></p>
+  </li>
+  <li>
+    <p><strong>损失函数</strong>：<br />
+<span class="kdmath">$J_{\text{CBOW}}(\theta) = -\frac{1}{T} \sum_{t=1}^{T} \log P\big(w_t \mid \text{Context}(w_t); \theta\big)$</span></p>
+  </li>
+</ul>
+
+<blockquote>
+  <p>两种模型在实践中各有优势——Skip-Gram 更适合小规模语料和稀有词建模，而 CBOW 训练更快、对高频词更稳定。</p>
+</blockquote>
+
+        </article>
+      </div>
+    </div>
+  </main>
+
+  <!-- Right: Category Articles -->
+  <aside class="post-category-sidebar" role="navigation" aria-label="分类文章列表">
+    <div class="category-panel">
+      
+      
+      <div class="category-sidebar-title">
+        <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
+        机器学习
+      </div>
+      <ul class="category-article-list">
+        
+        
+        <li class="">
+          <a href="/2026/08/21/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/LLM-%E8%AE%AD%E7%BB%83/" title="LLM 训练">
+            <span class="article-title">LLM 训练</span>
+            <span class="article-date">08-21</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/08/21/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0/" title="强化学习">
+            <span class="article-title">强化学习</span>
+            <span class="article-date">08-21</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/06/17/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/transformer/" title="transformer">
+            <span class="article-title">transformer</span>
+            <span class="article-date">06-17</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/05/08/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E6%A2%AF%E5%BA%A6%E4%B8%8B%E9%99%8D/" title="梯度下降">
+            <span class="article-title">梯度下降</span>
+            <span class="article-date">05-08</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/05/08/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E7%99%BE%E9%9D%A2%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" title="百面机器学习">
+            <span class="article-title">百面机器学习</span>
+            <span class="article-date">05-08</span>
+          </a>
+        </li>
+        
+        <li class="active">
+          <a href="/2026/04/23/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E6%96%AF%E5%9D%A6%E7%A6%8F-CS224N-NLP%E8%AF%BE%E7%A8%8B/" title="斯坦福-CS224N-NLP课程">
+            <span class="article-title">斯坦福-CS224N-NLP课程</span>
+            <span class="article-date">04-23</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/04/09/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E6%AF%94%E8%BE%83%E6%A3%80%E9%AA%8C/" title="比较检验">
+            <span class="article-title">比较检验</span>
+            <span class="article-date">04-09</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/01/22/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/TitanicTutorial/" title="TitanicTutorial">
+            <span class="article-title">TitanicTutorial</span>
+            <span class="article-date">01-22</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2025/11/06/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/MLP/" title="MLP">
+            <span class="article-title">MLP</span>
+            <span class="article-date">11-06</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2025/08/15/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E7%BA%BF%E6%80%A7%E5%9B%9E%E5%BD%92/" title="线性回归">
+            <span class="article-title">线性回归</span>
+            <span class="article-date">08-15</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2025/03/13/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E5%BC%95%E8%A8%80/" title="引言">
+            <span class="article-title">引言</span>
+            <span class="article-date">03-13</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2025/02/26/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E6%80%A7%E8%83%BD%E5%BA%A6%E9%87%8F/" title="性能度量">
+            <span class="article-title">性能度量</span>
+            <span class="article-date">02-26</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2025/02/25/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E8%AF%84%E4%BC%B0%E6%96%B9%E6%B3%95/" title="评估方法">
+            <span class="article-title">评估方法</span>
+            <span class="article-date">02-25</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2025/02/24/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E7%BB%8F%E9%AA%8C%E8%AF%AF%E5%B7%AE%E4%B8%8E%E8%BF%87%E6%8B%9F%E5%90%88/" title="经验误差与过拟合">
+            <span class="article-title">经验误差与过拟合</span>
+            <span class="article-date">02-24</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2025/02/23/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E5%81%87%E8%AE%BE%E7%A9%BA%E9%97%B4/" title="假设空间">
+            <span class="article-title">假设空间</span>
+            <span class="article-date">02-23</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2025/02/22/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E5%9F%BA%E6%9C%AC%E6%9C%AF%E8%AF%AD/" title="基本术语">
+            <span class="article-title">基本术语</span>
+            <span class="article-date">02-22</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2025/02/21/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E5%BD%92%E7%BA%B3%E5%81%8F%E5%A5%BD/" title="归纳偏好">
+            <span class="article-title">归纳偏好</span>
+            <span class="article-date">02-21</span>
+          </a>
+        </li>
+        
+      </ul>
+      
+    </div>
+  </aside>
+</div>
+
+<!-- Theme Toggle Button -->
+<button type="button" class="theme-toggle" aria-label="Toggle Theme">
+  <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+  </svg>
+  <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="12" cy="12" r="5"></circle>
+    <line x1="12" y1="1" x2="12" y2="3"></line>
+    <line x1="12" y1="21" x2="12" y2="23"></line>
+    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+    <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+    <line x1="1" y1="12" x2="3" y2="12"></line>
+    <line x1="21" y1="12" x2="23" y2="12"></line>
+    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+    <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+  </svg>
+</button>
+
+<!-- Back to Top Button -->
+<button type="button" class="back-to-top" aria-label="Back to Top">
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <polyline points="18 15 12 9 6 15"></polyline>
+  </svg>
+</button>
+
+
+    <!-- Site Footer -->
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-content">
+      <div class="footer-info">
+        <h4>xinfan9's blog</h4>
+        <p>Actually, less is more!</p>
+      </div>
+      <div class="footer-links">
+        <a href="https://github.com/xinfan9/" target="_blank" title="GitHub">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+        </a>
+        <a href="mailto:11411619@qq.com" title="Email">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+        </a>
+        <a href="/feed.xml" title="RSS">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11a9 9 0 0 1 9 9"/><path d="M4 4a16 16 0 0 1 16 16"/><circle cx="5" cy="19" r="1"/></svg>
+        </a>
+      </div>
+      <div class="footer-copyright">
+        <p>&copy; 2026 xinfan9. Built with Jekyll.</p>
+      </div>
+    </div>
+  </div>
+</footer>
+      
+    
+    <!-- Global Buttons (for non-post pages) -->
+    
+  </body>
+</html>
