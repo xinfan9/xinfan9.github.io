@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+  <head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="Content-Language" content="zh-CN">
+	<title>mem0 - xinfan9's blog</title>
+
+	<link rel="icon" href="/styles/images/favicon.jpg">
+
+	<!-- Preconnect for CDN -->
+	
+	<link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+	<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+	
+
+
+	<!-- Inline Critical Reset (was index.css) -->
+	<style>
+		*,*::before,*::after{box-sizing:border-box}html{-ms-text-size-adjust:100%;-webkit-text-size-adjust:100%;-webkit-tap-highlight-color:rgba(0,0,0,0)}body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Microsoft YaHei",sans-serif;font-size:14px;line-height:1.42857143;color:#333;background-color:#f7f7f7}article,aside,details,figcaption,figure,footer,header,main,nav,section,summary{display:block}a{color:#43759e;text-decoration:none;background:transparent}a:hover,a:focus{color:#2c4d68;text-decoration:underline}a:focus{outline:thin dotted;outline-offset:-2px}img{vertical-align:middle;max-width:100%;height:auto}input,button,select,textarea{font-family:inherit;font-size:inherit;line-height:inherit}h1,h2,h3,h4,h5,h6{margin-top:0}.container{max-width:1200px;margin-left:auto;margin-right:auto;padding-left:15px;padding-right:15px}.clearfix::after{content:"";display:table;clear:both}.text-muted{color:#777}.sr-only{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0,0,0,0);border:0}
+	</style>
+
+	
+	<link rel="prefetch" as="image" href="/styles/images/api/background.webp">
+
+	<!-- Clarity Blog Theme -->
+	<link rel="stylesheet" href="/assets/css/clarity-blog.css?v=1789907667">
+
+	<!-- Prism.js Theme (non-blocking, only needed for code blocks) -->
+	
+	
+	<link rel="canonical" href="https://xinfang.site/2026/09/20/agent/mem0/">
+	<link rel="alternate" type="application/rss+xml" title="xinfan9's blog" href="https://xinfang.site/feed.xml">
+	
+	<meta name="description" content="mem0 是一个开源记忆层（Memory Layer），为 AI Agent 提供长期记忆能力。
+">
+
+	<!-- Open Graph for social sharing -->
+	<meta property="og:title" content="mem0">
+	<meta property="og:description" content="mem0 是一个开源记忆层（Memory Layer），为 AI Agent 提供长期记忆能力。
+">
+	<meta property="og:url" content="https://xinfang.site/2026/09/20/agent/mem0/">
+	<meta property="og:site_name" content="xinfan9's blog">
+	<meta property="og:type" content="article">
+	<meta property="article:published_time" content="2026-09-20T20:33:54+08:00">
+	
+	<meta property="og:image" content="https://xinfang.site/styles/images/api/background.webp">
+	<meta property="og:image:width" content="1200">
+	<meta property="og:image:height" content="630">
+	
+	<meta property="og:locale" content="zh_CN">
+
+	<!-- Twitter Card -->
+	<meta name="twitter:card" content="summary_large_image">
+	<meta name="twitter:title" content="mem0">
+	<meta name="twitter:description" content="mem0 是一个开源记忆层（Memory Layer），为 AI Agent 提供长期记忆能力。
+">
+	<meta name="twitter:image" content="https://xinfang.site/styles/images/favicon.jpg">
+	
+	<!-- Theme color for mobile browsers -->
+	<meta name="theme-color" content="#0b72d9" media="(prefers-color-scheme: light)">
+	<meta name="theme-color" content="#0f172a" media="(prefers-color-scheme: dark)">
+
+	<!-- Prevent FOUC for theme -->
+	<script>
+		(function() {
+			const savedTheme = localStorage.getItem('theme');
+			const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+			if (savedTheme) {
+				document.documentElement.setAttribute('data-theme', savedTheme);
+			} else if (prefersDark) {
+				document.documentElement.setAttribute('data-theme', 'dark');
+			}
+		})();
+	</script>
+	
+	<!-- Prism.js only on post pages with code blocks -->
+	
+
+	<!-- Mermaid.js for diagram rendering (conditional) -->
+	
+
+	<!-- MathJax for LaTeX rendering (conditional) -->
+	
+
+	<!-- Blog Interactive Features -->
+	<script src="/assets/js/blog.js?v=1789907667" defer></script>
+
+	<!-- JSON-LD Structured Data -->
+	
+	<script type="application/ld+json">
+	{
+		"@context": "https://schema.org",
+		"@type": "BlogPosting",
+		"inLanguage": "zh-CN",
+		"headline": "mem0",
+		"image": "https://xinfang.site/styles/images/favicon.jpg",
+		"datePublished": "2026-09-20T20:33:54+08:00",
+		"dateModified": "2026-09-20T20:33:54+08:00",
+		"author": {
+			"@type": "Person",
+			"name": "xinfan9"
+		},
+		"publisher": {
+			"@type": "Organization",
+			"name": "xinfan9's blog",
+			"logo": {
+				"@type": "ImageObject",
+				"url": "https://xinfang.site/styles/images/favicon.jpg"
+			}
+		},
+		"mainEntityOfPage": {
+			"@type": "WebPage",
+			"@id": "https://xinfang.site/2026/09/20/agent/mem0/"
+		},
+		"keywords": "Agent",
+		"articleBody": "mem0 是一个开源记忆层（Memory Layer），为 AI Agent 提供长期记忆能力。\n",
+		"description": "mem0 是一个开源记忆层（Memory Layer），为 AI Agent 提供长期记忆能力。\n"
+	}
+	</script>
+	
+</head>
+
+  <body class="index">
+
+    <!-- Reading Progress Bar -->
+<div class="reading-progress" id="reading-progress"></div>
+
+<!-- Page Background -->
+<div class="post-background"></div>
+
+<div class="post-layout">
+  <!-- Left: TOC -->
+  <aside class="post-toc-sidebar" id="post-toc-sidebar" role="navigation" aria-label="文章目录">
+    <div class="toc-panel">
+      <div class="toc-title">
+        <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="12" x2="15" y2="12"></line><line x1="3" y1="18" x2="18" y2="18"></line></svg>
+        目录
+      </div>
+      <ul class="toc-list" id="toc-list"></ul>
+    </div>
+  </aside>
+
+  <!-- Center: Article -->
+  <main class="post-main">
+    <div class="panel docs-content">
+      <div class="wrapper">
+        <header class="post-header" role="banner">
+          <a href="https://xinfang.site/" class="back-home-link">
+            <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+            返回主页
+          </a>
+          <h1 class="post-title">mem0</h1>
+          <div class="post-meta-info">
+            <time class="meta-item meta-date" datetime="2026-09-20T20:33:54+08:00">
+              <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+              2026-09-20
+            </time>
+            
+            <time class="meta-item meta-update" datetime="2026-09-20T20:33:54+08:00">
+              <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 2.2"/></svg>
+              2026-09-20
+            </time>
+            
+            <span class="meta-item meta-author">
+              <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+              xinfan9
+            </span>
+            
+            <span class="meta-item meta-words">
+              <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+              649 字
+            </span>
+            
+            <span class="meta-item meta-reading">
+              <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+              约 7 分钟
+            </span>
+          </div>
+        </header>
+        <article class="post-content" role="article">
+          <p>mem0 是一个开源记忆层（Memory Layer），为 AI Agent 提供长期记忆能力。</p>
+
+<pre><code>用户消息
+  │
+  ▼
+Memory.add() / Memory.search()              [memory/main.py]
+  │
+  ├── LLM 层 (18+ 提供方)                   [llms/]
+  │   └── 事实提取 / 记忆合并
+  ├── Embedding 层 (12+ 提供方)             [embeddings/]
+  │   └── 文本 → 向量
+  ├── Vector Store 层 (24+ 提供方)          [vector_stores/]
+  │   └── 向量存储 / 检索
+  ├── Entity Store                          [memory/main.py]
+  │   └── 实体抽取 + 记忆-实体双向链接
+  ├── SQLite 存储                            [memory/storage.py]
+  │   └── 历史记录 / 消息缓存
+  └── Reranker 层 (5 提供方)                [reranker/]
+      └── 可选重排序
+</code></pre>
+
+<p>把 LLM 的职责压缩到最小（只做事实提取），其余全部用确定性算法（hash 去重、spaCy 实体抽取、向量搜索）完成。</p>
+
+<h1 id="核心流程一add--写入记忆">核心流程一：add() — 写入记忆</h1>
+
+<pre><code>add(messages, user_id, agent_id, metadata)
+  │
+  ├── 参数校验
+  │   ├─ 至少一个身份标识 (user_id/agent_id/run_id)
+  │   └─ 防止 metadata 注入身份字段
+  │
+  └── V3 Phased Batch Pipeline (infer=True)
+      │
+      ├── Phase 0: 上下文收集
+      │   └─ 从 SQLite 取最近 10 条消息作为上下文
+      │
+      ├── Phase 1: 已有记忆检索
+      │   ├─ 对新消息做 embedding
+      │   ├─ 向量搜索 top-10 相关已有记忆
+      │   └─ UUID → 整数映射 (防幻觉，见下文)
+      │
+      ├── Phase 2: LLM 事实抽取 (单次调用)
+      │   ├─ 输入: 新消息 + 已有记忆 + 上下文
+      │   ├─ 输出: 结构化 JSON (只做 ADD，不做 UPDATE/DELETE)
+      │   └─ 这是 V3 的核心简化——旧版让 LLM 做 CRUD 决策，新版只提取
+      │
+      ├── Phase 3: 批量 Embedding
+      │   ├─ 优先用 batch API 一次编码所有文本
+      │   └─ 失败则逐条回退
+      │
+      ├── Phase 4: 单条 CPU 处理
+      │   ├─ BM25 词形还原 (lemmatize)
+      │   └─ MD5 hash (用于去重)
+      │
+      ├── Phase 5: Hash 去重
+      │   └─ 与已有 hash + 本轮已见 hash 比较，跳过重复
+      │
+      ├── Phase 6: 批量持久化
+      │   ├─ vector_store.insert() 写入向量
+      │   └─ SQLite 记录变更历史
+      │
+      ├── Phase 7: 批量实体链接
+      │   ├─ spaCy 抽取实体 (零 LLM 成本)
+      │   ├─ 实体去重 → embed → 搜索已有实体
+      │   └─ 新增或更新实体-记忆关联
+      │
+      └── Phase 8: 保存消息 + 返回
+          ├─ SQLite 保存消息 (按 session 保留最近 10 条)
+          └─ return [{"id", "memory", "event":"ADD"}, ...]
+</code></pre>
+
+<h3 id="参数校验">参数校验</h3>
+
+<p>校验三步：<code>user_id</code>、<code>agent_id</code>、<code>run_id</code>至少传一个，这三个会被拆成租户标识用于后续所有搜索的隔离；防止调用者通过 <code>metadata</code> 偷偷注入身份信息来跨越租户边界；消息格式自动归一化——传字符串自动转消息列表，传字典自动包一层。</p>
+
+<h3 id="phase-0上下文收集滑动窗口">Phase 0：上下文收集（滑动窗口）</h3>
+
+<p>从 SQLite 取最近 10 条消息作为 LLM 提取时的上下文。把 <code>user_id</code>、<code>agent_id</code>、<code>run_id</code> 拼成确定性字符串作为查询 key，按时间倒序取最近 10 条再升序返回。之所以需要这一步，是因为用户说&#8221;它很快&#8221;，没有上文 LLM 就不知道&#8221;它&#8221;指什么。</p>
+
+<h3 id="phase-1已有记忆检索向量检索">Phase 1：已有记忆检索（向量检索）</h3>
+
+<p>搜索与新消息相关的已有记忆，供 LLM 判断哪些是新事实、哪些已经知道了。把新消息做 embedding 后向量搜索取 top-10。关键一步是 UUID → 整数映射：真实记忆 ID 是长 UUID，传给 LLM 时替换成 <code>"0"</code>、<code>"1"</code> 这种短整数。因为 LLM 看到真实 UUID 可能编造不存在的 ID（幻觉），短整数让它只能引用我们给的 ID。</p>
+
+<h3 id="phase-2llm-事实抽取">Phase 2：LLM 事实抽取</h3>
+
+<p>一次性把所有信息发给 LLM，让它从新消息中提取事实。输入包括系统指令（纯增量提取，只提取新事实）、新消息、已有记忆列表、最近上下文；输出为结构化 JSON，每条记忆包含文本和归属人。之所以叫&#8221;增量提取&#8221;，LLM 只管提取，去重交给后面的 hash 比较，更新交给外部逻辑。</p>
+
+<h3 id="phase-3批量-embedding">Phase 3：批量 Embedding</h3>
+
+<p>把 LLM 提取的所有记忆文本一次性编码成向量。优先一次 API 调用处理全部，失败则逐条回退。如果 LLM 提取了 20 条记忆，逐条就是 20 次 API 调用，batch 只需要 1 次。</p>
+
+<h3 id="phase-4生成指纹--hash-去重">Phase 4：生成指纹 + Hash 去重</h3>
+
+<p>对每条记忆做两个纯 CPU 操作：词形还原，如把 &#8220;running&#8221;→&#8221;run&#8221;、&#8221;cars&#8221;→&#8221;car&#8221;，让后续关键词搜索时搜 &#8220;run&#8221; 能匹配到存储的 &#8220;running&#8221;；MD5 哈希，生成 32 位指纹用于去重。同时组装元数据：原文、词形还原后文本、哈希、时间戳、归属人。</p>
+
+<p>跳过已经存在的记忆，分两层：跨批次去重，和已有记忆的 hash 比较；同批次去重，和本轮已处理的 hash 比较。命中任何一个就跳过。用 hash 而不是向量相似度，是因为 hash 是确定性算法——相同文本必定相同指纹，零误判，且比较是 O(1)，比向量搜索快几个数量级。</p>
+
+<h3 id="phase-5批量持久化">Phase 5：批量持久化</h3>
+
+<p>把去重后的记录写入两个存储：向量数据库负责语义检索，批量写入向量和元数据；SQLite 负责审计追踪，记录谁在什么时候加了什么记忆。两者职责分离，各自失败各自逐条回退。</p>
+
+<h3 id="phase-6批量实体链接">Phase 6：批量实体链接</h3>
+
+<p>从记忆文本中抽取实体，建立记忆和实体的双向链接。分五步：用 spaCy （开源的 Python NLP 库）批量抽取人名、组织、地点等实体（零 LLM 成本）；标准化去重——&#8221;阿里巴巴&#8221;和&#8221;阿里&#8221;归一化为同一个 key；把实体文本编码成向量；搜索是否已有这些实体，精确匹配或语义相似度 ≥ 0.95 都算命中；命中则合并关联记忆列表，新实体则批量插入。这一步让搜索时能通过实体反向找到关联记忆——搜&#8221;阿里&#8221;，不是靠语义碰运气，而是直接找到链接到这个实体的所有记忆。</p>
+
+<pre><code>每条 entity 的数据结构：
+
+Text
+
+{
+  "data": "阿里巴巴",           // 实体文本
+  "entity_type": "PROPER",      // 实体类型 (PROPER/QUOTED/TOPIC/IDENTIFIER)
+  "linked_memory_ids": [        // 关联的记忆 ID 列表
+    "uuid-1",
+    "uuid-2",
+    "uuid-3"
+  ],
+  "user_id": "u1",              // 租户隔离字段
+  "agent_id": "a1"
+}
+
+</code></pre>
+
+<p>加上向量本身（由 embed(entity_text) 生成），用于语义搜索。</p>
+
+<p>核心操作：</p>
+
+<p>写入（upsert）：先精确匹配（同一 normalized key），再语义匹配（向量相似度 ≥ 0.95）。命中则往 linked_memory_ids 追加新记忆 ID；未命中则新建一条 entity 记录。<br />
+删除关联：当一条记忆被删除时，遍历记忆的所有 entity，从 linked_memory_ids 中移除该记忆 ID。如果移除后列表为空，整个 entity 记录删除。<br />
+搜索：search() 时从查询中抽实体 → 搜 entity store → 拿到 linked_memory_ids → 给这些记忆加分。</p>
+
+<pre><code>真正的知识图谱（比如 Neo4j、NebulaGraph）不会遍历所有节点，靠的是索引 + 图遍历剪枝。
+
+新增节点/边时：通过索引定位。比如新增"辛放 → 工作于 → 阿里巴巴"，先在节点索引里查"辛放"和"阿里巴巴"是否存在（B-tree 或哈希索引，O(log n) 或 O(1)），存在就复用，不存在就新建。然后插入边。全程不扫全表。
+
+删除节点时：只需要处理直接关联的边。图数据库存了邻接表——每个节点知道自己连着哪些边。删"辛放"这个节点，只需要遍历它的出边和入边（通常几条到几十条），删掉这些边，再检查相邻节点是否变成孤立节点。不需要碰图中不相关的节点。
+
+更新关系时：只影响路径上的节点。比如"辛放从阿里巴巴跳槽到腾讯"，只改一条边的指向，其他几百万个节点完全不受影响。
+
+真正需要遍历的场景是图查询——比如"找到辛放的所有二度人脉"，这时才从"辛放"出发，沿着边做 BFS，但也是按需遍历，碰到目标深度就停，不会扫全图。
+</code></pre>
+
+<h1 id="核心流程二search">核心流程二：search</h1>
+
+<p>检索流程主要围绕向量检索、BM25检索和实体检索。</p>
+
+<pre><code>search(query, user_id, top_k=20, threshold=0.1)
+  │
+  ├── 参数校验
+  │   ├─ 至少一个身份标识
+  │   └─ 高级过滤 (eq/ne/gt/lt/in/contains/AND/OR/NOT)
+  │
+  └── 混合检索 (Hybrid Search)
+      │
+      ├── Step 1: BM25 预处理
+      │   └─ 查询词形还原
+      │
+      ├── Step 2: 实体抽取
+      │   └─ spaCy 抽取查询中的实体
+      │
+      ├── Step 3: 语义 Embedding
+      │   └─ 查询文本 → 向量
+      │
+      ├── Step 4: 向量搜索 (Over-fetch 4×)
+      │   └─ 先取 top_k × 4 条候选，再精排
+      │
+      ├── Step 5: BM25 关键词搜索
+      │   └─ 全文检索 (仅 Qdrant/ES/PGVector 支持)
+      │
+      ├── Step 6: BM25 归一化
+      │   └─ sigmoid 自适应归一化 (参数根据查询词数动态调整)
+      │
+      ├── Step 7: 实体 Boost
+      │   └─ 搜索 entity_store，匹配实体的关联记忆加分
+      │
+      ├── Step 8: 混合评分
+      │   └─ combined = (semantic + BM25 + entity_boost) / max_possible
+      │
+      └── Step 9: 格式化返回
+          └─ return {"results": [MemoryItem, ...]}
+</code></pre>
+
+<h1 id="关键组件">关键组件</h1>
+
+<h3 id="实体系统-entity-store">实体系统 (Entity Store)</h3>
+
+<p>独立的向量集合，存储 <code>(entity_text, entity_type, linked_memory_ids)</code>：</p>
+
+<ul>
+  <li><strong>抽取</strong>：spaCy NLP（非 LLM），零 API 成本，抽取 4 类实体（专有名词、引号文本、名词复合、技术标识符）</li>
+  <li><strong>去重</strong>：同一实体只存一份，多条记忆链接到同一个实体</li>
+  <li><strong>双向链接</strong>：记忆 → 实体、实体 → 记忆，支持&#8221;这个实体关联了哪些记忆&#8221;的反向查询</li>
+  <li><strong>搜索增强</strong>：search() 时匹配实体为关联记忆加分</li>
+</ul>
+
+<h3 id="session-隔离">Session 隔离</h3>
+
+<p>通过 <code>user_id</code> + <code>agent_id</code> + <code>run_id</code> 三重标识实现租户隔离：</p>
+
+<ul>
+  <li><code>user_id</code>：不同用户数据完全隔离</li>
+  <li><code>agent_id</code>：同一用户的不同 Agent 实例隔离</li>
+  <li><code>run_id</code>：同一 Agent 的不同会话隔离</li>
+  <li><code>_build_session_scope()</code> 生成确定性 scope key，用于 SQLite 查询过滤</li>
+</ul>
+
+<h3 id="sqlite-存储">SQLite 存储</h3>
+
+<p>两张表：</p>
+
+<ul>
+  <li><code>history</code>：记忆变更历史（ADD/UPDATE/DELETE），用于回溯</li>
+  <li><code>messages</code>：最近 N 条消息（按 session 保留最近 10 条），作为 add() 的上下文</li>
+</ul>
+
+<p>线程安全：<code>threading.Lock</code> 保护所有写操作。</p>
+
+        </article>
+      </div>
+    </div>
+  </main>
+
+  <!-- Right: Category Articles -->
+  <aside class="post-category-sidebar" role="navigation" aria-label="分类文章列表">
+    <div class="category-panel">
+      
+      
+      <div class="category-sidebar-title">
+        <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
+        Agent
+      </div>
+      <ul class="category-article-list">
+        
+        
+        <li class="">
+          <a href="/2026/09/20/agent/Clarity/" title="Clarity">
+            <span class="article-title">Clarity</span>
+            <span class="article-date">09-20</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/09/20/agent/ClaudeCode-%E6%A0%B8%E5%BF%83%E6%B5%81%E7%A8%8B/" title="ClaudeCode 核心流程">
+            <span class="article-title">ClaudeCode 核心流程</span>
+            <span class="article-date">09-20</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/09/20/agent/Codex/" title="Codex">
+            <span class="article-title">Codex</span>
+            <span class="article-date">09-20</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/09/20/agent/DeepSeek-Harness/" title="DeepSeek Harness">
+            <span class="article-title">DeepSeek Harness</span>
+            <span class="article-date">09-20</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/09/20/agent/Hermes/" title="Hermes">
+            <span class="article-title">Hermes</span>
+            <span class="article-date">09-20</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/09/20/agent/Orchestration/" title="Orchestration">
+            <span class="article-title">Orchestration</span>
+            <span class="article-date">09-20</span>
+          </a>
+        </li>
+        
+        <li class="active">
+          <a href="/2026/09/20/agent/mem0/" title="mem0">
+            <span class="article-title">mem0</span>
+            <span class="article-date">09-20</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/09/20/agent/%E4%B8%80-Agent%E7%B3%BB%E7%BB%9F%E7%A0%94%E7%A9%B6%E8%84%89%E7%BB%9C/" title="一、Agent系统研究脉络">
+            <span class="article-title">一、Agent系统研究脉络</span>
+            <span class="article-date">09-20</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/09/14/agent/Agent-Ultimate-Edition/" title="Agent Ultimate Edition">
+            <span class="article-title">Agent Ultimate Edition</span>
+            <span class="article-date">09-14</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/09/14/agent/OpenClaw/" title="OpenClaw">
+            <span class="article-title">OpenClaw</span>
+            <span class="article-date">09-14</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/08/24/agent/%E9%95%BF%E7%A8%8B%E4%BB%BB%E5%8A%A1/" title="长程任务">
+            <span class="article-title">长程任务</span>
+            <span class="article-date">08-24</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/08/21/agent/RAG/" title="RAG">
+            <span class="article-title">RAG</span>
+            <span class="article-date">08-21</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/08/21/agent/%E4%B8%8A%E4%B8%8B%E6%96%87%E5%B7%A5%E7%A8%8B/" title="上下文工程">
+            <span class="article-title">上下文工程</span>
+            <span class="article-date">08-21</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/08/21/agent/%E8%AE%B0%E5%BF%86/" title="记忆">
+            <span class="article-title">记忆</span>
+            <span class="article-date">08-21</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/08/21/agent/Agent-RL/" title="Agent RL">
+            <span class="article-title">Agent RL</span>
+            <span class="article-date">08-21</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/08/21/agent/MCP/" title="MCP">
+            <span class="article-title">MCP</span>
+            <span class="article-date">08-21</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/08/10/agent/Plan-and-Solve/" title="Plan and Solve">
+            <span class="article-title">Plan and Solve</span>
+            <span class="article-date">08-10</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/08/10/agent/Reflection/" title="Reflection">
+            <span class="article-title">Reflection</span>
+            <span class="article-date">08-10</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/07/31/agent/ReAct/" title="ReAct">
+            <span class="article-title">ReAct</span>
+            <span class="article-date">07-31</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/07/30/agent/Scaling-Laws%E4%B8%8E%E6%A8%A1%E5%9E%8B%E5%B9%BB%E8%A7%89/" title="Scaling Laws">
+            <span class="article-title">Scaling Laws</span>
+            <span class="article-date">07-30</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/07/30/agent/%E6%A8%A1%E5%9E%8B%E9%80%89%E6%8B%A9%E7%9A%84%E8%80%83%E9%87%8F/" title="模型选择的考量">
+            <span class="article-title">模型选择的考量</span>
+            <span class="article-date">07-30</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/07/30/agent/Tokenizer/" title="Tokenizer">
+            <span class="article-title">Tokenizer</span>
+            <span class="article-date">07-30</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/07/23/agent/%E6%8F%90%E7%A4%BA%E5%B7%A5%E7%A8%8B/" title="提示工程">
+            <span class="article-title">提示工程</span>
+            <span class="article-date">07-23</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/06/09/agent/%E5%A4%A7%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E9%A9%B1%E5%8A%A8%E7%9A%84%E6%99%BA%E8%83%BD%E4%BD%93/" title="初识智能体">
+            <span class="article-title">初识智能体</span>
+            <span class="article-date">06-09</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/04/23/agent/Openclaw/" title="Openclaw">
+            <span class="article-title">Openclaw</span>
+            <span class="article-date">04-23</span>
+          </a>
+        </li>
+        
+      </ul>
+      
+    </div>
+  </aside>
+</div>
+
+<!-- Theme Toggle Button -->
+<button type="button" class="theme-toggle" aria-label="Toggle Theme">
+  <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+  </svg>
+  <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="12" cy="12" r="5"></circle>
+    <line x1="12" y1="1" x2="12" y2="3"></line>
+    <line x1="12" y1="21" x2="12" y2="23"></line>
+    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+    <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+    <line x1="1" y1="12" x2="3" y2="12"></line>
+    <line x1="21" y1="12" x2="23" y2="12"></line>
+    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+    <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+  </svg>
+</button>
+
+<!-- Back to Top Button -->
+<button type="button" class="back-to-top" aria-label="Back to Top">
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <polyline points="18 15 12 9 6 15"></polyline>
+  </svg>
+</button>
+
+
+    <!-- Site Footer -->
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-content">
+      <div class="footer-info">
+        <h4>xinfan9's blog</h4>
+        <p>Actually, less is more!</p>
+      </div>
+      <div class="footer-links">
+        <a href="https://github.com/xinfan9/" target="_blank" title="GitHub">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+        </a>
+        <a href="mailto:11411619@qq.com" title="Email">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+        </a>
+        <a href="/feed.xml" title="RSS">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11a9 9 0 0 1 9 9"/><path d="M4 4a16 16 0 0 1 16 16"/><circle cx="5" cy="19" r="1"/></svg>
+        </a>
+      </div>
+      <div class="footer-copyright">
+        <p>&copy; 2026 xinfan9. Built with Jekyll.</p>
+      </div>
+    </div>
+  </div>
+</footer>
+      
+    
+    <!-- Global Buttons (for non-post pages) -->
+    
+  </body>
+</html>

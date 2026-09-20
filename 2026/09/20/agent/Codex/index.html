@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+  <head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="Content-Language" content="zh-CN">
+	<title>Codex - xinfan9's blog</title>
+
+	<link rel="icon" href="/styles/images/favicon.jpg">
+
+	<!-- Preconnect for CDN -->
+	
+	<link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+	<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+	
+
+
+	<!-- Inline Critical Reset (was index.css) -->
+	<style>
+		*,*::before,*::after{box-sizing:border-box}html{-ms-text-size-adjust:100%;-webkit-text-size-adjust:100%;-webkit-tap-highlight-color:rgba(0,0,0,0)}body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Microsoft YaHei",sans-serif;font-size:14px;line-height:1.42857143;color:#333;background-color:#f7f7f7}article,aside,details,figcaption,figure,footer,header,main,nav,section,summary{display:block}a{color:#43759e;text-decoration:none;background:transparent}a:hover,a:focus{color:#2c4d68;text-decoration:underline}a:focus{outline:thin dotted;outline-offset:-2px}img{vertical-align:middle;max-width:100%;height:auto}input,button,select,textarea{font-family:inherit;font-size:inherit;line-height:inherit}h1,h2,h3,h4,h5,h6{margin-top:0}.container{max-width:1200px;margin-left:auto;margin-right:auto;padding-left:15px;padding-right:15px}.clearfix::after{content:"";display:table;clear:both}.text-muted{color:#777}.sr-only{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0,0,0,0);border:0}
+	</style>
+
+	
+	<link rel="prefetch" as="image" href="/styles/images/api/background.webp">
+
+	<!-- Clarity Blog Theme -->
+	<link rel="stylesheet" href="/assets/css/clarity-blog.css?v=1789907667">
+
+	<!-- Prism.js Theme (non-blocking, only needed for code blocks) -->
+	
+	
+	<link rel="canonical" href="https://xinfang.site/2026/09/20/agent/Codex/">
+	<link rel="alternate" type="application/rss+xml" title="xinfan9's blog" href="https://xinfang.site/feed.xml">
+	
+	<meta name="description" content="Codex Harness 核心流程分析
+">
+
+	<!-- Open Graph for social sharing -->
+	<meta property="og:title" content="Codex">
+	<meta property="og:description" content="Codex Harness 核心流程分析
+">
+	<meta property="og:url" content="https://xinfang.site/2026/09/20/agent/Codex/">
+	<meta property="og:site_name" content="xinfan9's blog">
+	<meta property="og:type" content="article">
+	<meta property="article:published_time" content="2026-09-20T20:33:54+08:00">
+	
+	<meta property="og:image" content="https://xinfang.site/styles/images/api/background.webp">
+	<meta property="og:image:width" content="1200">
+	<meta property="og:image:height" content="630">
+	
+	<meta property="og:locale" content="zh_CN">
+
+	<!-- Twitter Card -->
+	<meta name="twitter:card" content="summary_large_image">
+	<meta name="twitter:title" content="Codex">
+	<meta name="twitter:description" content="Codex Harness 核心流程分析
+">
+	<meta name="twitter:image" content="https://xinfang.site/styles/images/favicon.jpg">
+	
+	<!-- Theme color for mobile browsers -->
+	<meta name="theme-color" content="#0b72d9" media="(prefers-color-scheme: light)">
+	<meta name="theme-color" content="#0f172a" media="(prefers-color-scheme: dark)">
+
+	<!-- Prevent FOUC for theme -->
+	<script>
+		(function() {
+			const savedTheme = localStorage.getItem('theme');
+			const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+			if (savedTheme) {
+				document.documentElement.setAttribute('data-theme', savedTheme);
+			} else if (prefersDark) {
+				document.documentElement.setAttribute('data-theme', 'dark');
+			}
+		})();
+	</script>
+	
+	<!-- Prism.js only on post pages with code blocks -->
+	
+
+	<!-- Mermaid.js for diagram rendering (conditional) -->
+	
+
+	<!-- MathJax for LaTeX rendering (conditional) -->
+	
+
+	<!-- Blog Interactive Features -->
+	<script src="/assets/js/blog.js?v=1789907667" defer></script>
+
+	<!-- JSON-LD Structured Data -->
+	
+	<script type="application/ld+json">
+	{
+		"@context": "https://schema.org",
+		"@type": "BlogPosting",
+		"inLanguage": "zh-CN",
+		"headline": "Codex",
+		"image": "https://xinfang.site/styles/images/favicon.jpg",
+		"datePublished": "2026-09-20T20:33:54+08:00",
+		"dateModified": "2026-09-20T20:33:54+08:00",
+		"author": {
+			"@type": "Person",
+			"name": "xinfan9"
+		},
+		"publisher": {
+			"@type": "Organization",
+			"name": "xinfan9's blog",
+			"logo": {
+				"@type": "ImageObject",
+				"url": "https://xinfang.site/styles/images/favicon.jpg"
+			}
+		},
+		"mainEntityOfPage": {
+			"@type": "WebPage",
+			"@id": "https://xinfang.site/2026/09/20/agent/Codex/"
+		},
+		"keywords": "Agent",
+		"articleBody": "Codex Harness 核心流程分析\n",
+		"description": "Codex Harness 核心流程分析\n"
+	}
+	</script>
+	
+</head>
+
+  <body class="index">
+
+    <!-- Reading Progress Bar -->
+<div class="reading-progress" id="reading-progress"></div>
+
+<!-- Page Background -->
+<div class="post-background"></div>
+
+<div class="post-layout">
+  <!-- Left: TOC -->
+  <aside class="post-toc-sidebar" id="post-toc-sidebar" role="navigation" aria-label="文章目录">
+    <div class="toc-panel">
+      <div class="toc-title">
+        <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="12" x2="15" y2="12"></line><line x1="3" y1="18" x2="18" y2="18"></line></svg>
+        目录
+      </div>
+      <ul class="toc-list" id="toc-list"></ul>
+    </div>
+  </aside>
+
+  <!-- Center: Article -->
+  <main class="post-main">
+    <div class="panel docs-content">
+      <div class="wrapper">
+        <header class="post-header" role="banner">
+          <a href="https://xinfang.site/" class="back-home-link">
+            <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+            返回主页
+          </a>
+          <h1 class="post-title">Codex</h1>
+          <div class="post-meta-info">
+            <time class="meta-item meta-date" datetime="2026-09-20T20:33:54+08:00">
+              <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+              2026-09-20
+            </time>
+            
+            <time class="meta-item meta-update" datetime="2026-09-20T20:33:54+08:00">
+              <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 2.2"/></svg>
+              2026-09-20
+            </time>
+            
+            <span class="meta-item meta-author">
+              <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+              xinfan9
+            </span>
+            
+            <span class="meta-item meta-words">
+              <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+              357 字
+            </span>
+            
+            <span class="meta-item meta-reading">
+              <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+              约 4 分钟
+            </span>
+          </div>
+        </header>
+        <article class="post-content" role="article">
+          <h1 id="codex-harness-核心流程分析">Codex Harness 核心流程分析</h1>
+
+<h2 id="项目定位">项目定位</h2>
+
+<p>Codex Harness 是 OpenAI 开发的<strong>生产级 Agent 运行时框架</strong>，Apache-2.0 协议开源，Rust 核心（codex-rs）+ TypeScript/Python SDK 双栈。它驱动 Codex App、CLI 和 VS Code 插件的底层执行框架，管理对话状态、工具调用、沙箱执行、流式输出和人工审批。核心理念：<strong>Harness 是 Agent 的操作系统</strong>——模型只是计算单元，Harness 负责记忆、工具、审批、沙箱、并发、可观测性。</p>
+
+<hr />
+
+<h2 id="五部分核心组件">五部分核心组件</h2>
+
+<p>Codex Harness 的核心组件可以分为 5 个部分：</p>
+
+<ol>
+  <li><strong>上下文工程</strong>：Context Compaction（智能压缩长上下文，保留关键推理信息，非简单文本摘要）+ Retained Reasoning（保留中间推理痕迹供模型回溯）+ 结构化上下文管理替代杂乱长上下文拼接</li>
+  <li><strong>工具/插件系统</strong>：MCP 集成（支持应用自有 MCP 服务，打通业务数据与操作）+ Skills 框架（可复用 Skill 包）+ Hooks 生命周期钩子 + model-provider 抽象层（支持任意 OpenAI 兼容端点）</li>
+  <li><strong>状态持久化</strong>：Thread（完整对话会话，可 fork/resume）+ Turn（单轮交互）+ Item（Turn 内原子事件）+ thread-store/history 持久化存储</li>
+  <li><strong>权限/安全模型</strong>：跨平台沙箱隔离（linux-sandbox/windows-sandbox-rs）+ execpolicy 执行策略 + 审批机制（Human-in-the-loop，高风险操作暂停等待确认）+ 三层审批策略（auto/manual/suggest）</li>
+  <li><strong>可观测性和审计</strong>：app-server JSON-RPC 流式事件（实时看到 AI 在做什么）+ 中途打断能力 + codex agents 仪表盘（交互式 Agent 管理界面）</li>
+</ol>
+
+<hr />
+
+<h2 id="一次完整请求流程">一次完整请求流程</h2>
+
+<p>用户通过 Codex App、CLI（<code>codex exec</code>）、SDK 或 app-server 发起请求。</p>
+
+<p><strong>第一步：构建系统提示词。</strong> 组装系统指令、工具定义、技能描述等静态内容。静态内容放在 Prompt 前部，保证每轮都能命中 KV Cache，降低推理成本。</p>
+
+<p><strong>第二步：Agent Loop 启动。</strong> 标准化 Agent 循环：接收用户输入 → 构造 Prompt → 发送给模型推理 → 拿到响应。响应往往不是最终答案，而是一次工具调用（如&#8221;运行这个 shell 命令并告诉我结果&#8221;）。</p>
+
+<p><strong>第三步：工具调用执行。</strong> Harness 执行工具调用：读写文件、运行 shell 命令、执行测试、调用 linter 和类型检查器等。工具调用结果追加到 Prompt 中，再次查询模型。这个循环可能重复几十次，直到模型产出给用户的最终消息。</p>
+
+<p><strong>第四步：沙箱隔离。</strong> 工具执行在沙箱中进行。codex-rs 包含跨平台沙箱实现：linux-sandbox（内核级隔离）、windows-sandbox-rs（Windows 沙箱）。execpolicy 控制执行策略——哪些命令可以运行、哪些文件可以访问、哪些网络可以连接。</p>
+
+<p><strong>第五步：人工审批。</strong> 高风险操作（如删除文件、执行危险命令、访问敏感数据）暂停并等待人类确认。审批策略分三档：auto（自动批准）、manual（必须人工确认）、suggest（建议但可自动执行）。v0.149.0 修复了 approval profile 在 resumed/forked 线程中静默回退的 bug。</p>
+
+<p><strong>第六步：上下文压缩。</strong> 当上下文窗口填满时，Context Compaction 将历史编码为更小的表示。不是简单的文本摘要——保留关键推理信息（retained reasoning），让模型能回溯之前的思考过程。ARC-AGI-3 基准测试中，仅靠 retained reasoning + context compaction 两项优化，GPT-5.6 Sol 得分从 13.3% 跃升至 38.3%，输出 token 消耗降至原来的 1/6。</p>
+
+<p><strong>第七步：流式事件推送。</strong> app-server 通过 JSON-RPC 协议流式传输事件：用户消息、推理步骤、Shell 命令、文件编辑、工具调用结果。支持中途打断（turn/interrupt）。</p>
+
+<p><strong>第八步：会话持久化。</strong> Thread（完整对话）包含多个 Turn（单轮交互），每个 Turn 包含流式 Item 序列（原子事件）。Thread 支持 fork（分叉新路径）和 resume（恢复历史会话）。</p>
+
+<hr />
+
+<h2 id="三层集成接口">三层集成接口</h2>
+
+<p>Codex Harness 提供三层接入方式，覆盖从脚本到产品的全场景：</p>
+
+<p><strong>第一层：codex exec（CI 脚本 / 非交互任务）。</strong> 最轻量接入，一条 CLI 命令完成自动化任务。适合 CI/CD 流水线、批量脚本、后台一次性作业。执行完毕自动退出并返回结构化输出。</p>
+
+<p><strong>第二层：Codex SDK（程序化 Agent 编排）。</strong> TypeScript/Python 双接口，在应用代码中编程式启动、恢复、流式编排 Codex 任务。支持 thread/fork（分叉会话）、thread/resume（恢复历史会话）、turn/interrupt（中断当前轮次）。v0.149.0 新增 max/ultra 推理强度控制。</p>
+
+<p><strong>第三层：Codex app-server（持久会话 + 流式事件 + 审批）。</strong> 为产品级接入设计的进程间通信层。基于 JSON-RPC 2.0，支持 stdio（默认）、Unix socket、WebSocket（实验性）三种传输方式。驱动 VS Code 插件和 Codex Desktop App 的运行时。</p>
+
+<hr />
+
+<h2 id="关键设计决策">关键设计决策</h2>
+
+<p><strong>1. Rust 核心 + TypeScript SDK 双栈。</strong> codex-rs（约 120 个 crate）处理所有性能敏感路径（执行调度、沙箱、TUI 渲染、传输层）。TypeScript/Node.js 层保留为上层接口。资源占用和稳定性显著提升。</p>
+
+<p><strong>2. Retained Reasoning + Context Compaction。</strong> 不是简单截断或摘要——保留中间推理痕迹，让模型能回溯之前的思考过程。这是 Harness 设计带来 3 倍效果提升的核心原因。</p>
+
+<p><strong>3. app-server 协议自建。</strong> OpenAI 评估后拒绝用 MCP 承担 app-server 角色——MCP 面向工具的&#8221;请求-响应&#8221;模型无法表达流式 diff、多步审批流和持久会话状态。因此自建了 app-server 协议。MCP 负责把外部工具接入 Codex，app-server 负责把客户端接入 Codex，两者分工共存。</p>
+
+<p><strong>4. Thread/Turn/Item 三层会话模型。</strong> Thread（完整对话）→ Turn（单轮交互）→ Item（原子事件）。支持 fork、resume、interrupt，构建完整的多轮 Agent 交互产品。</p>
+
+<p><strong>5. 审批策略三档。</strong> auto（自动批准所有操作）、manual（必须人工确认）、suggest（建议，不阻塞）。CI 场景用 auto，生产场景从 suggest 开始逐步过渡。</p>
+
+<p><strong>6. 模型提供方抽象。</strong> model-provider 模块支持任意 OpenAI 兼容端点。可以通过修改 base_url 接入 DeepSeek、Qwen、Kimi 等任意兼容模型。</p>
+
+<p><strong>7. 开源边界清晰。</strong> 已开源：Codex CLI、SDK、app-server、codex exec、Skills、通用云环境。未开源：VS Code/JetBrains IDE 插件、Codex 网页版、云端托管产品、模型本身。</p>
+
+<hr />
+
+<h2 id="与-deepseek-harness-的对比">与 DeepSeek Harness 的对比</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>维度</th>
+      <th>Codex Harness</th>
+      <th>DeepSeek Harness</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>定位</td>
+      <td>生产级 Agent 执行层，&#8221;精装整机&#8221;的底座</td>
+      <td>&#8220;一切皆插件&#8221;的积木式框架</td>
+    </tr>
+    <tr>
+      <td>架构哲学</td>
+      <td>内核级沙箱安全、确定性优先</td>
+      <td>基于 Cordis 微内核，连 Agent 主循环都可替换</td>
+    </tr>
+    <tr>
+      <td>语言</td>
+      <td>Rust 核心 + TypeScript/Python SDK</td>
+      <td>TypeScript + Cordis</td>
+    </tr>
+    <tr>
+      <td>模型绑定</td>
+      <td>默认 OpenAI GPT 系列，可接任意 OpenAI 兼容端点</td>
+      <td>不绑定自家模型，原生支持近 40 家模型厂商</td>
+    </tr>
+    <tr>
+      <td>开源协议</td>
+      <td>Apache-2.0（执行层开源，产品与模型不开源）</td>
+      <td>MIT（完整开源）</td>
+    </tr>
+    <tr>
+      <td>三层接口</td>
+      <td>codex exec / SDK / app-server</td>
+      <td>npx dsh web / 插件开发</td>
+    </tr>
+    <tr>
+      <td>沙箱</td>
+      <td>跨平台内核级沙箱（linux/windows）</td>
+      <td>fail-closed 沙箱阶梯（bubblewrap/seatbelt）</td>
+    </tr>
+    <tr>
+      <td>可观测性</td>
+      <td>JSON-RPC 流式事件 + agents 仪表盘</td>
+      <td>append-only 会话日志 + 无 Key 回放测试</td>
+    </tr>
+  </tbody>
+</table>
+
+        </article>
+      </div>
+    </div>
+  </main>
+
+  <!-- Right: Category Articles -->
+  <aside class="post-category-sidebar" role="navigation" aria-label="分类文章列表">
+    <div class="category-panel">
+      
+      
+      <div class="category-sidebar-title">
+        <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
+        Agent
+      </div>
+      <ul class="category-article-list">
+        
+        
+        <li class="">
+          <a href="/2026/09/20/agent/Clarity/" title="Clarity">
+            <span class="article-title">Clarity</span>
+            <span class="article-date">09-20</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/09/20/agent/ClaudeCode-%E6%A0%B8%E5%BF%83%E6%B5%81%E7%A8%8B/" title="ClaudeCode 核心流程">
+            <span class="article-title">ClaudeCode 核心流程</span>
+            <span class="article-date">09-20</span>
+          </a>
+        </li>
+        
+        <li class="active">
+          <a href="/2026/09/20/agent/Codex/" title="Codex">
+            <span class="article-title">Codex</span>
+            <span class="article-date">09-20</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/09/20/agent/DeepSeek-Harness/" title="DeepSeek Harness">
+            <span class="article-title">DeepSeek Harness</span>
+            <span class="article-date">09-20</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/09/20/agent/Hermes/" title="Hermes">
+            <span class="article-title">Hermes</span>
+            <span class="article-date">09-20</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/09/20/agent/Orchestration/" title="Orchestration">
+            <span class="article-title">Orchestration</span>
+            <span class="article-date">09-20</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/09/20/agent/mem0/" title="mem0">
+            <span class="article-title">mem0</span>
+            <span class="article-date">09-20</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/09/20/agent/%E4%B8%80-Agent%E7%B3%BB%E7%BB%9F%E7%A0%94%E7%A9%B6%E8%84%89%E7%BB%9C/" title="一、Agent系统研究脉络">
+            <span class="article-title">一、Agent系统研究脉络</span>
+            <span class="article-date">09-20</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/09/14/agent/Agent-Ultimate-Edition/" title="Agent Ultimate Edition">
+            <span class="article-title">Agent Ultimate Edition</span>
+            <span class="article-date">09-14</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/09/14/agent/OpenClaw/" title="OpenClaw">
+            <span class="article-title">OpenClaw</span>
+            <span class="article-date">09-14</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/08/24/agent/%E9%95%BF%E7%A8%8B%E4%BB%BB%E5%8A%A1/" title="长程任务">
+            <span class="article-title">长程任务</span>
+            <span class="article-date">08-24</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/08/21/agent/RAG/" title="RAG">
+            <span class="article-title">RAG</span>
+            <span class="article-date">08-21</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/08/21/agent/%E4%B8%8A%E4%B8%8B%E6%96%87%E5%B7%A5%E7%A8%8B/" title="上下文工程">
+            <span class="article-title">上下文工程</span>
+            <span class="article-date">08-21</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/08/21/agent/%E8%AE%B0%E5%BF%86/" title="记忆">
+            <span class="article-title">记忆</span>
+            <span class="article-date">08-21</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/08/21/agent/Agent-RL/" title="Agent RL">
+            <span class="article-title">Agent RL</span>
+            <span class="article-date">08-21</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/08/21/agent/MCP/" title="MCP">
+            <span class="article-title">MCP</span>
+            <span class="article-date">08-21</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/08/10/agent/Plan-and-Solve/" title="Plan and Solve">
+            <span class="article-title">Plan and Solve</span>
+            <span class="article-date">08-10</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/08/10/agent/Reflection/" title="Reflection">
+            <span class="article-title">Reflection</span>
+            <span class="article-date">08-10</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/07/31/agent/ReAct/" title="ReAct">
+            <span class="article-title">ReAct</span>
+            <span class="article-date">07-31</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/07/30/agent/Scaling-Laws%E4%B8%8E%E6%A8%A1%E5%9E%8B%E5%B9%BB%E8%A7%89/" title="Scaling Laws">
+            <span class="article-title">Scaling Laws</span>
+            <span class="article-date">07-30</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/07/30/agent/%E6%A8%A1%E5%9E%8B%E9%80%89%E6%8B%A9%E7%9A%84%E8%80%83%E9%87%8F/" title="模型选择的考量">
+            <span class="article-title">模型选择的考量</span>
+            <span class="article-date">07-30</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/07/30/agent/Tokenizer/" title="Tokenizer">
+            <span class="article-title">Tokenizer</span>
+            <span class="article-date">07-30</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/07/23/agent/%E6%8F%90%E7%A4%BA%E5%B7%A5%E7%A8%8B/" title="提示工程">
+            <span class="article-title">提示工程</span>
+            <span class="article-date">07-23</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/06/09/agent/%E5%A4%A7%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E9%A9%B1%E5%8A%A8%E7%9A%84%E6%99%BA%E8%83%BD%E4%BD%93/" title="初识智能体">
+            <span class="article-title">初识智能体</span>
+            <span class="article-date">06-09</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/04/23/agent/Openclaw/" title="Openclaw">
+            <span class="article-title">Openclaw</span>
+            <span class="article-date">04-23</span>
+          </a>
+        </li>
+        
+      </ul>
+      
+    </div>
+  </aside>
+</div>
+
+<!-- Theme Toggle Button -->
+<button type="button" class="theme-toggle" aria-label="Toggle Theme">
+  <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+  </svg>
+  <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="12" cy="12" r="5"></circle>
+    <line x1="12" y1="1" x2="12" y2="3"></line>
+    <line x1="12" y1="21" x2="12" y2="23"></line>
+    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+    <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+    <line x1="1" y1="12" x2="3" y2="12"></line>
+    <line x1="21" y1="12" x2="23" y2="12"></line>
+    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+    <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+  </svg>
+</button>
+
+<!-- Back to Top Button -->
+<button type="button" class="back-to-top" aria-label="Back to Top">
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <polyline points="18 15 12 9 6 15"></polyline>
+  </svg>
+</button>
+
+
+    <!-- Site Footer -->
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-content">
+      <div class="footer-info">
+        <h4>xinfan9's blog</h4>
+        <p>Actually, less is more!</p>
+      </div>
+      <div class="footer-links">
+        <a href="https://github.com/xinfan9/" target="_blank" title="GitHub">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+        </a>
+        <a href="mailto:11411619@qq.com" title="Email">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+        </a>
+        <a href="/feed.xml" title="RSS">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11a9 9 0 0 1 9 9"/><path d="M4 4a16 16 0 0 1 16 16"/><circle cx="5" cy="19" r="1"/></svg>
+        </a>
+      </div>
+      <div class="footer-copyright">
+        <p>&copy; 2026 xinfan9. Built with Jekyll.</p>
+      </div>
+    </div>
+  </div>
+</footer>
+      
+    
+    <!-- Global Buttons (for non-post pages) -->
+    
+  </body>
+</html>

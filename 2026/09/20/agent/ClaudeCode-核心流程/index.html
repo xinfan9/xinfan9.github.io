@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+  <head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="Content-Language" content="zh-CN">
+	<title>ClaudeCode 核心流程 - xinfan9's blog</title>
+
+	<link rel="icon" href="/styles/images/favicon.jpg">
+
+	<!-- Preconnect for CDN -->
+	
+	<link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+	<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+	
+
+
+	<!-- Inline Critical Reset (was index.css) -->
+	<style>
+		*,*::before,*::after{box-sizing:border-box}html{-ms-text-size-adjust:100%;-webkit-text-size-adjust:100%;-webkit-tap-highlight-color:rgba(0,0,0,0)}body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Microsoft YaHei",sans-serif;font-size:14px;line-height:1.42857143;color:#333;background-color:#f7f7f7}article,aside,details,figcaption,figure,footer,header,main,nav,section,summary{display:block}a{color:#43759e;text-decoration:none;background:transparent}a:hover,a:focus{color:#2c4d68;text-decoration:underline}a:focus{outline:thin dotted;outline-offset:-2px}img{vertical-align:middle;max-width:100%;height:auto}input,button,select,textarea{font-family:inherit;font-size:inherit;line-height:inherit}h1,h2,h3,h4,h5,h6{margin-top:0}.container{max-width:1200px;margin-left:auto;margin-right:auto;padding-left:15px;padding-right:15px}.clearfix::after{content:"";display:table;clear:both}.text-muted{color:#777}.sr-only{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0,0,0,0);border:0}
+	</style>
+
+	
+	<link rel="prefetch" as="image" href="/styles/images/api/background.webp">
+
+	<!-- Clarity Blog Theme -->
+	<link rel="stylesheet" href="/assets/css/clarity-blog.css?v=1789907667">
+
+	<!-- Prism.js Theme (non-blocking, only needed for code blocks) -->
+	
+	
+	<link rel="canonical" href="https://xinfang.site/2026/09/20/agent/ClaudeCode-%E6%A0%B8%E5%BF%83%E6%B5%81%E7%A8%8B/">
+	<link rel="alternate" type="application/rss+xml" title="xinfan9's blog" href="https://xinfang.site/feed.xml">
+	
+	<meta name="description" content="Hareness 的核心组件为Agent Loop 与Multi Agent 服务，可以分为5个部分：
+">
+
+	<!-- Open Graph for social sharing -->
+	<meta property="og:title" content="ClaudeCode 核心流程">
+	<meta property="og:description" content="Hareness 的核心组件为Agent Loop 与Multi Agent 服务，可以分为5个部分：
+">
+	<meta property="og:url" content="https://xinfang.site/2026/09/20/agent/ClaudeCode-%E6%A0%B8%E5%BF%83%E6%B5%81%E7%A8%8B/">
+	<meta property="og:site_name" content="xinfan9's blog">
+	<meta property="og:type" content="article">
+	<meta property="article:published_time" content="2026-09-20T20:33:54+08:00">
+	
+	<meta property="og:image" content="https://xinfang.site/styles/images/api/background.webp">
+	<meta property="og:image:width" content="1200">
+	<meta property="og:image:height" content="630">
+	
+	<meta property="og:locale" content="zh_CN">
+
+	<!-- Twitter Card -->
+	<meta name="twitter:card" content="summary_large_image">
+	<meta name="twitter:title" content="ClaudeCode 核心流程">
+	<meta name="twitter:description" content="Hareness 的核心组件为Agent Loop 与Multi Agent 服务，可以分为5个部分：
+">
+	<meta name="twitter:image" content="https://xinfang.site/styles/images/favicon.jpg">
+	
+	<!-- Theme color for mobile browsers -->
+	<meta name="theme-color" content="#0b72d9" media="(prefers-color-scheme: light)">
+	<meta name="theme-color" content="#0f172a" media="(prefers-color-scheme: dark)">
+
+	<!-- Prevent FOUC for theme -->
+	<script>
+		(function() {
+			const savedTheme = localStorage.getItem('theme');
+			const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+			if (savedTheme) {
+				document.documentElement.setAttribute('data-theme', savedTheme);
+			} else if (prefersDark) {
+				document.documentElement.setAttribute('data-theme', 'dark');
+			}
+		})();
+	</script>
+	
+	<!-- Prism.js only on post pages with code blocks -->
+	
+
+	<!-- Mermaid.js for diagram rendering (conditional) -->
+	
+
+	<!-- MathJax for LaTeX rendering (conditional) -->
+	
+
+	<!-- Blog Interactive Features -->
+	<script src="/assets/js/blog.js?v=1789907667" defer></script>
+
+	<!-- JSON-LD Structured Data -->
+	
+	<script type="application/ld+json">
+	{
+		"@context": "https://schema.org",
+		"@type": "BlogPosting",
+		"inLanguage": "zh-CN",
+		"headline": "ClaudeCode 核心流程",
+		"image": "https://xinfang.site/styles/images/favicon.jpg",
+		"datePublished": "2026-09-20T20:33:54+08:00",
+		"dateModified": "2026-09-20T20:33:54+08:00",
+		"author": {
+			"@type": "Person",
+			"name": "xinfan9"
+		},
+		"publisher": {
+			"@type": "Organization",
+			"name": "xinfan9's blog",
+			"logo": {
+				"@type": "ImageObject",
+				"url": "https://xinfang.site/styles/images/favicon.jpg"
+			}
+		},
+		"mainEntityOfPage": {
+			"@type": "WebPage",
+			"@id": "https://xinfang.site/2026/09/20/agent/ClaudeCode-%E6%A0%B8%E5%BF%83%E6%B5%81%E7%A8%8B/"
+		},
+		"keywords": "Agent",
+		"articleBody": "Hareness 的核心组件为Agent Loop 与Multi Agent 服务，可以分为5个部分：\n",
+		"description": "Hareness 的核心组件为Agent Loop 与Multi Agent 服务，可以分为5个部分：\n"
+	}
+	</script>
+	
+</head>
+
+  <body class="index">
+
+    <!-- Reading Progress Bar -->
+<div class="reading-progress" id="reading-progress"></div>
+
+<!-- Page Background -->
+<div class="post-background"></div>
+
+<div class="post-layout">
+  <!-- Left: TOC -->
+  <aside class="post-toc-sidebar" id="post-toc-sidebar" role="navigation" aria-label="文章目录">
+    <div class="toc-panel">
+      <div class="toc-title">
+        <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="12" x2="15" y2="12"></line><line x1="3" y1="18" x2="18" y2="18"></line></svg>
+        目录
+      </div>
+      <ul class="toc-list" id="toc-list"></ul>
+    </div>
+  </aside>
+
+  <!-- Center: Article -->
+  <main class="post-main">
+    <div class="panel docs-content">
+      <div class="wrapper">
+        <header class="post-header" role="banner">
+          <a href="https://xinfang.site/" class="back-home-link">
+            <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+            返回主页
+          </a>
+          <h1 class="post-title">ClaudeCode 核心流程</h1>
+          <div class="post-meta-info">
+            <time class="meta-item meta-date" datetime="2026-09-20T20:33:54+08:00">
+              <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+              2026-09-20
+            </time>
+            
+            <time class="meta-item meta-update" datetime="2026-09-20T20:33:54+08:00">
+              <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 2.2"/></svg>
+              2026-09-20
+            </time>
+            
+            <span class="meta-item meta-author">
+              <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+              xinfan9
+            </span>
+            
+            <span class="meta-item meta-words">
+              <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+              173 字
+            </span>
+            
+            <span class="meta-item meta-reading">
+              <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+              约 2 分钟
+            </span>
+          </div>
+        </header>
+        <article class="post-content" role="article">
+          <p>Hareness 的核心组件为Agent Loop 与Multi Agent 服务，可以分为5个部分：</p>
+
+<ul>
+  <li>
+    <p>上下文工程</p>
+  </li>
+  <li>标准化工具层（Tools + Hooks）</li>
+  <li>状态持久化</li>
+  <li>权限模型</li>
+  <li>可观测性和审计系统</li>
+</ul>
+
+<p>Claude Code 本身是一个Harness Engineering 的实现。</p>
+
+<p>我们结合 Claude Code 一次完整请求来讲整个流程。</p>
+
+<p>用户输入进来，第一步是构建系统提示词。加载四层 CLAUDE.md 配置——从全局到项目、到本地覆盖、到子目录，层层叠加。同时注入自定义系统提示和记忆内容。第二步，解析用户输入——解析斜杠命令、 @ 文件引用，完成上下文注入，生成规范化的消息格式。第三步，持久化会话记录。第四步，组装初始化信息——工具列表、MCP 客户端、模型信息、命令、Agent 定义、技能列表，一次性注入。然后进入 Agent Loop。Claude 的工具按名称排序形成稳定前缀，可以利用kv Cache 避免重复计算并节约token；工具加载利用了渐进式披露的思想，首次只加载核心工具，其余工具利用ToolSearchTool进行按需发现。</p>
+
+<p>Agent Loop 的核心是一个无限循环。每轮迭代先进行压缩Pipeline，四级严格顺序：第一级snip裁剪，释放的 token 数传递给后续级别；第二级Micro compact 把旧的工具结果替换成固定占位文本，覆盖 9 种工具类型；第三级 collapse 在读取视角上可恢复性折叠冗余内容，不修改实际消息，（它是模式匹配特定消息，不关心语义，保留原始内容只是为了当前路径探索失败，需要回溯或debug等需求）；第四级auto compact 调 LLM 做摘要压缩，根据上下文窗口阈值触发，优先走零 LLM 调用的内存压缩路径，失败才回退到 LLM 摘要（直接把对话历史中已经确认完成的任务、已过期的工具结果等信息，从内存里标记为&#8221;可压缩&#8221;，用简单的规则替换掉（比如&#8221;这部分内容已完成，不再需要&#8221;），不需要 LLM 参与）。四个级别之间有信息传递——前面释放的 token 数直接影响后面的阈值判断。</p>
+
+<p>压缩完调用模型 API。底层是 HTTP POST 走 SSE 流式事件，模型边生成边返回。返回的流式事件被逐条消费：遇到可恢复错误不立即抛出，而是扣留起来等恢复流程走完；正常的消息实时推送给 UI；同时后台并发执行工具——模型还在生成第二个工具调用的时候，第一个已经在跑了。如果发生流式切换，先清理孤儿消息再重建执行器。最后还有一层错误兜底，处理模型切换重试、图片大小超限等情况。</p>
+
+<p>模型响应完成后，先触发后处理钩子，不阻塞主流程。然后进入终止判断。如果有工具调用待执行，跳过判断直接去执行。如果没有，走完整的错误恢复体系：413 错误（上下文超限）分两步恢复——先排空折叠缓存重试，不行再做完整摘要压缩重试，再失败才报告用户；输出截断也是两步——先升级输出上限重试，还截断就注入提示让模型继续，最多三次，超过就放弃。Stop Hook 可以阻止终止，或者注入额外消息要求继续。还有 token 预算检查——500K 预算没用完就自动继续。正常完成就返回结果。</p>
+
+<p>7种continue 重试路径：</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: left">路径</th>
+      <th style="text-align: left">场景</th>
+      <th style="text-align: left">做法</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left"><code>next_turn</code></td>
+      <td style="text-align: left">工具执行完成</td>
+      <td style="text-align: left">正常下一轮</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><code>token_budget_continuation</code></td>
+      <td style="text-align: left">500K token 预算未耗尽</td>
+      <td style="text-align: left">自动继续</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><code>max_output_tokens_escalate</code></td>
+      <td style="text-align: left">输出被截断</td>
+      <td style="text-align: left">升级 max_tokens 从 8K→64K 重试</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><code>max_output_tokens_recovery</code></td>
+      <td style="text-align: left">升级后仍截断</td>
+      <td style="text-align: left">注入提示让模型继续，最多3次</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><code>collapse_drain_retry</code></td>
+      <td style="text-align: left">413 上下文超限</td>
+      <td style="text-align: left">排空折叠缓存重试</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><code>reactive_compact_retry</code></td>
+      <td style="text-align: left">排空折叠后仍 413</td>
+      <td style="text-align: left">完整摘要压缩重试</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><code>stop_hook_blocking</code></td>
+      <td style="text-align: left">Stop Hook 要求继续</td>
+      <td style="text-align: left">注入额外消息继续</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>如果有工具调用，进入工具执行阶段。工具先分区，分区内并发执行——只读工具并发跑、写入工具串行跑，在安全性和性能之间取平衡。每个工具走七步管道：格式校验、输入验证、执行前钩子（可批准、修改上下文）、权限检查（规则匹配→权限模式→AI 分类器三层递进）、实际执行（命令行还要包一层沙盒隔离）、执行后钩子（审计日志、输出修改等）、转成 API 格式。核心安全原则是：拒绝规则优先级最高——即使钩子批准了，配置里的拒绝规则仍然能阻止。同时异步生成工具使用摘要，用轻量模型，不阻塞下一轮。</p>
+
+<blockquote>
+  <p>第一层：规则匹配（零成本）<br />
+先查 settings.json 里有没有匹配的 allow/deny 规则。比如&#8221;允许读取 src/ 下所有文件&#8221;、&#8221;禁止删除 .git 目录&#8221;。命中了就直接放行或拒绝，不需要往下走。这一步过滤掉大部分调用。</p>
+
+  <p>第二层：权限模式（零成本）<br />
+看当前处于什么模式。如果是 <code>bypassPermissions</code> 模式，所有操作自动放行；如果是 <code>plan</code> 模式，只允许只读操作；如果是 <code>default</code> 模式，需要继续往下判断。</p>
+
+  <p>第三层：AI 分类器（有成本，调模型）<br />
+前两层都判断不了的，交给一个独立的分类模型（YOLO Classifier）。它不是主模型自己判断，而是一个专门的&#8221;看门人&#8221;模型，二次审查这个操作是否安全。这一步最慢、最贵，但最精准。</p>
+</blockquote>
+
+<p>最后进入下一轮准备：处理队列中的命令、消费预取的记忆结果、发现新技能、刷新 MCP 工具、生成任务摘要、检查是否超过最大轮次。然后整体更新状态——把本轮的消息、模型回复、工具结果全部拼在一起，回到循环开头，开始下一轮。</p>
+
+<p>整个设计有五个关键决策贯穿始终：用Async Generator让 UI 实时看到进度；所有状态集中在一个对象里整体替换，防止漏改；错误扣留策略防止中间态错误被误判为最终失败；工具在模型流式输出期间并发执行，减少等待延迟。95% 的时间正常循环，但剩下 5% 的错误恢复——七种重试路径、四种扣留条件、三次熔断限制。</p>
+
+<p>四种扣留条件（遇到时不立即抛出错误，而是扣留等恢复）：</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: left">条件</th>
+      <th style="text-align: left">含义</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left">collapse withheld</td>
+      <td style="text-align: left">上下文超限，等待折叠排空</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">reactiveCompact withheld</td>
+      <td style="text-align: left">折叠排空失败，等待完整压缩</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">media size error withheld</td>
+      <td style="text-align: left">图片/媒体过大，等待处理</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">max_output_tokens withheld</td>
+      <td style="text-align: left">输出截断，等待升级重试</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>复制表格</p>
+
+<hr />
+
+<p>三次熔断限制：</p>
+
+<p>指 <code>max_output_tokens_recovery</code> 最多执行 3 次。源码里 <code>MAX_OUTPUT_TOKENS_RECOVERY_LIMIT = 3</code>。连续 3 次恢复都失败（模型仍然截断），就不再重试，放弃并向用户报告错误。防止无限循环。</p>
+
+
+        </article>
+      </div>
+    </div>
+  </main>
+
+  <!-- Right: Category Articles -->
+  <aside class="post-category-sidebar" role="navigation" aria-label="分类文章列表">
+    <div class="category-panel">
+      
+      
+      <div class="category-sidebar-title">
+        <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
+        Agent
+      </div>
+      <ul class="category-article-list">
+        
+        
+        <li class="">
+          <a href="/2026/09/20/agent/Clarity/" title="Clarity">
+            <span class="article-title">Clarity</span>
+            <span class="article-date">09-20</span>
+          </a>
+        </li>
+        
+        <li class="active">
+          <a href="/2026/09/20/agent/ClaudeCode-%E6%A0%B8%E5%BF%83%E6%B5%81%E7%A8%8B/" title="ClaudeCode 核心流程">
+            <span class="article-title">ClaudeCode 核心流程</span>
+            <span class="article-date">09-20</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/09/20/agent/Codex/" title="Codex">
+            <span class="article-title">Codex</span>
+            <span class="article-date">09-20</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/09/20/agent/DeepSeek-Harness/" title="DeepSeek Harness">
+            <span class="article-title">DeepSeek Harness</span>
+            <span class="article-date">09-20</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/09/20/agent/Hermes/" title="Hermes">
+            <span class="article-title">Hermes</span>
+            <span class="article-date">09-20</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/09/20/agent/Orchestration/" title="Orchestration">
+            <span class="article-title">Orchestration</span>
+            <span class="article-date">09-20</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/09/20/agent/mem0/" title="mem0">
+            <span class="article-title">mem0</span>
+            <span class="article-date">09-20</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/09/20/agent/%E4%B8%80-Agent%E7%B3%BB%E7%BB%9F%E7%A0%94%E7%A9%B6%E8%84%89%E7%BB%9C/" title="一、Agent系统研究脉络">
+            <span class="article-title">一、Agent系统研究脉络</span>
+            <span class="article-date">09-20</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/09/14/agent/Agent-Ultimate-Edition/" title="Agent Ultimate Edition">
+            <span class="article-title">Agent Ultimate Edition</span>
+            <span class="article-date">09-14</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/09/14/agent/OpenClaw/" title="OpenClaw">
+            <span class="article-title">OpenClaw</span>
+            <span class="article-date">09-14</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/08/24/agent/%E9%95%BF%E7%A8%8B%E4%BB%BB%E5%8A%A1/" title="长程任务">
+            <span class="article-title">长程任务</span>
+            <span class="article-date">08-24</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/08/21/agent/RAG/" title="RAG">
+            <span class="article-title">RAG</span>
+            <span class="article-date">08-21</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/08/21/agent/%E4%B8%8A%E4%B8%8B%E6%96%87%E5%B7%A5%E7%A8%8B/" title="上下文工程">
+            <span class="article-title">上下文工程</span>
+            <span class="article-date">08-21</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/08/21/agent/%E8%AE%B0%E5%BF%86/" title="记忆">
+            <span class="article-title">记忆</span>
+            <span class="article-date">08-21</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/08/21/agent/Agent-RL/" title="Agent RL">
+            <span class="article-title">Agent RL</span>
+            <span class="article-date">08-21</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/08/21/agent/MCP/" title="MCP">
+            <span class="article-title">MCP</span>
+            <span class="article-date">08-21</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/08/10/agent/Plan-and-Solve/" title="Plan and Solve">
+            <span class="article-title">Plan and Solve</span>
+            <span class="article-date">08-10</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/08/10/agent/Reflection/" title="Reflection">
+            <span class="article-title">Reflection</span>
+            <span class="article-date">08-10</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/07/31/agent/ReAct/" title="ReAct">
+            <span class="article-title">ReAct</span>
+            <span class="article-date">07-31</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/07/30/agent/Scaling-Laws%E4%B8%8E%E6%A8%A1%E5%9E%8B%E5%B9%BB%E8%A7%89/" title="Scaling Laws">
+            <span class="article-title">Scaling Laws</span>
+            <span class="article-date">07-30</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/07/30/agent/%E6%A8%A1%E5%9E%8B%E9%80%89%E6%8B%A9%E7%9A%84%E8%80%83%E9%87%8F/" title="模型选择的考量">
+            <span class="article-title">模型选择的考量</span>
+            <span class="article-date">07-30</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/07/30/agent/Tokenizer/" title="Tokenizer">
+            <span class="article-title">Tokenizer</span>
+            <span class="article-date">07-30</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/07/23/agent/%E6%8F%90%E7%A4%BA%E5%B7%A5%E7%A8%8B/" title="提示工程">
+            <span class="article-title">提示工程</span>
+            <span class="article-date">07-23</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/06/09/agent/%E5%A4%A7%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E9%A9%B1%E5%8A%A8%E7%9A%84%E6%99%BA%E8%83%BD%E4%BD%93/" title="初识智能体">
+            <span class="article-title">初识智能体</span>
+            <span class="article-date">06-09</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/04/23/agent/Openclaw/" title="Openclaw">
+            <span class="article-title">Openclaw</span>
+            <span class="article-date">04-23</span>
+          </a>
+        </li>
+        
+      </ul>
+      
+    </div>
+  </aside>
+</div>
+
+<!-- Theme Toggle Button -->
+<button type="button" class="theme-toggle" aria-label="Toggle Theme">
+  <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+  </svg>
+  <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="12" cy="12" r="5"></circle>
+    <line x1="12" y1="1" x2="12" y2="3"></line>
+    <line x1="12" y1="21" x2="12" y2="23"></line>
+    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+    <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+    <line x1="1" y1="12" x2="3" y2="12"></line>
+    <line x1="21" y1="12" x2="23" y2="12"></line>
+    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+    <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+  </svg>
+</button>
+
+<!-- Back to Top Button -->
+<button type="button" class="back-to-top" aria-label="Back to Top">
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <polyline points="18 15 12 9 6 15"></polyline>
+  </svg>
+</button>
+
+
+    <!-- Site Footer -->
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-content">
+      <div class="footer-info">
+        <h4>xinfan9's blog</h4>
+        <p>Actually, less is more!</p>
+      </div>
+      <div class="footer-links">
+        <a href="https://github.com/xinfan9/" target="_blank" title="GitHub">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+        </a>
+        <a href="mailto:11411619@qq.com" title="Email">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+        </a>
+        <a href="/feed.xml" title="RSS">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11a9 9 0 0 1 9 9"/><path d="M4 4a16 16 0 0 1 16 16"/><circle cx="5" cy="19" r="1"/></svg>
+        </a>
+      </div>
+      <div class="footer-copyright">
+        <p>&copy; 2026 xinfan9. Built with Jekyll.</p>
+      </div>
+    </div>
+  </div>
+</footer>
+      
+    
+    <!-- Global Buttons (for non-post pages) -->
+    
+  </body>
+</html>
