@@ -1,0 +1,1104 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+  <head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="Content-Language" content="zh-CN">
+	<title>Redis - xinfan9's blog</title>
+
+	<link rel="icon" href="/styles/images/favicon.jpg">
+
+	<!-- Preconnect for CDN -->
+	
+	<link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+	<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+	
+
+
+	<!-- Inline Critical Reset (was index.css) -->
+	<style>
+		*,*::before,*::after{box-sizing:border-box}html{-ms-text-size-adjust:100%;-webkit-text-size-adjust:100%;-webkit-tap-highlight-color:rgba(0,0,0,0)}body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Microsoft YaHei",sans-serif;font-size:14px;line-height:1.42857143;color:#333;background-color:#f7f7f7}article,aside,details,figcaption,figure,footer,header,main,nav,section,summary{display:block}a{color:#43759e;text-decoration:none;background:transparent}a:hover,a:focus{color:#2c4d68;text-decoration:underline}a:focus{outline:thin dotted;outline-offset:-2px}img{vertical-align:middle;max-width:100%;height:auto}input,button,select,textarea{font-family:inherit;font-size:inherit;line-height:inherit}h1,h2,h3,h4,h5,h6{margin-top:0}.container{max-width:1200px;margin-left:auto;margin-right:auto;padding-left:15px;padding-right:15px}.clearfix::after{content:"";display:table;clear:both}.text-muted{color:#777}.sr-only{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0,0,0,0);border:0}
+	</style>
+
+	
+	<link rel="prefetch" as="image" href="/styles/images/api/background.webp">
+
+	<!-- Clarity Blog Theme -->
+	<link rel="stylesheet" href="/assets/css/clarity-blog.css?v=1791466635">
+
+	<!-- Prism.js Theme (non-blocking, only needed for code blocks) -->
+	
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" media="print" onload="this.media='all'" onerror="console.warn('Prism CSS load failed')">
+	
+	
+	<link rel="canonical" href="https://xinfang.site/2026/08/24/%E4%B8%AD%E9%97%B4%E4%BB%B6/Redis/">
+	<link rel="alternate" type="application/rss+xml" title="xinfan9's blog" href="https://xinfang.site/feed.xml">
+	
+	<meta name="description" content="https://www.xiaolincoding.com/redis/base/redis_interview.html#redis-%E4%BD%BF%E7%94%A8%E7%9A%84%E8%BF%87%E6%9C%9F%E5%88%A0%E9%99%A4%E7%AD%96%E7%95%A5%E6%98%A...">
+
+	<!-- Open Graph for social sharing -->
+	<meta property="og:title" content="Redis">
+	<meta property="og:description" content="https://www.xiaolincoding.com/redis/base/redis_interview.html#redis-%E4%BD%BF%E7%94%A8%E7%9A%84%E8%BF%87%E6%9C%9F%E5%88%A0%E9%99%A4%E7%AD%96%E7%95%A5%E6%98%AF%E4%BB%80%E4%B9%88
+">
+	<meta property="og:url" content="https://xinfang.site/2026/08/24/%E4%B8%AD%E9%97%B4%E4%BB%B6/Redis/">
+	<meta property="og:site_name" content="xinfan9's blog">
+	<meta property="og:type" content="article">
+	<meta property="article:published_time" content="2026-08-24T17:53:23+08:00">
+	
+	<meta property="og:image" content="https://xinfang.site/styles/images/api/background.webp">
+	<meta property="og:image:width" content="1200">
+	<meta property="og:image:height" content="630">
+	
+	<meta property="og:locale" content="zh_CN">
+
+	<!-- Twitter Card -->
+	<meta name="twitter:card" content="summary_large_image">
+	<meta name="twitter:title" content="Redis">
+	<meta name="twitter:description" content="https://www.xiaolincoding.com/redis/base/redis_interview.html#redis-%E4%BD%BF%E7%94%A8%E7%9A%84%E8%BF%87%E6%9C%9F%E5%88%A0%E9%99%A4%E7%AD%96%E7%95%A5%E6%98%AF%E4%BB%80%E4%B9%88
+">
+	<meta name="twitter:image" content="https://xinfang.site/styles/images/favicon.jpg">
+	
+	<!-- Theme color for mobile browsers -->
+	<meta name="theme-color" content="#0b72d9" media="(prefers-color-scheme: light)">
+	<meta name="theme-color" content="#0f172a" media="(prefers-color-scheme: dark)">
+
+	<!-- Prevent FOUC for theme -->
+	<script>
+		(function() {
+			const savedTheme = localStorage.getItem('theme');
+			const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+			if (savedTheme) {
+				document.documentElement.setAttribute('data-theme', savedTheme);
+			} else if (prefersDark) {
+				document.documentElement.setAttribute('data-theme', 'dark');
+			}
+		})();
+	</script>
+	
+	<!-- Prism.js only on post pages with code blocks -->
+	
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" defer></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js" defer></script>
+	
+
+	<!-- Mermaid.js for diagram rendering (conditional) -->
+	
+
+	<!-- MathJax for LaTeX rendering (conditional) -->
+	
+	<script>
+		MathJax = {
+			tex: { inlineMath: [['$','$'], ['\\(','\\)']], displayMath: [['$$','$$'], ['\\[','\\]']] },
+			svg: { fontCache: 'global' },
+			startup: { typeset: true }
+		};
+	</script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-svg.js" defer></script>
+	
+
+	<!-- Blog Interactive Features -->
+	<script src="/assets/js/blog.js?v=1791466635" defer></script>
+
+	<!-- JSON-LD Structured Data -->
+	
+	<script type="application/ld+json">
+	{
+		"@context": "https://schema.org",
+		"@type": "BlogPosting",
+		"inLanguage": "zh-CN",
+		"headline": "Redis",
+		"image": "https://xinfang.site/styles/images/favicon.jpg",
+		"datePublished": "2026-08-24T17:53:23+08:00",
+		"dateModified": "2026-08-24T17:53:23+08:00",
+		"author": {
+			"@type": "Person",
+			"name": "xinfan9"
+		},
+		"publisher": {
+			"@type": "Organization",
+			"name": "xinfan9's blog",
+			"logo": {
+				"@type": "ImageObject",
+				"url": "https://xinfang.site/styles/images/favicon.jpg"
+			}
+		},
+		"mainEntityOfPage": {
+			"@type": "WebPage",
+			"@id": "https://xinfang.site/2026/08/24/%E4%B8%AD%E9%97%B4%E4%BB%B6/Redis/"
+		},
+		"keywords": "中间件",
+		"articleBody": "https://www.xiaolincoding.com/redis/base/redis_interview.html#redis-%E4%BD%BF%E7%94%A8%E7%9A%84%E8%BF%87%E6%9C%9F%E5%88%A0%E9%99%A4%E7%AD%96%E7%95%A5%E6%98%AF%E4%BB%80%E4%B9%88\n",
+		"description": "https://www.xiaolincoding.com/redis/base/redis_interview.html#redis-%E4%BD%BF%E7%94%A8%E7%9A%84%E8%BF%87%E6%9C%9F%E5%88%A0%E9%99%A4%E7%AD%96%E7%95%A5%E6%98%A..."
+	}
+	</script>
+	
+</head>
+
+  <body class="index">
+
+    <!-- Reading Progress Bar -->
+<div class="reading-progress" id="reading-progress"></div>
+
+<!-- Page Background -->
+<div class="post-background"></div>
+
+<div class="post-layout">
+  <!-- Left: TOC -->
+  <aside class="post-toc-sidebar" id="post-toc-sidebar" role="navigation" aria-label="文章目录">
+    <div class="toc-panel">
+      <div class="toc-title">
+        <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="12" x2="15" y2="12"></line><line x1="3" y1="18" x2="18" y2="18"></line></svg>
+        目录
+      </div>
+      <ul class="toc-list" id="toc-list"></ul>
+    </div>
+  </aside>
+
+  <!-- Center: Article -->
+  <main class="post-main">
+    <div class="panel docs-content">
+      <div class="wrapper">
+        <header class="post-header" role="banner">
+          <a href="https://xinfang.site/" class="back-home-link">
+            <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+            返回主页
+          </a>
+          <h1 class="post-title">Redis</h1>
+          <div class="post-meta-info">
+            <time class="meta-item meta-date" datetime="2026-08-24T17:53:23+08:00">
+              <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+              2026-08-24
+            </time>
+            
+            <time class="meta-item meta-update" datetime="2026-08-31T20:14:13+08:00">
+              <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 2.2"/></svg>
+              2026-08-31
+            </time>
+            
+            <span class="meta-item meta-author">
+              <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+              xinfan9
+            </span>
+            
+            <span class="meta-item meta-words">
+              <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+              785 字
+            </span>
+            
+            <span class="meta-item meta-reading">
+              <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+              约 8 分钟
+            </span>
+          </div>
+        </header>
+        <article class="post-content" role="article">
+          <p>https://www.xiaolincoding.com/redis/base/redis_interview.html#redis-%E4%BD%BF%E7%94%A8%E7%9A%84%E8%BF%87%E6%9C%9F%E5%88%A0%E9%99%A4%E7%AD%96%E7%95%A5%E6%98%AF%E4%BB%80%E4%B9%88</p>
+
+<h1 id="引言">引言</h1>
+
+<p>Redis是一个高性能、分布式 kv数据库。</p>
+
+<p>Redis高性能的原因：</p>
+
+<ul>
+  <li>Redis是内存数据库，大多数命令处理基于内存操作，读写快。</li>
+  <li>Redis是单进程线程处理网络请求，大多数命令是读和写io，不涉及计算，不需要多线程。这样避免了上下文的切换和锁。</li>
+  <li>Redis使用多路IO复用模型(select、poll、epoll)，可以高效处理并发连接。</li>
+  <li>Redis的底层数据结构很巧妙，包括简单冬动态字符串sds、跳表skip list、整数集合intset、压缩列表ziplist、快速链表quicklist、字典dict。</li>
+</ul>
+
+<p>Redis被广泛应用的原因：</p>
+
+<ul>
+  <li>速度快。</li>
+  <li>value支持复杂数据结构：字符串、链表、集合、哈希、有序集合。</li>
+  <li>支持数据持久化。RDB、AOF、RDB&amp;AOF。</li>
+  <li>稳定。分布式主从结构。</li>
+</ul>
+
+<h1 id="redis的底层数据结构">Redis的底层数据结构</h1>
+
+<h2 id="简单动态字符串-sds">简单动态字符串 SDS</h2>
+
+<p>简单动态字符串(Simple Dynamic Strings，SDS) 是Redis的基本数据结构，我们从以下几个设计目标来理解这个数据结构。</p>
+
+<h3 id="设计目标一-实现一个扩容方便且二进制安全的字符串">设计目标一： “<strong>实现一个扩容方便且二进制安全的字符串</strong>”。</h3>
+
+<blockquote>
+  <p>[!NOTE]</p>
+
+  <p>非二进制安全指的是在C语言中，如果字符串本身包含<code>\0</code> 字符，会被识别为字符串末尾，导致字符串被截断。二进制安全反之。</p>
+</blockquote>
+
+<p>通过设置单独的统计变量len 和 free 来保证二进制安全和得到字符串长度，内容通过柔性数组buf存放并暴露数组指针，让上层可以像C字符串一样读取和处理sds。</p>
+
+<pre><code class="language-cpp">struct sds {
+  int len;
+  int free;
+  char buf[];
+}
+</code></pre>
+
+<p>所谓柔性数组，指的是他的地址和结构体是连续的，可以快速查找内存。</p>
+
+<p><img src="/post-images/中间件/2026-08-24-Redis.assets/image-20260831193324489.webp" alt="image-20260831193324489" /></p>
+
+<h3 id="设计目标二不同长度的字符串其实没必要占用相同大小的头部">设计目标二：不同长度的字符串其实没必要占用相同大小的头部，</h3>
+
+<p>每个字符串的元信息都占用4字节太浪费了。因此，针对不同大小的字符串，衍生了多种sds。</p>
+
+<p><strong>sdshdr5</strong></p>
+
+<p>对于最短的字符串，使用1个flag字节来表示元信息，低3位存储类型，高5位存储长度。短字符串不需要free，因为修改后大概率也在32($2^5$ )字节内，无需扩容；即使扩容，也会直接修改类型，不会再使用<code>sdshdr5</code> 。</p>
+
+<pre><code class="language-cpp">struct sdshdr5 {
+	unsigned char flags;
+  char buf[];
+}
+</code></pre>
+
+<p><img src="/post-images/中间件/2026-08-24-Redis.assets/image-20260831193949495.webp" alt="image-20260831193949495" /></p>
+
+<p><strong>sdshdr8</strong></p>
+
+<pre><code class="language-cpp">struct sdshdr8 {
+  uint8_t len; // 当前长度
+  uint8_t alloc; // 总长度，空闲长度free = alloc - len
+  unsigned char flags; // 低3位类型，高5位预留
+}
+</code></pre>
+
+<h3 id="sds的扩容">SDS的扩容</h3>
+
+<p><img src="/post-images/中间件/2026-08-24-Redis.assets/image-20260831195623273.webp" alt="image-20260831195623273" /></p>
+
+<h2 id="跳跃表-skiplist">跳跃表 skiplist</h2>
+
+<p>对于有序数据，数组不便于元素插入和删除，链表查询效率低，平衡树或红黑树实现复杂，因此Redis采用了跳跃表。</p>
+
+<h3 id="分层有序链表思想">分层有序链表思想</h3>
+
+<p>首先，为了解决链表查找效率问题，我们可以参考分层有序链表，从高到低进行查找。</p>
+
+<p><img src="/post-images/中间件/2026-08-24-Redis.assets/image-20260831195930311.webp" alt="image-20260831195930311" /></p>
+
+<p><img src="/post-images/中间件/2026-08-24-Redis.assets/image-20260831200153284.webp" alt="image-20260831200153284" /></p>
+
+<p>基于这种思想，跳跃表具有以下几个关键性质：</p>
+
+<ol>
+  <li><strong>多层结构</strong>：跳跃表由多层有序链表构成；底层（L0）包含全部数据节点，上层是底层的子集；<strong>一个节点出现在上层，则必然出现在下层</strong>。</li>
+  <li><strong>头结点header</strong>：专属头节点，不作为实际数据节点；每层存储指向本层下一个节点的指针，同时记录跨度<code>span</code>，<code>span</code>代表该指针跨越的底层节点数量。</li>
+  <li><strong>表高度level</strong>：排除头节点，节点最大层数就是跳跃表高度，图中示例高度为3。</li>
+  <li><strong>有序存储</strong>：每一层链表内数据按分数递增有序排列；每层链表末尾节点指向<code>NULL</code>，标记本层链表结束。</li>
+  <li><strong>尾指针tail</strong>：维护<code>tail</code>指针，直接指向跳跃表最末尾的数据节点。</li>
+  <li><strong>表长度length</strong>：最底层L0的节点总数（不计header头节点），代表跳跃表整体长度，示例中length=7。</li>
+  <li><strong>后退指针backward</strong>：每个数据节点带有后退指针；头节点、第一个数据节点后退指针为<code>NULL</code>；其余节点的后退指针，指向<strong>最底层链表的前一个节点</strong>，只在底层实现反向遍历。</li>
+  <li><strong>节点信息</strong>：每个数据节点存储score分值，作为排序依据。</li>
+</ol>
+
+<blockquote>
+  <p>补充：上层链表用来加速查找，底层完整链表保存全部元素；span跨度用于计算元素在表中的排位。</p>
+</blockquote>
+
+<h3 id="跳跃表数据结构">跳跃表数据结构</h3>
+
+<pre><code class="language-cpp">typedef struct zskiplist {
+  struct zskiplistNode *header, *tail;
+  unsigned long length;
+  int level;
+}
+
+typedef struct zskiplistNode {
+  sds ele; // 存储字符串类型数据
+  double score; // 存储本层分数
+  struct zskiplistNode *backward;
+  struct zskiplistLevel {
+    struct zskiplistNode *forward;
+    unsigned int span;
+  } level[];
+}
+</code></pre>
+
+<h3 id="每个节点层数确定">每个节点层数确定</h3>
+
+<p>跳跃表通过一个random函数随机生成一个1-64之间的数，来确认自身高度。</p>
+
+<pre><code class="language-cpp">#define ZSKIPLIST_P 0.25
+int zslrandomLevel(void) {
+  int level = 1;
+  while ((random()&amp;0xFFFF) &lt; (ZSKIPLIST_P*0xFFFF)) ++level;
+  return (level &lt; ZSKIPLIST_MAXLEVEL) ?level : ZSKIPLIST_MAXLEVEL;
+}
+</code></pre>
+
+<p>节点层高为n的概率为 $p^{n-1}(1 - p)$</p>
+
+<h3 id="插入节点的步骤">插入节点的步骤</h3>
+
+<ol>
+  <li>查找插入位置</li>
+  <li>调整跳跃表高度</li>
+  <li>插入节点</li>
+  <li>调整backward</li>
+</ol>
+
+<h3 id="删除节点的步骤">删除节点的步骤</h3>
+
+<ol>
+  <li>查找涉及更新的节点</li>
+  <li>设置span和forward</li>
+</ol>
+
+<h3 id="跳跃表的应用">跳跃表的应用</h3>
+
+<p>当使用压缩列表的配置（<code>zset-max-ziplist-entries</code> 和 <code>zset-max-ziplist-value</code>）超限时，跳跃表主要应用于有序集合的底层实现。</p>
+
+<h2 id="压缩列表-ziplist">压缩列表 ziplist</h2>
+
+<p>压缩列表的本质是一个字节数组。Redis的有序集合、散列表和列表都使用了压缩列表。</p>
+
+<ul>
+  <li>有序集合和散列表在元素少且是短字符串时使用压缩列表。</li>
+  <li>列表依赖快速链表实现，快速链表是双向链表与压缩列表的组合。</li>
+</ul>
+
+<h3 id="压缩列表数据结构">压缩列表数据结构</h3>
+
+<p>整体结构</p>
+
+<p><img src="/post-images/中间件/2026-08-24-Redis.assets/image-20260831222843954.png" alt="image-20260831222843954" /></p>
+
+<ul>
+  <li>zlbytes ：压缩列表长度</li>
+  <li>zltail ：尾元素地址偏移量 (元素个数*元素大小)</li>
+  <li>zllen ：元素个数</li>
+  <li>entryX ：压缩列表存储的元素</li>
+  <li>zlend : 压缩列表结尾，值恒为0xFF</li>
+</ul>
+
+<p>每个节点的结构</p>
+
+<p><img src="/post-images/中间件/2026-08-24-Redis.assets/image-20260831224031223.png" alt="image-20260831224031223" /></p>
+
+<p>普通双向链表每个节点都要维护 <code>prev</code>、<code>next</code> 两个指针，每个指针占用 8 字节（64 位系统），元数据开销很大。</p>
+
+<ul>
+  <li>ziplist<strong>不使用指针</strong>，全部数据紧凑排布在一块连续内存；</li>
+  <li>节点通过<code>prevlen</code>记录上一个节点的长度实现双向遍历，替代链表指针；</li>
+  <li>利用<code>encoding</code> 和 <code>content</code> 支持可变长度编码：小整数直接用整数编码，短字符串用字节编码，不同内容选择最小占用的编码格式，最大限度压缩存储空间。</li>
+</ul>
+
+<h2 id="字典-dict">字典 dict</h2>
+
+<p>基本同其他编程语言的map。</p>
+
+<h2 id="整数集合-intset">整数集合 intset</h2>
+
+<h2 id="快速链表-quicklist">快速链表 quicklist</h2>
+
+<h2 id="stream">stream</h2>
+
+<h1 id="redis面试题">Redis面试题</h1>
+
+<h2 id="一认识-redis">一、认识 Redis</h2>
+
+<h3 id="1-什么是-redis">1. 什么是 Redis？</h3>
+
+<blockquote>
+  <p>Redis 是一个<strong>开源、基于内存、支持持久化的键值对NoSQL数据库</strong>，C语言开发。支持多种丰富数据结构；支持主从、哨兵、集群；单线程模型，性能极高；可以做缓存、分布式锁、延迟队列、计数器等。数据主要放在内存，也可以RDB/AOF落盘持久化。</p>
+</blockquote>
+
+<h3 id="2-redis-和-memcached-有什么区别">2. Redis 和 Memcached 有什么区别？</h3>
+
+<ol>
+  <li><strong>数据结构</strong>：Memcached只有简单k‑v字符串；Redis支持String、List、Hash、Set、ZSet等多种数据结构。</li>
+  <li><strong>持久化</strong>：Memcached不支持持久化；Redis支持RDB、AOF持久化，宕机数据可恢复。</li>
+  <li><strong>线程模型</strong>：Memcached多线程；Redis6.0前单线程处理命令，6.0引入多线程IO。</li>
+  <li><strong>集群</strong>：Memcached原生不支持集群；Redis支持主从、哨兵、Redis‑Cluster集群。</li>
+  <li><strong>内存管理</strong>：Memcached使用预分配内存池；Redis按需申请内存，支持内存淘汰策略。</li>
+  <li><strong>其他</strong>：Redis支持发布订阅、Lua脚本、事务；Memcached功能简单。</li>
+</ol>
+
+<h3 id="3-为什么用-redis-作为-mysql-的缓存">3. 为什么用 Redis 作为 MySQL 的缓存？</h3>
+
+<ol>
+  <li>Redis内存访问速度远快于磁盘MySQL，降低数据库压力，提升接口响应速度。</li>
+  <li>支持丰富数据结构，能直接满足业务的集合、排序、列表类缓存场景。</li>
+  <li>支持过期时间，天然适合缓存过期失效。</li>
+  <li>支持持久化，缓存节点重启后数据可以恢复。</li>
+  <li>支持集群，可横向扩容，承载高并发读请求。</li>
+</ol>
+
+<blockquote>
+  <p>注意：需要处理缓存穿透、击穿、雪崩，以及缓存与数据库一致性问题。</p>
+</blockquote>
+
+<h2 id="二redis-数据结构">二、Redis 数据结构</h2>
+
+<h3 id="1-redis数据类型以及使用场景分别是什么">1. Redis数据类型以及使用场景分别是什么？</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>类型</th>
+      <th>作用</th>
+      <th>典型场景</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>String</td>
+      <td>字符串/数字</td>
+      <td>计数器、分布式session、简单KV、限流计数</td>
+    </tr>
+    <tr>
+      <td>List</td>
+      <td>双向列表</td>
+      <td>消息队列、最新列表、时间轴</td>
+    </tr>
+    <tr>
+      <td>Hash</td>
+      <td>哈希表</td>
+      <td>存储对象，用户信息，商品属性</td>
+    </tr>
+    <tr>
+      <td>Set</td>
+      <td>无序集合</td>
+      <td>去重、交集并集、好友共同关注</td>
+    </tr>
+    <tr>
+      <td>ZSet</td>
+      <td>有序集合</td>
+      <td>排行榜、延时队列、带权重排序</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="2-五种常见的-redis-数据类型是怎么实现">2. 五种常见的 Redis 数据类型是怎么实现？</h3>
+
+<ol>
+  <li><strong>String</strong>：底层 SDS（简单动态字符串）。</li>
+  <li><strong>List</strong>：底层 quicklist（3.2版本后），双向链表，每个节点是ziplist压缩列表。</li>
+  <li><strong>Hash</strong>：数据少时用ziplist压缩列表；数据量大转为dict哈希表。</li>
+  <li><strong>Set</strong>：整数集合intset（元素全是整数、数量少）；否则dict哈希表。</li>
+  <li><strong>ZSet</strong>：数据少时ziplist；数据量大使用跳表(zskiplist)+dict字典。</li>
+</ol>
+
+<h2 id="三redis-线程模型">三、Redis 线程模型</h2>
+
+<h3 id="1-redis是单线程吗">1. Redis是单线程吗？</h3>
+
+<blockquote>
+  <p>Redis <strong>执行命令的主线程是单线程</strong>，但Redis整体并不是只有一个线程。</p>
+</blockquote>
+
+<ul>
+  <li>Redis6.0之前：网络IO、命令执行全部单线程；持久化RDB/AOF会fork子进程做后台工作。</li>
+  <li>Redis6.0之后：<strong>命令执行依旧单线程</strong>；网络IO处理支持多线程，读写socket可以多线程分担。</li>
+</ul>
+
+<h3 id="2-redis单线程模式是怎样的">2. Redis单线程模式是怎样的？</h3>
+
+<p>采用<strong>IO多路复用 + 单线程事件循环</strong>：</p>
+
+<ol>
+  <li>一个主线程，通过epoll/kqueue监听大量socket文件描述符。</li>
+  <li>当客户端socket就绪，主线程读取请求，执行Redis命令，返回结果。</li>
+  <li>所有命令串行执行，不会出现线程安全问题，不需要锁。</li>
+  <li>耗时操作（RDB、AOF刷盘）交给子进程/后台线程，不阻塞主线程。</li>
+</ol>
+
+<h3 id="3-redis采用单线程为什么还这么快">3. Redis采用单线程为什么还这么快？</h3>
+
+<ol>
+  <li>绝大部分操作是内存操作，内存访问速度极快。</li>
+  <li>IO多路复用，可以处理大量客户端连接。</li>
+  <li>避免多线程频繁上下文切换、锁竞争开销。</li>
+  <li>耗时任务交给子进程/后台线程，不阻塞主线程。</li>
+  <li>C语言实现，底层内存处理高效。</li>
+</ol>
+
+<blockquote>
+  <p>注意：单线程怕<strong>慢命令</strong>，keys、flushall、大集合操作会阻塞整个服务。</p>
+</blockquote>
+
+<h3 id="4-redis-60之前为什么使用单线程">4. Redis 6.0之前为什么使用单线程？</h3>
+
+<ol>
+  <li>内存数据库瓶颈大多不在CPU，而在网络IO；单线程足以跑满网络。</li>
+  <li>多线程会带来锁、竞争、上下文切换的额外开销，增加代码复杂度。</li>
+  <li>命令串行执行，天然线程安全，不需要处理并发竞争。</li>
+  <li>fork子进程处理持久化，已经可以把耗时操作剥离主线程。</li>
+</ol>
+
+<h3 id="5-redis-60-之后为什么引入了多线程">5. Redis 6.0 之后为什么引入了多线程？</h3>
+
+<p>当网络IO成为瓶颈时，单线程处理大量网络读写会打满CPU。</p>
+
+<ul>
+  <li><strong>多线程只用来做socket的IO读写，命令执行仍然是单线程</strong>。</li>
+  <li>将网络数据包解析、读写交给IO线程，主线程专心执行命令，提升高并发下网络吞吐。</li>
+  <li>默认关闭，需要配置开启。</li>
+</ul>
+
+<h2 id="四redis持久化">四、Redis持久化</h2>
+
+<h3 id="1-redis如何实现数据不丢失">1. Redis如何实现数据不丢失？</h3>
+
+<p>依靠两种持久化：<strong>RDB快照、AOF日志</strong>，也可以开启混合持久化。</p>
+
+<ol>
+  <li>RDB：某时间点全量二进制快照，fork子进程把内存数据写入磁盘。</li>
+  <li>AOF：记录每一条写命令，追加写入日志文件；宕机后重放AOF恢复数据。</li>
+  <li>混合持久化：AOF文件头部带上RDB快照，后面跟着增量AOF日志，兼顾恢复速度与数据安全性。</li>
+</ol>
+
+<h3 id="2-aof日志是如何实现的">2. AOF日志是如何实现的？</h3>
+
+<ol>
+  <li><strong>命令追加</strong>：写命令追加到aof_buf内存缓冲区，不是直接写磁盘。对于有过期时间的key，AOF会改写命令为设置过期的绝对时间戳；对于过期的key，AOF会追加del命令。</li>
+  <li><strong>文件刷盘策略</strong>：
+    <ul>
+      <li>always：每次写都fsync刷盘，最安全，性能差。</li>
+      <li>everysec：每秒刷盘（默认），最多丢失1秒数据。</li>
+      <li>no：交给操作系统自行刷盘，不可控。</li>
+    </ul>
+  </li>
+  <li><strong>AOF重写bgrewriteaof</strong>：日志会越来越大，fork子进程，遍历内存数据生成新AOF文件，丢弃冗余旧命令，完成后替换旧文件，减小文件体积。</li>
+</ol>
+
+<h3 id="3-rdb快照是如何实现的呢">3. RDB快照是如何实现的呢？</h3>
+
+<ol>
+  <li>
+    <p>执行bgsave，主线程调用<code>fork()</code>生成子进程。</p>
+  </li>
+  <li>
+    <p>子进程拥有内存数据副本（写时复制COW），把内存全量数据dump成二进制rdb文件。</p>
+  </li>
+  <li>
+    <p>子进程完成后通知主进程，替换旧RDB文件。</p>
+  </li>
+  <li>
+    <p>触发方式：手动save/bgsave；配置定时自动触发。</p>
+
+    <blockquote>
+      <p>save命令在主线程执行，会阻塞，生产环境禁止使用。</p>
+    </blockquote>
+  </li>
+</ol>
+
+<h3 id="4-为什么会有混合持久化">4. 为什么会有混合持久化？</h3>
+
+<p>AOF纯模式：恢复数据需要重放全部历史命令，文件大、恢复慢。 纯RDB：只能全量快照，两次快照之间宕机会丢失大量数据。</p>
+
+<blockquote>
+  <p>混合持久化：AOF重写时，把当前内存数据以RDB二进制写到AOF文件头部，后续继续追加AOF增量命令。</p>
+</blockquote>
+
+<ul>
+  <li>恢复：先加载RDB部分，再重放后面增量AOF，兼顾恢复速度和少丢数据。Redis4.0+支持。</li>
+</ul>
+
+<h2 id="五redis集群">五、Redis集群</h2>
+
+<h3 id="1-redis如何实现服务高可用">1. Redis如何实现服务高可用？</h3>
+
+<ol>
+  <li><strong>主从复制</strong>：主节点写，从节点同步数据，从节点提供读服务；主挂掉无法自动切换。</li>
+  <li><strong>Sentinel哨兵</strong>：监控主从节点；主节点故障，哨兵自动选出新主节点，自动故障转移，实现高可用。</li>
+  <li><strong>Redis‑Cluster集群</strong>：分片，把数据分散到多个master节点，水平扩容存储；每个master搭配slave实现故障转移。</li>
+</ol>
+
+<h3 id="2-集群脑裂导致数据丢失怎么办">2. 集群脑裂导致数据丢失怎么办？</h3>
+
+<p><strong>先复现脑裂整个过程</strong></p>
+
+<ol>
+  <li>原本：A 是主节点，B、C 是从节点，Sentinel 哨兵正常监控。</li>
+  <li><strong>网络分区发生</strong>：主节点 A 和哨兵、从节点之间网络断了。
+    <ul>
+      <li>哨兵收不到 A 的心跳，认为 A 故障，把从 B 升级成<strong>新主节点</strong>。客户端慢慢切换连到新主 B 写数据。</li>
+      <li>⚠️但是！旧主 A 本身还活着，只是和哨兵隔离。<strong>一部分客户端因为网络路由，依旧还能连上旧主 A，继续向旧主 A 写入新数据</strong>。</li>
+    </ul>
+  </li>
+  <li>一段时间后网络恢复。
+    <ul>
+      <li>哨兵会把旧主 A 降级为新主 B 的从节点。</li>
+      <li>A 上自己接收的那部分新写入的数据，会被直接清空，同步新主 B 的数据，<strong>这部分旧主 A 的写入就永久丢失了</strong>。</li>
+    </ul>
+  </li>
+</ol>
+
+<blockquote>
+  <p>问题根源：网络断开后，旧主依然认为自己是 master，还在接受写请求。</p>
+</blockquote>
+
+<p><strong>两个配置参数含义</strong></p>
+
+<pre><code>min‑replicas‑to‑write 1
+min‑replicas‑max‑lag 5
+</code></pre>
+
+<blockquote>
+  <p>翻译：<strong>主节点只有满足：至少有 1 个从节点，且这个从节点的复制延迟不超过 5 秒，主节点才允许执行写命令；否则拒绝写操作。</strong></p>
+</blockquote>
+
+<ol>
+  <li><code>min‑replicas‑to‑write 1</code> 主节点要求，<strong>在线、正常复制的从节点数量至少达到 N 个</strong>，才允许接收写。这里 N=1。</li>
+  <li><code>min‑replicas‑max‑lag 5</code> 判断从节点的<code>repl_lag</code>复制延迟（从节点上报给主的延迟秒数）。 只有从节点复制滞后时间 ≤5 秒，才算有效可用从节点。</li>
+</ol>
+
+<p>发生网络分区，旧主 A 与哨兵、从节点网络断开：</p>
+
+<ol>
+  <li>旧主 A 再也收不到从节点 B、C 的 repl ack，从节点复制延迟会越来越大，超过 5 秒。</li>
+  <li>此时旧主 A 检测：有效从节点数量为 0，不满足<code>min‑replicas‑to‑write 1</code>条件。</li>
+  <li><strong>旧主 A 直接拒绝所有写请求</strong>（写命令返回错误）。</li>
+  <li>哨兵那边依旧正常把 B 提升为新主，客户端切换到 B 写入。</li>
+  <li>网络恢复之后：旧主 A 降为从，同步 B 的数据。</li>
+</ol>
+
+<blockquote>
+  <p>因为脑裂期间旧主 A 根本没有新数据写入，就不会出现数据丢失。</p>
+</blockquote>
+
+<h2 id="六redis过期删除与内存淘汰">六、Redis过期删除与内存淘汰</h2>
+
+<h3 id="1-redis使用的过期删除策略是什么">1. Redis使用的过期删除策略是什么？</h3>
+
+<ol>
+  <li>
+    <p><strong>惰性删除</strong>：访问key的时候才检查是否过期，过期直接删除；CPU友好，但过期key占内存。</p>
+  </li>
+  <li>
+    <p><strong>定期删除</strong>：主线程定时随机抽取一批带过期时间的key，检查删除过期key；采样式，不会扫描全部key。</p>
+
+    <blockquote>
+      <p>Redis是惰性删除+定期删除配合，不会一次性扫描全部key避免阻塞。</p>
+    </blockquote>
+  </li>
+</ol>
+
+<h3 id="2-redis持久化时对过期键会如何处理的">2. Redis持久化时，对过期键会如何处理的？</h3>
+
+<ol>
+  <li><strong>RDB</strong>：生成RDB快照时，过期key不会写入RDB文件；加载RDB的时候，忽略已经过期的key。</li>
+  <li><strong>AOF</strong>：key过期不会立刻删除，当key真正被删除时，才向AOF追加del命令；AOF重写的时候，过期key不会写入新AOF。</li>
+</ol>
+
+<h3 id="3-redis主从模式中对过期键会如何处理">3. Redis主从模式中，对过期键会如何处理？</h3>
+
+<p>Redis主从<strong>不会把过期时间同步给从库</strong>。</p>
+
+<blockquote>
+  <p>过期删除逻辑全部在主节点执行；主节点删除过期key，生成del命令同步给从节点。从库不会主动删除key，依靠主节点下发del。 旧版本从库即使key过期，依旧可以读到，直到主库发送del。</p>
+</blockquote>
+
+<h3 id="4-redis内存满了会发生什么">4. Redis内存满了，会发生什么？</h3>
+
+<p>达到maxmemory最大内存限制，触发<strong>内存淘汰策略</strong>，按照策略删除key释放内存。 如果策略设置为<code>noeviction</code>，不会删除key，写命令直接返回OOM错误。</p>
+
+<h3 id="5-redis内存淘汰策略有哪些">5. Redis内存淘汰策略有哪些？</h3>
+
+<ol>
+  <li><code>noeviction</code>：不淘汰，写报错（默认）</li>
+  <li><code>allkeys‑lru</code>：所有key，淘汰最近最少使用</li>
+  <li><code>volatile‑lru</code>：只对带过期时间key，LRU淘汰</li>
+  <li><code>allkeys‑lfu</code>：所有key，淘汰访问频次最低</li>
+  <li><code>volatile‑lfu</code>：过期key范围内LFU</li>
+  <li><code>allkeys‑random</code>：全部key随机删</li>
+  <li><code>volatile‑random</code>：过期key随机删</li>
+  <li><code>volatile‑ttl</code>：删除剩余ttl时间最短的key</li>
+</ol>
+
+<blockquote>
+  <p>Redis LRU不是真实LRU，是采样近似LRU，节省内存。</p>
+</blockquote>
+
+<h3 id="6-lru算法和lfu算法有什么区别">6. LRU算法和LFU算法有什么区别？</h3>
+
+<ul>
+  <li><strong>LRU(Least Recently Used)</strong>：淘汰<strong>最近最少访问</strong>的key，关心时间维度；适合访问时间差异大的场景。缺点：偶尔访问的冷数据会把长期不访问但是马上要访问的热点挤掉。</li>
+  <li><strong>LFU(Least Frequently Used)</strong>：淘汰<strong>访问频次最低</strong>的key，关心访问次数；适合看访问热度。缺点：历史高频key，后续不再访问，还会驻留内存。</li>
+</ul>
+
+<h2 id="七redis缓存设计">七、Redis缓存设计</h2>
+
+<h3 id="1-如何避免缓存雪崩缓存击穿缓存穿透">1. 如何避免缓存雪崩、缓存击穿、缓存穿透？</h3>
+
+<ol>
+  <li><strong>缓存雪崩</strong>：大量key同时过期，或者Redis宕机，大量请求打到数据库。
+    <ul>
+      <li>方案：过期时间加随机偏移；Redis高可用；限流熔断；多级缓存。</li>
+    </ul>
+  </li>
+  <li><strong>缓存击穿</strong>：某一个热点key过期，大量并发请求打数据库。
+    <ul>
+      <li>方案：热点key永不过期；互斥锁。</li>
+    </ul>
+  </li>
+  <li><strong>缓存穿透</strong>：查询不存在的数据，缓存不命中，直接穿透到数据库。
+    <ul>
+      <li>方案：参数校验；布隆过滤器；空值缓存短期过期。</li>
+    </ul>
+  </li>
+</ol>
+
+<h3 id="2-如何设计一个缓存策略可以动态缓存热点数据呢">2. 如何设计一个缓存策略，可以动态缓存热点数据呢？</h3>
+
+<ol>
+  <li>设置内存淘汰策略使用<code>allkeys‑lfu</code>，Redis自动统计访问频次，保留热点key，冷key淘汰。</li>
+  <li>不设置过期时间，依靠LFU内存淘汰自动剔除冷数据。</li>
+  <li>也可以业务层统计访问量，主动把热点数据写入Redis。</li>
+</ol>
+
+<h3 id="3-说说常见的缓存更新策略">3. 说说常见的缓存更新策略？</h3>
+
+<ol>
+  <li><strong>Cache Aside（旁路缓存，业务最常用）</strong>：更新数据库，删除缓存；读：先读缓存，miss读DB再写缓存。</li>
+  <li><strong>Read/Write Through</strong>：读写全部交给缓存，缓存负责同步更新数据库，业务代码简单。</li>
+  <li><strong>Write Back写回</strong>：写只更新缓存，后台异步批量刷数据库，性能高，宕机容易丢数据。</li>
+</ol>
+
+<blockquote>
+  <p>工业界主流：Cache‑Aside。</p>
+</blockquote>
+
+<h3 id="4-如何保证缓存和数据库数据的一致性">4. 如何保证缓存和数据库数据的一致性？</h3>
+
+<ol>
+  <li>优先：更新数据库，<strong>删除缓存</strong>，而不是更新缓存。</li>
+  <li>延迟双删：更新DB，删缓存；短暂sleep，再删一次缓存，解决读请求旧数据回写缓存。</li>
+  <li>给缓存设置过期时间，作为兜底最终一致性。</li>
+  <li>高一致性场景，可以使用Canal监听binlog，异步更新/失效缓存。</li>
+  <li>强一致性场景，不要用缓存。</li>
+</ol>
+
+<blockquote>
+  <p>缓存更多追求最终一致性，很难做到强一致。</p>
+</blockquote>
+
+<h2 id="八redis实战">八、Redis实战</h2>
+
+<h3 id="1-redis如何实现延迟队列">1. Redis如何实现延迟队列？</h3>
+
+<p><strong>延迟队列：消息 / 任务不会立刻被消费，等待指定一段时间之后才被处理</strong>。</p>
+
+<p>Redis 实现延迟队列，常用 ZSet 方案，score 存放到期时间戳。生产者写入 zset；消费者轮询查询 score 小于等于当前时间的任务。<strong>多实例部署下，查询和删除要通过 Lua 脚本保证原子，防止重复消费</strong>。</p>
+
+<h3 id="2-redis的大key如何处理">2. Redis的大key如何处理？</h3>
+
+<blockquote>
+  <p>大key：value很大，或者集合元素极多；删除会阻塞主线程；迁移慢。</p>
+</blockquote>
+
+<p>拆 key 一般会给分片加后缀编号。 一种方式业务通过元素 hash / 取模算出分片下标，直接定位分片 key，不需要额外元数据； 另一种用额外元数据 key 保存全部分片 key 列表。</p>
+
+<p>拆 key 会带来代价：聚合查询、计数需要业务层遍历多个分片结果；同时丢失单 key 的原子性。 注意区分拆 key 和 scan 渐进删除：scan 不改变 key 名称，只是分批删里面元素。</p>
+
+<h3 id="3-redis管道有什么用">3. Redis管道有什么用？</h3>
+
+<p><strong>pipeline管道</strong>：把多条命令打包，一次性发给Redis，减少多次网络往返RTT；服务端批量执行，一次性返回结果。</p>
+
+<blockquote>
+  <p>注意：不是事务，中间命令失败不会回滚；适合批量操作提升性能。</p>
+</blockquote>
+
+<h3 id="4-redis事务支持回滚吗">4. Redis事务支持回滚吗？</h3>
+
+<p>Redis事务：<code>MULTI</code>开启，<code>EXEC</code>执行，<code>DISCARD</code>放弃。</p>
+
+<blockquote>
+  <p><strong>不支持回滚</strong>。</p>
+</blockquote>
+
+<ol>
+  <li>
+    <p>语法错误：全部命令不执行。</p>
+  </li>
+  <li>
+    <p>运行时错误（比如对字符串执行hget），错误命令报错，其他命令依旧执行，不会回滚。</p>
+
+    <blockquote>
+      <p>如果需要原子性，优先使用Lua脚本。</p>
+    </blockquote>
+  </li>
+</ol>
+
+<h3 id="5-如何用-redis-实现分布式锁的">5. 如何用 Redis 实现分布式锁的？</h3>
+
+<ol>
+  <li>基础：<code>SET key value NX EX</code>；NX不存在才设置，EX设置过期时间，防止死锁。</li>
+  <li><strong>锁value设置唯一标识（UUID）</strong>，释放锁的时候，判断是自己加的锁才删除，避免误删别人锁。</li>
+  <li>释放锁用Lua脚本保证查询+del原子操作。</li>
+  <li>问题：锁过期业务没执行完，需要锁续期（Redisson看门狗机制）。</li>
+  <li>Redis集群需要Redlock红锁算法解决主从切换锁丢失风险。</li>
+</ol>
+
+<h1 id="agent限流">Agent限流</h1>
+
+<p>使用ZSET实现，member为标识，score为时间戳。</p>
+
+<h2 id="用户级别限流">用户级别限流</h2>
+
+<p><strong>每个用户任意连续 10 秒最多请求 3 次</strong>。使用ZSET保存用户的请求记录。可以把 ZSET 想象成一条自动按时间排列的请求时间轴：</p>
+
+<pre><code>1s          4s                    9s
+A-----------B---------------------C
+</code></pre>
+
+<p>用于判断允许还是拒绝。</p>
+
+<h3 id="调用前">调用前</h3>
+
+<ol>
+  <li>清理超时成员</li>
+  <li>检查当前数量</li>
+  <li>未超过上限则 ZADD</li>
+</ol>
+
+<h3 id="调用后">调用后</h3>
+
+<p>ZREM 调用 ID</p>
+
+<h1 id="任务去重消息重复消费问题">任务去重、消息重复消费问题</h1>
+
+<p>通过 <code>SETNX</code> 判断是否已经执行，<code>SET NX</code> 是 <code>SET</code> 命令配合 <code>NX</code>（Not eXists）参数的一种用法。它的核心作用是：只有当指定的键（Key, 这里指的是唯一任务id）不存在时，才执行设置操作；如果键已经存在，则不执行任何操作*。</p>
+
+<p>异步 Agent 通过 MQ 返回结果时，使用Redis防止消息重复消费，保证幂等姓。</p>
+
+<h1 id="熔断器">熔断器</h1>
+
+<ul>
+  <li><code>{agentId}:window</code>
+    <ul>
+      <li><strong>作用</strong>：滑动窗口计数器。</li>
+      <li><strong>理解</strong>：用来记录最近一段时间内（比如最近10秒）该 Agent 的成功和失败调用次数。Redis 的 List 或 ZSet 结构非常适合做这种时间窗口统计。当失败次数超过阈值（比如50%的请求都失败了），就会触发状态变更。</li>
+    </ul>
+  </li>
+  <li><code>{agentId}:openuntil</code>
+    <ul>
+      <li><strong>作用</strong>：熔断截止时间戳。</li>
+      <li><strong>理解</strong>：这是一个“禁令”标记。一旦进入 OPEN 状态，系统会写入一个未来的时间戳。在这个时间点之前，所有请求直接拒绝，不再调用下游 Agent。</li>
+    </ul>
+  </li>
+  <li><code>{agentId}:halfopen_probe</code>
+    <ul>
+      <li><strong>作用</strong>：半开状态的探针锁。</li>
+      <li><strong>理解</strong>：这是为了解决“集群惊群效应”。当熔断时间结束进入 HALF_OPEN 状态时，如果集群有100个节点，不能让100个节点同时去试探下游是否恢复。利用 Redis 的原子性（如 SETNX），只允许抢到锁的那 1 个节点去发探测请求。</li>
+    </ul>
+  </li>
+</ul>
+
+<p>熔断器生命周期</p>
+
+<ul>
+  <li><strong>CLOSED (闭合/正常态)</strong>
+    <ul>
+      <li><strong>含义</strong>：一切正常，请求正常转发给 Agent。</li>
+      <li><strong>触发条件</strong>：在 <code>window</code> 窗口期内，统计到的失败率超过了设定的阈值。</li>
+      <li><strong>动作</strong>：系统判定 Agent 不可用，状态切换为 OPEN。</li>
+    </ul>
+  </li>
+  <li><strong>OPEN (开启/熔断态)</strong>
+    <ul>
+      <li><strong>含义</strong>：Agent 已“挂掉”，停止发送请求，直接返回错误或默认值（快速失败）。</li>
+      <li><strong>触发条件</strong>：预设的熔断冷却时间（<code>openuntil=30</code>）结束。</li>
+      <li><strong>动作</strong>：状态切换为 HALF_OPEN，准备尝试恢复。</li>
+    </ul>
+  </li>
+  <li><strong>HALF_OPEN (半开/探测态)</strong>
+    <ul>
+      <li><strong>含义</strong>：小心翼翼地尝试恢复。</li>
+      <li><strong>触发条件</strong>：放行的探测请求调用成功。</li>
+      <li><strong>动作</strong>：确认 Agent 已恢复，状态切回 CLOSED；如果探测失败，则重新回到 OPEN 状态并延长冷却时间。</li>
+    </ul>
+  </li>
+</ul>
+
+<h1 id="分布式锁">分布式锁</h1>
+
+<h2 id="为什么需要分布式锁">为什么需要分布式锁</h2>
+
+<p>假设 Octopus 部署三个节点：</p>
+
+<pre><code>节点 A：原来执行任务 T1，后来宕机 
+节点 B：SchedulerX 扫描到 T1 
+节点 C：Callback 到达，也发现 T1 需要恢复
+</code></pre>
+
+<p>此时 B 和 C 都可能尝试恢复同一个任务。</p>
+
+<p>没有锁时可能发生：</p>
+
+<pre><code>B 恢复 T1 → 调用 Agent C 恢复 T1 → 再次调用 Agent
+</code></pre>
+
+<p>后果包括：</p>
+
+<ul>
+  <li>外部 Agent 被调用两次；</li>
+  <li>最终消息重复推送；</li>
+  <li>Checkpoint 相互覆盖；</li>
+  <li>TaskCenter 重复上报；</li>
+  <li>产生重复业务副作用。</li>
+</ul>
+
+<p>获取锁的方法</p>
+
+<pre><code>SET lockKey ownerToken NX PX 60000
+
+</code></pre>
+
+<ul>
+  <li>NX：Key 不存在时才写入；</li>
+  <li><strong>PX</strong>：设置毫秒级过期时间；</li>
+  <li><strong>ownerToken</strong>：当前持有者的唯一身份。</li>
+</ul>
+
+<h1 id="callback-bridge">callback bridge</h1>
+
+<p>外部 Agent 的结果是异步返回的，而且可能回调到任意 Octopus 节点，如何把结果交给原来的执行流程，不能使用内存，因此需要借助Redis。</p>
+
+<p><strong>Callback Bridge 的核心需求是低延迟、按 correlationId 动态唤醒；消息已经存入 Redis，Pub/Sub 只做可丢失的通知。若改用 MQ，仍需共享存储和节点路由，复杂度更高、收益有限。</strong></p>
+
+<p>callback bridge传递三类消息：</p>
+
+<h2 id="中间事件">中间事件</h2>
+
+<p>对于中间结果，它需要</p>
+
+<ul>
+  <li>多条事件排队；</li>
+  <li>保持到达顺序；</li>
+  <li>被等待线程逐条消费；</li>
+  <li>新事件到达时立即唤醒线程；</li>
+  <li>消费后及时清理。</li>
+</ul>
+
+<h2 id="最终结果">最终结果</h2>
+
+<p>短期保留，供等待/恢复读取</p>
+
+<pre><code>回调到达
+  ↓
+写 Redis
+  ↓
+Pub/Sub 通知
+  ↓
+等待线程立即醒来
+</code></pre>
+
+<h2 id="唤醒通知">唤醒通知</h2>
+
+<p>项目会先把数据写进 Redis，再执行 Publish。如果pub失败，模型仍可以通过定期扫描获取数据；如果写入失败，模型会通过agent run进行重试。</p>
+
+<h1 id="redis-心跳">Redis 心跳</h1>
+
+<p>Agent执行过程中，要通过Redis 心跳告诉Scheduler巡检员自己没有宕机。</p>
+
+
+        </article>
+      </div>
+    </div>
+  </main>
+
+  <!-- Right: Category Articles -->
+  <aside class="post-category-sidebar" role="navigation" aria-label="分类文章列表">
+    <div class="category-panel">
+      
+      
+      <div class="category-sidebar-title">
+        <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
+        中间件
+      </div>
+      <ul class="category-article-list">
+        
+        
+        <li class="">
+          <a href="/2026/08/24/%E4%B8%AD%E9%97%B4%E4%BB%B6/MySQL/" title="MySQL">
+            <span class="article-title">MySQL</span>
+            <span class="article-date">08-24</span>
+          </a>
+        </li>
+        
+        <li class="active">
+          <a href="/2026/08/24/%E4%B8%AD%E9%97%B4%E4%BB%B6/Redis/" title="Redis">
+            <span class="article-title">Redis</span>
+            <span class="article-date">08-24</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/08/24/%E4%B8%AD%E9%97%B4%E4%BB%B6/MQ/" title="MQ">
+            <span class="article-title">MQ</span>
+            <span class="article-date">08-24</span>
+          </a>
+        </li>
+        
+      </ul>
+      
+    </div>
+  </aside>
+</div>
+
+<!-- Theme Toggle Button -->
+<button type="button" class="theme-toggle" aria-label="Toggle Theme">
+  <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+  </svg>
+  <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="12" cy="12" r="5"></circle>
+    <line x1="12" y1="1" x2="12" y2="3"></line>
+    <line x1="12" y1="21" x2="12" y2="23"></line>
+    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+    <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+    <line x1="1" y1="12" x2="3" y2="12"></line>
+    <line x1="21" y1="12" x2="23" y2="12"></line>
+    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+    <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+  </svg>
+</button>
+
+<!-- Back to Top Button -->
+<button type="button" class="back-to-top" aria-label="Back to Top">
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <polyline points="18 15 12 9 6 15"></polyline>
+  </svg>
+</button>
+
+
+    <!-- Site Footer -->
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-content">
+      <div class="footer-info">
+        <h4>xinfan9's blog</h4>
+        <p>Actually, less is more!</p>
+      </div>
+      <div class="footer-links">
+        <a href="https://github.com/xinfan9/" target="_blank" title="GitHub">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+        </a>
+        <a href="mailto:11411619@qq.com" title="Email">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+        </a>
+        <a href="/feed.xml" title="RSS">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11a9 9 0 0 1 9 9"/><path d="M4 4a16 16 0 0 1 16 16"/><circle cx="5" cy="19" r="1"/></svg>
+        </a>
+      </div>
+      <div class="footer-copyright">
+        <p>&copy; 2026 xinfan9. Built with Jekyll.</p>
+      </div>
+    </div>
+  </div>
+</footer>
+      
+    
+    <!-- Global Buttons (for non-post pages) -->
+    
+  </body>
+</html>

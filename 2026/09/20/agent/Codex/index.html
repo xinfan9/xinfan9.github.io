@@ -1,0 +1,2912 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+  <head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="Content-Language" content="zh-CN">
+	<title>Codex - xinfan9's blog</title>
+
+	<link rel="icon" href="/styles/images/favicon.jpg">
+
+	<!-- Preconnect for CDN -->
+	
+	<link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+	<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+	
+
+
+	<!-- Inline Critical Reset (was index.css) -->
+	<style>
+		*,*::before,*::after{box-sizing:border-box}html{-ms-text-size-adjust:100%;-webkit-text-size-adjust:100%;-webkit-tap-highlight-color:rgba(0,0,0,0)}body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Microsoft YaHei",sans-serif;font-size:14px;line-height:1.42857143;color:#333;background-color:#f7f7f7}article,aside,details,figcaption,figure,footer,header,main,nav,section,summary{display:block}a{color:#43759e;text-decoration:none;background:transparent}a:hover,a:focus{color:#2c4d68;text-decoration:underline}a:focus{outline:thin dotted;outline-offset:-2px}img{vertical-align:middle;max-width:100%;height:auto}input,button,select,textarea{font-family:inherit;font-size:inherit;line-height:inherit}h1,h2,h3,h4,h5,h6{margin-top:0}.container{max-width:1200px;margin-left:auto;margin-right:auto;padding-left:15px;padding-right:15px}.clearfix::after{content:"";display:table;clear:both}.text-muted{color:#777}.sr-only{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0,0,0,0);border:0}
+	</style>
+
+	
+	<link rel="prefetch" as="image" href="/styles/images/api/background.webp">
+
+	<!-- Clarity Blog Theme -->
+	<link rel="stylesheet" href="/assets/css/clarity-blog.css?v=1791466635">
+
+	<!-- Prism.js Theme (non-blocking, only needed for code blocks) -->
+	
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" media="print" onload="this.media='all'" onerror="console.warn('Prism CSS load failed')">
+	
+	
+	<link rel="canonical" href="https://xinfang.site/2026/09/20/agent/Codex/">
+	<link rel="alternate" type="application/rss+xml" title="xinfan9's blog" href="https://xinfang.site/feed.xml">
+	
+	<meta name="description" content="Codex Harness 核心流程分析
+">
+
+	<!-- Open Graph for social sharing -->
+	<meta property="og:title" content="Codex">
+	<meta property="og:description" content="Codex Harness 核心流程分析
+">
+	<meta property="og:url" content="https://xinfang.site/2026/09/20/agent/Codex/">
+	<meta property="og:site_name" content="xinfan9's blog">
+	<meta property="og:type" content="article">
+	<meta property="article:published_time" content="2026-09-20T20:33:54+08:00">
+	
+	<meta property="og:image" content="https://xinfang.site/styles/images/api/background.webp">
+	<meta property="og:image:width" content="1200">
+	<meta property="og:image:height" content="630">
+	
+	<meta property="og:locale" content="zh_CN">
+
+	<!-- Twitter Card -->
+	<meta name="twitter:card" content="summary_large_image">
+	<meta name="twitter:title" content="Codex">
+	<meta name="twitter:description" content="Codex Harness 核心流程分析
+">
+	<meta name="twitter:image" content="https://xinfang.site/styles/images/favicon.jpg">
+	
+	<!-- Theme color for mobile browsers -->
+	<meta name="theme-color" content="#0b72d9" media="(prefers-color-scheme: light)">
+	<meta name="theme-color" content="#0f172a" media="(prefers-color-scheme: dark)">
+
+	<!-- Prevent FOUC for theme -->
+	<script>
+		(function() {
+			const savedTheme = localStorage.getItem('theme');
+			const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+			if (savedTheme) {
+				document.documentElement.setAttribute('data-theme', savedTheme);
+			} else if (prefersDark) {
+				document.documentElement.setAttribute('data-theme', 'dark');
+			}
+		})();
+	</script>
+	
+	<!-- Prism.js only on post pages with code blocks -->
+	
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" defer></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js" defer></script>
+	
+
+	<!-- Mermaid.js for diagram rendering (conditional) -->
+	
+
+	<!-- MathJax for LaTeX rendering (conditional) -->
+	
+
+	<!-- Blog Interactive Features -->
+	<script src="/assets/js/blog.js?v=1791466635" defer></script>
+
+	<!-- JSON-LD Structured Data -->
+	
+	<script type="application/ld+json">
+	{
+		"@context": "https://schema.org",
+		"@type": "BlogPosting",
+		"inLanguage": "zh-CN",
+		"headline": "Codex",
+		"image": "https://xinfang.site/styles/images/favicon.jpg",
+		"datePublished": "2026-09-20T20:33:54+08:00",
+		"dateModified": "2026-09-20T20:33:54+08:00",
+		"author": {
+			"@type": "Person",
+			"name": "xinfan9"
+		},
+		"publisher": {
+			"@type": "Organization",
+			"name": "xinfan9's blog",
+			"logo": {
+				"@type": "ImageObject",
+				"url": "https://xinfang.site/styles/images/favicon.jpg"
+			}
+		},
+		"mainEntityOfPage": {
+			"@type": "WebPage",
+			"@id": "https://xinfang.site/2026/09/20/agent/Codex/"
+		},
+		"keywords": "Agent",
+		"articleBody": "Codex Harness 核心流程分析\n",
+		"description": "Codex Harness 核心流程分析\n"
+	}
+	</script>
+	
+</head>
+
+  <body class="index">
+
+    <!-- Reading Progress Bar -->
+<div class="reading-progress" id="reading-progress"></div>
+
+<!-- Page Background -->
+<div class="post-background"></div>
+
+<div class="post-layout">
+  <!-- Left: TOC -->
+  <aside class="post-toc-sidebar" id="post-toc-sidebar" role="navigation" aria-label="文章目录">
+    <div class="toc-panel">
+      <div class="toc-title">
+        <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="12" x2="15" y2="12"></line><line x1="3" y1="18" x2="18" y2="18"></line></svg>
+        目录
+      </div>
+      <ul class="toc-list" id="toc-list"></ul>
+    </div>
+  </aside>
+
+  <!-- Center: Article -->
+  <main class="post-main">
+    <div class="panel docs-content">
+      <div class="wrapper">
+        <header class="post-header" role="banner">
+          <a href="https://xinfang.site/" class="back-home-link">
+            <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+            返回主页
+          </a>
+          <h1 class="post-title">Codex</h1>
+          <div class="post-meta-info">
+            <time class="meta-item meta-date" datetime="2026-09-20T20:33:54+08:00">
+              <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+              2026-09-20
+            </time>
+            
+            <time class="meta-item meta-update" datetime="2026-10-06T13:56:01+08:00">
+              <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 2.2"/></svg>
+              2026-10-06
+            </time>
+            
+            <span class="meta-item meta-author">
+              <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+              xinfan9
+            </span>
+            
+            <span class="meta-item meta-words">
+              <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+              4490 字
+            </span>
+            
+            <span class="meta-item meta-reading">
+              <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+              约 46 分钟
+            </span>
+          </div>
+        </header>
+        <article class="post-content" role="article">
+          <h1 id="codex-harness-核心流程分析">Codex Harness 核心流程分析</h1>
+
+<h2 id="项目定位">项目定位</h2>
+
+<p>Codex Harness 是 OpenAI 开发的<strong>生产级 Agent 运行时框架</strong>，Apache-2.0 协议开源，Rust 核心（codex-rs）+ TypeScript/Python SDK 双栈。它驱动 Codex App、CLI 和 VS Code 插件的底层执行框架，管理对话状态、工具调用、沙箱执行、流式输出和人工审批。核心理念：<strong>Harness 是 Agent 的操作系统</strong>——模型只是计算单元，Harness 负责记忆、工具、审批、沙箱、并发、可观测性。</p>
+
+<hr />
+
+<h2 id="五部分核心组件">五部分核心组件</h2>
+
+<p>Codex Harness 的核心组件可以分为 5 个部分：</p>
+
+<ol>
+  <li><strong>上下文工程</strong>：Context Compaction（智能压缩长上下文，保留关键推理信息，非简单文本摘要）+ Retained Reasoning（保留中间推理痕迹供模型回溯）+ 结构化上下文管理替代杂乱长上下文拼接</li>
+  <li><strong>工具/插件系统</strong>：MCP 集成（支持应用自有 MCP 服务，打通业务数据与操作）+ Skills 框架（可复用 Skill 包）+ Hooks 生命周期钩子 + model-provider 抽象层（支持任意 OpenAI 兼容端点）</li>
+  <li><strong>状态持久化</strong>：Thread（完整对话会话，可 fork/resume）+ Turn（单轮交互）+ Item（Turn 内原子事件）+ thread-store/history 持久化存储</li>
+  <li><strong>权限/安全模型</strong>：跨平台沙箱隔离（linux-sandbox/windows-sandbox-rs）+ execpolicy 执行策略 + 审批机制（Human-in-the-loop，高风险操作暂停等待确认）+ 三层审批策略（auto/manual/suggest）</li>
+  <li><strong>可观测性和审计</strong>：app-server JSON-RPC 流式事件（实时看到 AI 在做什么）+ 中途打断能力 + codex agents 仪表盘（交互式 Agent 管理界面）</li>
+</ol>
+
+<hr />
+
+<h2 id="一次完整请求流程">一次完整请求流程</h2>
+
+<p>用户通过 Codex App、CLI（<code>codex exec</code>）、SDK 或 app-server 发起请求。</p>
+
+<p><strong>第一步：构建系统提示词。</strong> 组装系统指令、工具定义、技能描述等静态内容。静态内容放在 Prompt 前部，保证每轮都能命中 KV Cache，降低推理成本。</p>
+
+<p><strong>第二步：Agent Loop 启动。</strong> 标准化 Agent 循环：接收用户输入 → 构造 Prompt → 发送给模型推理 → 拿到响应。响应往往不是最终答案，而是一次工具调用（如&#8221;运行这个 shell 命令并告诉我结果&#8221;）。</p>
+
+<p><strong>第三步：工具调用执行。</strong> Harness 执行工具调用：读写文件、运行 shell 命令、执行测试、调用 linter 和类型检查器等。工具调用结果追加到 Prompt 中，再次查询模型。这个循环可能重复几十次，直到模型产出给用户的最终消息。</p>
+
+<p><strong>第四步：沙箱隔离。</strong> 工具执行在沙箱中进行。codex-rs 包含跨平台沙箱实现：linux-sandbox（内核级隔离）、windows-sandbox-rs（Windows 沙箱）。execpolicy 控制执行策略——哪些命令可以运行、哪些文件可以访问、哪些网络可以连接。</p>
+
+<p><strong>第五步：人工审批。</strong> 高风险操作（如删除文件、执行危险命令、访问敏感数据）暂停并等待人类确认。审批策略分三档：auto（自动批准）、manual（必须人工确认）、suggest（建议但可自动执行）。v0.149.0 修复了 approval profile 在 resumed/forked 线程中静默回退的 bug。</p>
+
+<p><strong>第六步：上下文压缩。</strong> 当上下文窗口填满时，Context Compaction 将历史编码为更小的表示。不是简单的文本摘要——保留关键推理信息（retained reasoning），让模型能回溯之前的思考过程。ARC-AGI-3 基准测试中，仅靠 retained reasoning + context compaction 两项优化，GPT-5.6 Sol 得分从 13.3% 跃升至 38.3%，输出 token 消耗降至原来的 1/6。</p>
+
+<p><strong>第七步：流式事件推送。</strong> app-server 通过 JSON-RPC 协议流式传输事件：用户消息、推理步骤、Shell 命令、文件编辑、工具调用结果。支持中途打断（turn/interrupt）。</p>
+
+<p><strong>第八步：会话持久化。</strong> Thread（完整对话）包含多个 Turn（单轮交互），每个 Turn 包含流式 Item 序列（原子事件）。Thread 支持 fork（分叉新路径）和 resume（恢复历史会话）。</p>
+
+<hr />
+
+<h2 id="三层集成接口">三层集成接口</h2>
+
+<p>Codex Harness 提供三层接入方式，覆盖从脚本到产品的全场景：</p>
+
+<p><strong>第一层：codex exec（CI 脚本 / 非交互任务）。</strong> 最轻量接入，一条 CLI 命令完成自动化任务。适合 CI/CD 流水线、批量脚本、后台一次性作业。执行完毕自动退出并返回结构化输出。</p>
+
+<p><strong>第二层：Codex SDK（程序化 Agent 编排）。</strong> TypeScript/Python 双接口，在应用代码中编程式启动、恢复、流式编排 Codex 任务。支持 thread/fork（分叉会话）、thread/resume（恢复历史会话）、turn/interrupt（中断当前轮次）。v0.149.0 新增 max/ultra 推理强度控制。</p>
+
+<p><strong>第三层：Codex app-server（持久会话 + 流式事件 + 审批）。</strong> 为产品级接入设计的进程间通信层。基于 JSON-RPC 2.0，支持 stdio（默认）、Unix socket、WebSocket（实验性）三种传输方式。驱动 VS Code 插件和 Codex Desktop App 的运行时。</p>
+
+<hr />
+
+<h2 id="关键设计决策">关键设计决策</h2>
+
+<p><strong>1. Rust 核心 + TypeScript SDK 双栈。</strong> codex-rs（约 120 个 crate）处理所有性能敏感路径（执行调度、沙箱、TUI 渲染、传输层）。TypeScript/Node.js 层保留为上层接口。资源占用和稳定性显著提升。</p>
+
+<p><strong>2. Retained Reasoning + Context Compaction。</strong> 不是简单截断或摘要——保留中间推理痕迹，让模型能回溯之前的思考过程。这是 Harness 设计带来 3 倍效果提升的核心原因。</p>
+
+<p><strong>3. app-server 协议自建。</strong> OpenAI 评估后拒绝用 MCP 承担 app-server 角色——MCP 面向工具的&#8221;请求-响应&#8221;模型无法表达流式 diff、多步审批流和持久会话状态。因此自建了 app-server 协议。MCP 负责把外部工具接入 Codex，app-server 负责把客户端接入 Codex，两者分工共存。</p>
+
+<p><strong>4. Thread/Turn/Item 三层会话模型。</strong> Thread（完整对话）→ Turn（单轮交互）→ Item（原子事件）。支持 fork、resume、interrupt，构建完整的多轮 Agent 交互产品。</p>
+
+<p><strong>5. 审批策略三档。</strong> auto（自动批准所有操作）、manual（必须人工确认）、suggest（建议，不阻塞）。CI 场景用 auto，生产场景从 suggest 开始逐步过渡。</p>
+
+<p><strong>6. 模型提供方抽象。</strong> model-provider 模块支持任意 OpenAI 兼容端点。可以通过修改 base_url 接入 DeepSeek、Qwen、Kimi 等任意兼容模型。</p>
+
+<p><strong>7. 开源边界清晰。</strong> 已开源：Codex CLI、SDK、app-server、codex exec、Skills、通用云环境。未开源：VS Code/JetBrains IDE 插件、Codex 网页版、云端托管产品、模型本身。</p>
+
+<hr />
+
+<h2 id="与-deepseek-harness-的对比">与 DeepSeek Harness 的对比</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>维度</th>
+      <th>Codex Harness</th>
+      <th>DeepSeek Harness</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>定位</td>
+      <td>生产级 Agent 执行层，&#8221;精装整机&#8221;的底座</td>
+      <td>&#8220;一切皆插件&#8221;的积木式框架</td>
+    </tr>
+    <tr>
+      <td>架构哲学</td>
+      <td>内核级沙箱安全、确定性优先</td>
+      <td>基于 Cordis 微内核，连 Agent 主循环都可替换</td>
+    </tr>
+    <tr>
+      <td>语言</td>
+      <td>Rust 核心 + TypeScript/Python SDK</td>
+      <td>TypeScript + Cordis</td>
+    </tr>
+    <tr>
+      <td>模型绑定</td>
+      <td>默认 OpenAI GPT 系列，可接任意 OpenAI 兼容端点</td>
+      <td>不绑定自家模型，原生支持近 40 家模型厂商</td>
+    </tr>
+    <tr>
+      <td>开源协议</td>
+      <td>Apache-2.0（执行层开源，产品与模型不开源）</td>
+      <td>MIT（完整开源）</td>
+    </tr>
+    <tr>
+      <td>三层接口</td>
+      <td>codex exec / SDK / app-server</td>
+      <td>npx dsh web / 插件开发</td>
+    </tr>
+    <tr>
+      <td>沙箱</td>
+      <td>跨平台内核级沙箱（linux/windows）</td>
+      <td>fail-closed 沙箱阶梯（bubblewrap/seatbelt）</td>
+    </tr>
+    <tr>
+      <td>可观测性</td>
+      <td>JSON-RPC 流式事件 + agents 仪表盘</td>
+      <td>append-only 会话日志 + 无 Key 回放测试</td>
+    </tr>
+  </tbody>
+</table>
+
+<h1 id="openai-codex-cli-harness-深度解析">OpenAI Codex CLI Harness 深度解析</h1>
+
+<p><strong>面向读者</strong>：Agent 研发工程师  <br />
+<strong>源码仓库</strong>：<code>openai/codex</code>  <br />
+<strong>源码快照</strong>：commit <code>822e58cc3d666166c7446c5b1ea2e52f5d09594c</code>  <br />
+<strong>快照时间</strong>：2026-10-06  <br />
+<strong>分享时长</strong>：60 分钟  <br />
+<strong>交付形式</strong>：源码解析、端到端流程、分享执行稿、FAQ</p>
+
+<hr />
+
+<h2 id="摘要">摘要</h2>
+
+<p>本文所说的“Codex Harness”是一个分析性称呼，源码项目的正式名称是 <strong>Codex CLI</strong>。它不是简单的终端聊天客户端，也不是一个单文件 ReAct 循环，而是一套完整的本地 coding-agent runtime：CLI/TUI/IDE/SDK 通过 app-server 控制线程和 turn；Core 将用户输入、项目指令、模型配置、工具目录和历史组装成 Responses API 请求；模型流式返回消息或工具调用；工具调用经 policy、hook、approval、sandbox、执行器和输出截断后回到历史；Rollout JSONL 保存可恢复事实；上下文压力由工具输出截断、本地/远端 compaction 和下一 turn 恢复机制共同治理。</p>
+
+<p>固定源码快照的关键规模如下：</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>项目</th>
+      <th style="text-align: right">值</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>跟踪文件</td>
+      <td style="text-align: right">8,980</td>
+    </tr>
+    <tr>
+      <td>Rust 文件</td>
+      <td style="text-align: right">5,141</td>
+    </tr>
+    <tr>
+      <td>Cargo manifests</td>
+      <td style="text-align: right">161</td>
+    </tr>
+    <tr>
+      <td>主体目录</td>
+      <td style="text-align: right"><code>codex-rs</code></td>
+    </tr>
+    <tr>
+      <td>许可证</td>
+      <td style="text-align: right">Apache-2.0</td>
+    </tr>
+    <tr>
+      <td>固定 commit</td>
+      <td style="text-align: right"><code>822e58cc</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<p>一次典型任务的主链可以概括为：</p>
+
+<pre><code class="language-text">CLI / TUI / exec / IDE / SDK
+  -&gt; app-server thread/start | turn/start
+  -&gt; ThreadManager / CodexThread / Session
+  -&gt; TurnContext + StepContext
+  -&gt; history.for_prompt + instructions + tools
+  -&gt; Responses API WebSocket/SSE stream
+  -&gt; assistant item / tool call
+  -&gt; ToolRegistry + hooks + approval + sandbox + runtime
+  -&gt; tool output truncation + rollout persistence
+  -&gt; needs_follow_up ? 下一次 sampling : TurnComplete
+</code></pre>
+
+<p>核心结论：</p>
+
+<ol>
+  <li><strong>app-server 是统一控制面，Core Session 是运行时主体。</strong> TUI 和 <code>codex exec</code> 都不是独立实现一套 Agent loop。</li>
+  <li><strong>一个用户 turn 可以包含多次模型 sampling。</strong> <code>response.completed</code> 不一定意味着 turn 结束；工具调用、<code>end_turn=false</code> 或 steer 都可能触发下一轮 sampling。</li>
+  <li><strong>工具安全由多层共同实现。</strong> ToolPolicy、execpolicy、approval、OS sandbox、网络代理和 hook 分别解决不同问题，任何单层都不是完整安全边界。</li>
+  <li><strong>Rollout 与模型 history 不是同一个东西。</strong> Rollout 尽量保留原始事件；模型 history 会规范化、截断和压缩。</li>
+  <li><strong>大结果先截断，长历史再 compact。</strong> 普通 provider 超窗通常结束当前 turn，并强制下一 turn 预压缩，而不是在同一次 sampling 中无限删历史重试。</li>
+</ol>
+
+<hr />
+
+<h2 id="1-研究对象与边界">1. 研究对象与边界</h2>
+
+<h3 id="11-codex-clicodex-app-与-codex-web">1.1 Codex CLI、Codex App 与 Codex Web</h3>
+
+<p>官方 README 将 Codex CLI 定义为“运行在本机上的 OpenAI coding agent”。它可以检查、修改和运行代码；<code>codex exec</code> 用于非交互自动化；Codex App 提供桌面体验；Codex Web 是云端 Agent 产品。<a href="https://github.com/openai/codex/blob/822e58cc3d666166c7446c5b1ea2e52f5d09594c/README.md#L1-L81">README</a></p>
+
+<p>本文只分析开源仓库中的 <strong>Codex CLI、本地 app-server、Core、工具、沙箱、Rollout 与 SDK 接入</strong>。云端 Codex 的调度、容器和服务端模型实现不在开源源码范围内。</p>
+
+<h3 id="12-harness在本文中的含义">1.2 “Harness”在本文中的含义</h3>
+
+<p>本文将围绕模型的以下系统统称为 Harness：</p>
+
+<ul>
+  <li>Prompt 与项目指令组装；</li>
+  <li>Thread、Turn 和状态机；</li>
+  <li>Responses API 调用与流消费；</li>
+  <li>工具注册、准入、执行和结果回传；</li>
+  <li>审批、沙箱和网络政策；</li>
+  <li>Rollout、resume、fork 和 rollback；</li>
+  <li>上下文窗口、输出截断和 compaction；</li>
+  <li>MCP、skills、hooks 和 multi-agent；</li>
+  <li>TUI、headless、IDE 与 SDK 控制面。</li>
+</ul>
+
+<p>因此 Codex 的可观察行为并不只由模型权重决定：</p>
+
+<pre><code class="language-text">Codex behavior
+= model
++ instructions
++ history projection
++ tool catalog
++ approval and sandbox
++ execution environment
++ context policy
++ client control flow
+</code></pre>
+
+<h3 id="13-证据口径">1.3 证据口径</h3>
+
+<p>本报告按以下顺序采用证据：</p>
+
+<ol>
+  <li>固定 commit 的源码与测试；</li>
+  <li>仓库内 README、默认配置和协议定义；</li>
+  <li>OpenAI 官方 Codex 文档；</li>
+  <li>工程判断与落地建议明确标为分析，不当作官方承诺。</li>
+</ol>
+
+<p>本次只读研究，没有运行 Codex、模型调用、构建、测试或仓库脚本。</p>
+
+<hr />
+
+<h2 id="2-仓库与模块地图">2. 仓库与模块地图</h2>
+
+<p>Codex 主体是一个大型 Rust workspace。核心模块如下：</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>模块</th>
+      <th>主要职责</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>codex-rs/cli</code></td>
+      <td>顶层 <code>codex</code> 命令和子命令分流</td>
+    </tr>
+    <tr>
+      <td><code>codex-rs/tui</code></td>
+      <td>交互式终端 UI、审批和 session picker</td>
+    </tr>
+    <tr>
+      <td><code>codex-rs/exec</code></td>
+      <td>非交互 headless/CI 客户端</td>
+    </tr>
+    <tr>
+      <td><code>codex-rs/app-server</code></td>
+      <td>统一 thread/turn RPC 控制面</td>
+    </tr>
+    <tr>
+      <td><code>codex-rs/app-server-protocol</code></td>
+      <td>请求、响应、通知与 thread item 协议</td>
+    </tr>
+    <tr>
+      <td><code>codex-rs/core</code></td>
+      <td>Session、turn loop、模型请求、工具协调、compaction</td>
+    </tr>
+    <tr>
+      <td><code>codex-rs/protocol</code></td>
+      <td>Core 的 <code>Op</code>、<code>EventMsg</code>、审批和 sandbox 类型</td>
+    </tr>
+    <tr>
+      <td><code>codex-rs/codex-api</code></td>
+      <td>Responses endpoint、SSE 和 API 类型</td>
+    </tr>
+    <tr>
+      <td><code>codex-rs/tools</code></td>
+      <td>ToolSpec、ToolExecutor、工具接口</td>
+    </tr>
+    <tr>
+      <td><code>codex-rs/sandboxing</code></td>
+      <td>跨平台 sandbox 选择与封装</td>
+    </tr>
+    <tr>
+      <td><code>codex-rs/linux-sandbox</code></td>
+      <td>Linux bubblewrap、seccomp 与 legacy Landlock</td>
+    </tr>
+    <tr>
+      <td><code>codex-rs/windows-sandbox-rs</code></td>
+      <td>Windows token、ACL、Job Object、WFP</td>
+    </tr>
+    <tr>
+      <td><code>codex-rs/rollout</code></td>
+      <td>JSONL 写入、读取和持久化策略</td>
+    </tr>
+    <tr>
+      <td><code>codex-rs/history</code></td>
+      <td>Rollout item、tool output 元数据和 retained source</td>
+    </tr>
+    <tr>
+      <td><code>codex-rs/config</code></td>
+      <td>多层配置、profile、managed requirements</td>
+    </tr>
+    <tr>
+      <td><code>codex-rs/codex-mcp</code></td>
+      <td>MCP transport、工具发现、binding 与调用</td>
+    </tr>
+    <tr>
+      <td><code>codex-rs/ext/*</code></td>
+      <td>skills、agent、MCP、memories、web search 等扩展</td>
+    </tr>
+    <tr>
+      <td><code>sdk/python</code></td>
+      <td>基于 app-server RPC 的 Python SDK</td>
+    </tr>
+    <tr>
+      <td><code>sdk/typescript</code></td>
+      <td>基于 <code>codex exec --experimental-json</code> 的 TypeScript SDK</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><code>codex-rs/Cargo.toml</code> 的 workspace member 清单展示了 Core、app-server、工具、安全、MCP、扩展和多种 SDK/服务边界。<a href="https://github.com/openai/codex/blob/822e58cc3d666166c7446c5b1ea2e52f5d09594c/codex-rs/Cargo.toml#L1-L159">Cargo workspace</a></p>
+
+<hr />
+
+<h2 id="3-总体架构控制面运行面和事实面">3. 总体架构：控制面、运行面和事实面</h2>
+
+<p>可以把 Codex 拆成三层。</p>
+
+<h3 id="31-控制面">3.1 控制面</h3>
+
+<p>控制面负责：</p>
+
+<ul>
+  <li>创建、恢复、fork 和归档 thread；</li>
+  <li>开始、steer 和 interrupt turn；</li>
+  <li>把审批问题发给客户端；</li>
+  <li>把流式 item、usage 和状态通知客户端；</li>
+  <li>接收动态工具结果和 MCP elicitation。</li>
+</ul>
+
+<p>主要实现是 app-server。协议形式接近 JSON-RPC，但源码明确省略标准的 <code>"jsonrpc":"2.0"</code> 字段。客户端必须先 initialize，再使用 <code>thread/*</code> 和 <code>turn/*</code> 方法。</p>
+
+<h3 id="32-运行面">3.2 运行面</h3>
+
+<p>运行面由 Core 驱动：</p>
+
+<ul>
+  <li><code>ThreadManager</code> 管理 thread 创建和内存注册；</li>
+  <li><code>CodexThread</code> 是客户端持有的线程句柄；</li>
+  <li><code>Session</code> 保存一个 Agent 线程的运行时服务和状态；</li>
+  <li><code>TurnContext</code> 固定一次 turn 的配置；</li>
+  <li><code>StepContext</code> 固定一次 sampling 的工具、模型和环境视图；</li>
+  <li><code>run_turn()</code> 驱动模型请求、工具调用和下一次 sampling。</li>
+</ul>
+
+<p><code>Session</code> 源码明确规定“一个 Session 同时最多有一个 running task”，并通过 <code>active_turn</code>、<code>input_queue</code> 和 cancellation 管理并发输入。<a href="https://github.com/openai/codex/blob/822e58cc3d666166c7446c5b1ea2e52f5d09594c/codex-rs/core/src/session/session.rs#L56-L99">Session</a></p>
+
+<h3 id="33-事实面">3.3 事实面</h3>
+
+<p>事实面有两种不同视图：</p>
+
+<ul>
+  <li><strong>Rollout JSONL</strong>：用于持久化、审计、resume 和 fork，尽量保留原始 ResponseItem 与状态事件；</li>
+  <li><strong>ContextManager history</strong>：下一次发给模型的规范化视图，执行配对修复、模态过滤、工具输出截断和 compaction replacement。</li>
+</ul>
+
+<p>这个分离非常重要：模型不需要看到所有运行日志，但恢复过程需要知道比“messages 数组”更多的事实。</p>
+
+<hr />
+
+<h2 id="4-启动与产品入口">4. 启动与产品入口</h2>
+
+<h3 id="41-cli-根入口">4.1 CLI 根入口</h3>
+
+<p><code>codex-rs/cli/src/main.rs</code> 中的 <code>MultitoolCli</code> 定义了交互 TUI 和子命令。无子命令时进入交互式 CLI；主要子命令包括：</p>
+
+<ul>
+  <li><code>exec</code>：非交互运行；</li>
+  <li><code>review</code>：非交互代码审查；</li>
+  <li><code>app-server</code>：启动控制面；</li>
+  <li><code>mcp</code>：管理 MCP server；</li>
+  <li><code>sandbox</code>：在 Codex sandbox 内执行命令；</li>
+  <li><code>resume</code> / <code>fork</code> / <code>queue</code>；</li>
+  <li><code>cloud</code>；</li>
+  <li><code>doctor</code>、<code>features</code>、<code>debug</code> 等。</li>
+</ul>
+
+<p>源码：<a href="https://github.com/openai/codex/blob/822e58cc3d666166c7446c5b1ea2e52f5d09594c/codex-rs/cli/src/main.rs#L114-L244">MultitoolCli 与 Subcommand</a></p>
+
+<h3 id="42-tui-不是另一个-agent-loop">4.2 TUI 不是另一个 Agent loop</h3>
+
+<p>TUI 的职责是：</p>
+
+<ul>
+  <li>呈现 thread 和 turn；</li>
+  <li>发送 <code>turn/start</code>、<code>turn/steer</code> 和 <code>turn/interrupt</code>；</li>
+  <li>显示流式 item；</li>
+  <li>处理审批、MCP elicitation、request_user_input；</li>
+  <li>在 embedded app-server、本地 daemon 和远端 transport 间选择。</li>
+</ul>
+
+<p>没有活动 turn 时，用户输入发起 <code>turn_start</code>；已有活动 turn 时输入进入 <code>turn_steer</code>。真正的模型/工具循环仍在 Core。</p>
+
+<h3 id="43-codex-exec">4.3 <code>codex exec</code></h3>
+
+<p><code>codex exec</code> 是面向脚本、CI 和一次性任务的 headless 客户端。它同样通过 in-process app-server 发 <code>TurnStart</code> 并消费通知，而不是直接调用模型。</p>
+
+<p>与 TUI 的关键差异：</p>
+
+<ul>
+  <li>默认 approval 为 <code>never</code>；</li>
+  <li>不能真正进行交互审批；</li>
+  <li><code>request_user_input</code> 通常被拒绝；</li>
+  <li>stdout 只输出最终文本或严格 JSONL，其余诊断走 stderr；</li>
+  <li>支持 schema、ephemeral、resume、fork 和 review。</li>
+</ul>
+
+<h3 id="44-app-server-的意义">4.4 App-server 的意义</h3>
+
+<p>app-server 将 UI/SDK 与 Core 解耦。TUI、exec、Python SDK、IDE 都可以复用：</p>
+
+<pre><code class="language-text">thread/start
+thread/resume
+thread/fork
+turn/start
+turn/steer
+turn/interrupt
+</code></pre>
+
+<p>这比让每个客户端直接链接一套内部 Agent 类型更稳定，也便于将 embedded runtime 替换为 daemon 或远端 transport。</p>
+
+<hr />
+
+<h2 id="5-核心对象与数据流">5. 核心对象与数据流</h2>
+
+<h3 id="51-threadmanager">5.1 ThreadManager</h3>
+
+<p><code>ThreadManager</code> 负责：</p>
+
+<ul>
+  <li>创建/恢复/fork thread；</li>
+  <li>维护 <code>ThreadId -&gt; Arc&lt;CodexThread&gt;</code> 注册表；</li>
+  <li>加载 Rollout；</li>
+  <li>创建 Session；</li>
+  <li>等待首个 <code>SessionConfigured</code> 后再向调用方发布 thread。</li>
+</ul>
+
+<p>这是一道发布边界：客户端拿到 <code>CodexThread</code> 时，核心 Session 已完成初始配置。</p>
+
+<h3 id="52-codexthread">5.2 CodexThread</h3>
+
+<p><code>CodexThread</code> 是外部控制 Core 的句柄，关键能力包括：</p>
+
+<ul>
+  <li><code>submit()</code>：提交普通 <code>Op</code>；</li>
+  <li><code>start_or_steer_turn()</code>；</li>
+  <li><code>steer_turn()</code>；</li>
+  <li><code>next_event()</code>；</li>
+  <li><code>recover_turn_if_idle()</code>。</li>
+</ul>
+
+<p>它不承载完整业务状态，真正状态在 <code>Session</code>。</p>
+
+<h3 id="53-session">5.3 Session</h3>
+
+<p><code>Session</code> 持有：</p>
+
+<ul>
+  <li>thread id 和事件 channel；</li>
+  <li><code>SessionState</code>；</li>
+  <li><code>active_turn</code>；</li>
+  <li>input queue；</li>
+  <li>model client、rollout、tools、MCP、auth、telemetry 等服务；</li>
+  <li>sandbox/permission profile；</li>
+  <li>动态工具、multi-agent 版本和附件服务。</li>
+</ul>
+
+<h3 id="54-opsubmission-与-eventmsg">5.4 Op、Submission 与 EventMsg</h3>
+
+<p>Core 输入是 <code>Submission</code>：</p>
+
+<pre><code class="language-text">submission id
++ Op
++ trace context
++ turn lineage
++ residency guard
+</code></pre>
+
+<p><code>Op</code> 包含 TurnInput、Interrupt、审批响应、动态工具响应、Compact、Review、Shutdown 等。<code>submission_loop</code> 串行消费控制操作，避免多个控制命令无序修改同一个 active turn。</p>
+
+<p>Core 输出是 <code>Event { id, msg: EventMsg }</code>。客户端通过事件看到 turn、item、approval、usage、warning 和 error。</p>
+
+<h3 id="55-codex-中没有单一-turn-运行时-struct">5.5 Codex 中没有单一 <code>Turn</code> 运行时 struct</h3>
+
+<p>源码容易误读的一点是：Core 的运行态并非一个包含所有内容的 <code>Turn</code> struct，而是由以下对象组合：</p>
+
+<ul>
+  <li><code>TurnContext</code>：一次 turn 的固定配置和元数据；</li>
+  <li><code>StepContext</code>：一次 sampling 捕获的工具和环境；</li>
+  <li><code>ActiveTurn</code>：当前任务、pending input 和状态；</li>
+  <li><code>RunningTask</code> / <code>TurnState</code>；</li>
+  <li>app-server 协议中的 <code>Turn</code>：面向客户端的投影。</li>
+</ul>
+
+<hr />
+
+<h2 id="6-从用户输入到一次-turn">6. 从用户输入到一次 Turn</h2>
+
+<h3 id="61-输入路由">6.1 输入路由</h3>
+
+<p>app-server 的 <code>turn_start_inner</code> 将协议层 <code>UserInput</code> 转为 Core <code>TurnInputRequest</code>。<code>SessionIo::submit_turn_input</code> 把请求包装成 <code>Op::TurnInput</code>，放入容量受限的 async channel。</p>
+
+<p><code>submission_loop</code> 串行路由后，<code>turn_input::start_or_steer</code> 在 active-turn 锁下决定：</p>
+
+<ul>
+  <li><code>Started</code>：当前 idle，创建 RegularTask；</li>
+  <li><code>Steered</code>：已有活动 turn，写入 pending input；</li>
+  <li><code>NotSubmitted</code>：状态不接受。</li>
+</ul>
+
+<p>并发提交时，最多一个请求真正启动新 turn，其余可进入 steer，而不是同时运行两个 turn。</p>
+
+<h3 id="62-run_turn-主循环">6.2 <code>run_turn()</code> 主循环</h3>
+
+<p><code>run_turn()</code> 的简化流程：</p>
+
+<pre><code class="language-text">运行 TurnStart hooks
+记录用户输入与注入上下文
+准备 shell snapshot / connector selection
+创建 turn-scoped ModelClientSession
+loop:
+  领取可进入下一 step 的 pending input
+  运行 SteeredUserInput hooks
+  捕获 StepContext
+  更新 world state / instructions / skills
+  clone history -&gt; for_prompt
+  run_sampling_request
+  处理工具与 assistant output
+  检查 pending input 与 token pressure
+  如果需要 rollover -&gt; compact -&gt; continue
+  如果 model/tool/steer 需要 follow-up -&gt; continue
+  否则运行 Stop hooks -&gt; 完成 turn
+</code></pre>
+
+<p>关键代码显示：同一个 <code>ModelClientSession</code> 在一个 turn 的 retry/sampling 间复用，以保留 WebSocket 与 sticky routing 状态。<a href="https://github.com/openai/codex/blob/822e58cc3d666166c7446c5b1ea2e52f5d09594c/codex-rs/core/src/session/turn.rs#L368-L659">run_turn 主循环</a></p>
+
+<h3 id="63-stepcontext-是一次请求视图">6.3 StepContext 是一次请求视图</h3>
+
+<p>每轮 sampling 前重新捕获 StepContext，确保以下内容来自同一个一致快照：</p>
+
+<ul>
+  <li>模型与 reasoning settings；</li>
+  <li>当前工具目录；</li>
+  <li>MCP binding；</li>
+  <li>sandbox/permission；</li>
+  <li>environment；</li>
+  <li>skills 和 project instructions。</li>
+</ul>
+
+<p>如果 pending steer 引入新的 plugin/MCP 依赖，系统重新解析 required servers 和 plugins，再捕获新的 StepContext。</p>
+
+<h3 id="64-prompt-构建">6.4 Prompt 构建</h3>
+
+<p>下一次模型请求主要由以下部分组成：</p>
+
+<ul>
+  <li>base instructions；</li>
+  <li>global/thread/project instructions；</li>
+  <li>history.for_prompt()；</li>
+  <li>当前工具 specs；</li>
+  <li>output schema；</li>
+  <li>reasoning、service tier 等请求配置。</li>
+</ul>
+
+<p><code>ContextManager::for_prompt()</code> 会：</p>
+
+<ul>
+  <li>保证 function call 与 output 的配对；</li>
+  <li>移除孤儿 output；</li>
+  <li>过滤模型不支持的图片/音频；</li>
+  <li>使用已经截断或压缩后的 history。</li>
+</ul>
+
+<hr />
+
+<h2 id="7-responses-api-与流式循环">7. Responses API 与流式循环</h2>
+
+<h3 id="71-请求协议">7.1 请求协议</h3>
+
+<p><code>ModelClientSession::stream()</code> 优先使用 Responses WebSocket；必要时回退 HTTP SSE。HTTP 路径 POST <code>/responses</code>，要求 <code>text/event-stream</code>。</p>
+
+<p>请求通常包含：</p>
+
+<ul>
+  <li>model；</li>
+  <li>input history；</li>
+  <li>instructions；</li>
+  <li>tools；</li>
+  <li><code>tool_choice=auto</code>；</li>
+  <li><code>stream=true</code>；</li>
+  <li>reasoning 与 output schema 等扩展。</li>
+</ul>
+
+<h3 id="72-流事件">7.2 流事件</h3>
+
+<p>Core 消费的主要事件：</p>
+
+<ul>
+  <li><code>Created</code>；</li>
+  <li><code>OutputItemAdded</code>；</li>
+  <li>text/reasoning/tool argument delta；</li>
+  <li><code>OutputItemDone</code>；</li>
+  <li>token usage、rate limits、model metadata；</li>
+  <li><code>Completed</code>。</li>
+</ul>
+
+<p>如果 stream 在 <code>response.completed</code> 前关闭，Core 将其视为错误，而不是把半截结果当成正常完成。<a href="https://github.com/openai/codex/blob/822e58cc3d666166c7446c5b1ea2e52f5d09594c/codex-rs/core/src/session/turn.rs#L2631-L2669">流关闭检查</a></p>
+
+<h3 id="73-responsecompleted-不等于用户-turn-结束">7.3 <code>response.completed</code> 不等于用户 Turn 结束</h3>
+
+<p>收到 <code>Completed</code> 时，Core 记录 usage 和 response id。以下情况会继续下一次 sampling：</p>
+
+<ul>
+  <li>本次输出包含需要执行的工具；</li>
+  <li>provider 返回 <code>end_turn=false</code>；</li>
+  <li>pending steer/input 已到达；</li>
+  <li>hook 产生 continuation；</li>
+  <li>compaction 后需要继续；</li>
+  <li>mailbox/multi-agent 通信要求 follow-up。</li>
+</ul>
+
+<p><code>try_run_sampling_request()</code> 使用 <code>needs_follow_up</code> 汇总这些条件。<a href="https://github.com/openai/codex/blob/822e58cc3d666166c7446c5b1ea2e52f5d09594c/codex-rs/core/src/session/turn.rs#L2953-L2999">Completed 处理</a></p>
+
+<h3 id="74-工具结果如何续跑">7.4 工具结果如何续跑</h3>
+
+<p>模型输出 <code>FunctionCall</code>、<code>CustomToolCall</code>、<code>LocalShellCall</code> 或其他工具 item 后：</p>
+
+<ol>
+  <li><code>handle_output_item_done()</code> 持久化模型输出；</li>
+  <li><code>ToolRouter</code> 构造 ToolInvocation；</li>
+  <li><code>ToolCallRuntime</code> 判断可否并发；</li>
+  <li>工具 future 放入 <code>FuturesOrdered</code>；</li>
+  <li>执行可以并发，但结果按模型顺序 drain；</li>
+  <li>tool output 写入 history；</li>
+  <li><code>needs_follow_up=true</code>；</li>
+  <li>外层 turn loop 用新 history 发下一次模型请求。</li>
+</ol>
+
+<p>源码使用 <code>FuturesOrdered</code> 保持提交到 history 的顺序。<a href="https://github.com/openai/codex/blob/822e58cc3d666166c7446c5b1ea2e52f5d09594c/codex-rs/core/src/session/turn.rs#L2465-L2494">工具 drain</a></p>
+
+<hr />
+
+<h2 id="8-tool-registry-与工具可见性">8. Tool Registry 与工具可见性</h2>
+
+<h3 id="81-toolspec-与-toolexecutor">8.1 ToolSpec 与 ToolExecutor</h3>
+
+<p>工具不是只有一份 JSON Schema。<code>ToolExecutor</code> 将以下内容绑定：</p>
+
+<ul>
+  <li>工具名称与 namespace；</li>
+  <li>ToolSpec；</li>
+  <li>exposure；</li>
+  <li>是否允许并行；</li>
+  <li>handler/runtime。</li>
+</ul>
+
+<p>ToolSpec 支持 Function、Namespace、ToolSearch、WebSearch 和 Freeform。</p>
+
+<h3 id="82-工具来源">8.2 工具来源</h3>
+
+<p>Step 的工具目录可来自：</p>
+
+<ul>
+  <li>Core 内建工具；</li>
+  <li>MCP；</li>
+  <li>extension/plugin；</li>
+  <li>app-server host 注入的 dynamic tools；</li>
+  <li>hosted tool；</li>
+  <li>multi-agent control tools。</li>
+</ul>
+
+<p>ToolPolicy 是 Session 启动时的能力上限，只能删减可用工具，不能替代 runtime permission 与 approval。</p>
+
+<h3 id="83-注册与冲突">8.3 注册与冲突</h3>
+
+<p><code>ToolRegistry</code> 使用有序映射保存工具：</p>
+
+<ul>
+  <li>ToolPolicy 不允许的工具不会注册；</li>
+  <li>内建可信工具重复注册是错误；</li>
+  <li>外部工具同名时先注册者生效，并记录 collision；</li>
+  <li>外部工具不能占用默认 namespace 的 <code>exec_command</code> / <code>shell_command</code>；</li>
+  <li>exposure 决定直接可见、deferred、hidden 等状态。</li>
+</ul>
+
+<p>源码：<a href="https://github.com/openai/codex/blob/822e58cc3d666166c7446c5b1ea2e52f5d09594c/codex-rs/core/src/tools/registry.rs#L294-L427">ToolRegistry 注册规则</a></p>
+
+<h3 id="84-本版本没有独立的内建-readsearch-tool">8.4 本版本没有独立的内建 read/search tool</h3>
+
+<p>固定 commit 的 shell family 主要暴露 <code>exec_command</code> 与 <code>write_stdin</code>。常见读取和搜索通过 shell 命令完成。<code>parse_shell_script()</code> 将命令分类为 Read/Search/ListFiles/Unknown，主要用于 UI 和遥测，不是安全判定边界。</p>
+
+<p>这与一些 Agent 框架把 read、grep、glob 做成独立工具不同。</p>
+
+<hr />
+
+<h2 id="9-工具执行流水线">9. 工具执行流水线</h2>
+
+<h3 id="91-从模型-item-到-handler">9.1 从模型 item 到 handler</h3>
+
+<p>统一链路：</p>
+
+<pre><code class="language-text">ResponseItem
+ -&gt; ToolRouter::build_tool_call
+ -&gt; ToolCallRuntime parallel/exclusive gate
+ -&gt; ToolRegistry::dispatch_any_with_state
+ -&gt; PreToolUse hooks
+ -&gt; concrete handler
+ -&gt; PostToolUse hooks
+ -&gt; ToolOutput::to_response_item
+ -&gt; ContextManager history
+</code></pre>
+
+<h3 id="92-pretooluse-与-posttooluse">9.2 PreToolUse 与 PostToolUse</h3>
+
+<p>PreToolUse hook 在执行前运行，可以：</p>
+
+<ul>
+  <li>block；</li>
+  <li>修改允许修改的输入；</li>
+  <li>continue。</li>
+</ul>
+
+<p>PostToolUse hook 在工具已经执行后运行。它可以：</p>
+
+<ul>
+  <li>附加上下文；</li>
+  <li>把结果反馈替换成另一段模型可见文本；</li>
+  <li>block 结果。</li>
+</ul>
+
+<p>但它不能回滚已经发生的文件、网络或进程副作用。源码对此有明确注释。<a href="https://github.com/openai/codex/blob/822e58cc3d666166c7446c5b1ea2e52f5d09594c/codex-rs/core/src/tools/registry.rs#L724-L779">PostToolUse 语义</a></p>
+
+<h3 id="93-错误语义">9.3 错误语义</h3>
+
+<p>工具错误分为：</p>
+
+<ul>
+  <li><code>RespondToModel</code>：转成普通失败 tool output，让模型继续；</li>
+  <li><code>Fatal</code>：终止当前流程；</li>
+  <li>sandbox/approval 拒绝；</li>
+  <li>timeout/cancellation；</li>
+  <li>handler 执行失败。</li>
+</ul>
+
+<p>Unknown tool 通常成为模型可见错误，而 payload kind 与已注册工具不匹配可视为 fatal protocol error。</p>
+
+<h3 id="94-并发语义">9.4 并发语义</h3>
+
+<p><code>ToolCallRuntime</code> 使用读写锁表达并发：</p>
+
+<ul>
+  <li>支持 parallel 的工具取得共享许可；</li>
+  <li>非 parallel 工具取得独占许可；</li>
+  <li>future 可并发运行；</li>
+  <li>结果由 <code>FuturesOrdered</code> 按模型 item 顺序写回。</li>
+</ul>
+
+<p>工具的并行声明只说明单次调用可以并行，不自动解决两个调用对同一个文件、进程或外部资源的业务冲突。</p>
+
+<hr />
+
+<h2 id="10-shellunified-exec-与-apply-patch">10. Shell、Unified Exec 与 Apply Patch</h2>
+
+<h3 id="101-unified-exec">10.1 Unified Exec</h3>
+
+<p><code>exec_command</code> 的主要步骤：</p>
+
+<ol>
+  <li>解析参数；</li>
+  <li>选择 cwd、environment 与 shell；</li>
+  <li>校验 TTY、timeout 和 additional permissions；</li>
+  <li>识别伪装成 shell 命令的 <code>apply_patch</code>；</li>
+  <li>通过 execpolicy 判定；</li>
+  <li>进入 <code>ToolOrchestrator</code>；</li>
+  <li>选择 sandbox；</li>
+  <li>启动本地 PTY 或远端 exec-server；</li>
+  <li>返回输出或 session id。</li>
+</ol>
+
+<p>Unified Exec 开启时支持可恢复进程与 <code>write_stdin</code>；关闭时只暴露 one-shot <code>exec_command</code>。</p>
+
+<h3 id="102-后台进程">10.2 后台进程</h3>
+
+<p>一次 exec 初始等待通常受最小/最大值约束。超过等待并不一定杀进程，而可能返回 session id，让 Agent 后续用 <code>write_stdin</code> 读取。只有 one-shot 明确 timeout 时才确认终止。</p>
+
+<p>进程管理器限制保留数量，并优先清理较旧、已退出的进程。Turn cancellation 会中止当前 dispatch，但已经被进程管理器接管的后台终端可能继续存在，需要显式清理。</p>
+
+<h3 id="103-apply-patch">10.3 Apply Patch</h3>
+
+<p><code>apply_patch</code> 是 freeform grammar tool，不是普通 shell 文本。它会：</p>
+
+<ul>
+  <li>parse patch；</li>
+  <li>解析目标 environment；</li>
+  <li>对所有源/目标路径做 sandbox 检查；</li>
+  <li>通过 ToolOrchestrator 执行。</li>
+</ul>
+
+<p>重要限制：apply patch <strong>不是事务性的</strong>。如果中间失败，前面已经写入的 delta 可能保留。Harness 不保证自动回滚，调用方应检查工作树和 diff。</p>
+
+<hr />
+
+<h2 id="11-approvalpermission-与-execpolicy">11. Approval、Permission 与 Execpolicy</h2>
+
+<h3 id="111-approval-policy">11.1 Approval Policy</h3>
+
+<p><code>AskForApproval</code> 包含：</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>模式</th>
+      <th>含义</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>UnlessTrusted</code></td>
+      <td>用于不可信项目；除非 execpolicy 明确允许，否则需要审批</td>
+    </tr>
+    <tr>
+      <td><code>OnRequest</code></td>
+      <td>默认；模型/策略决定何时申请</td>
+    </tr>
+    <tr>
+      <td><code>Granular</code></td>
+      <td>分别控制 sandbox、rules、skill、permission、MCP elicitation</td>
+    </tr>
+    <tr>
+      <td><code>Never</code></td>
+      <td>永不向用户提问；需要审批的动作直接失败，而不是全部放行</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>源码：<a href="https://github.com/openai/codex/blob/822e58cc3d666166c7446c5b1ea2e52f5d09594c/codex-rs/protocol/src/protocol.rs#L943-L1021">AskForApproval</a></p>
+
+<h3 id="112-execpolicy">11.2 Execpolicy</h3>
+
+<p>Execpolicy 将命令归为：</p>
+
+<ul>
+  <li>Forbidden；</li>
+  <li>Prompt；</li>
+  <li>Allow。</li>
+</ul>
+
+<p>只有所有相关命令段都被显式规则允许，才可能形成 bypass sandbox 的结论。危险命令识别本身含启发式成分，不应作为唯一安全控制。</p>
+
+<h3 id="113-permission-request">11.3 Permission Request</h3>
+
+<p>模型可通过 <code>request_permissions</code> 申请附加路径或网络权限。系统会：</p>
+
+<ul>
+  <li>规范化相对路径；</li>
+  <li>将客户端批准结果与原请求求交集；</li>
+  <li>防止客户端响应意外授予模型未申请的更大权限；</li>
+  <li>将授权限制为 turn 或 session 生命周期。</li>
+</ul>
+
+<p><code>Never</code> 或 Granular 禁止相应类别时，不弹窗并返回空授权。</p>
+
+<h3 id="114-approval-的解析顺序">11.4 Approval 的解析顺序</h3>
+
+<p>审批可以由多种 reviewer 决定：</p>
+
+<pre><code class="language-text">permission hook
+ -&gt; Guardian/auto review
+ -&gt; human client
+</code></pre>
+
+<p>最终仍需由 ToolOrchestrator 把审批结论与 sandbox policy 结合，而不是把“已批准”直接等价成“无条件在宿主执行”。</p>
+
+<hr />
+
+<h2 id="12-sandbox-与网络安全">12. Sandbox 与网络安全</h2>
+
+<h3 id="121-toolorchestrator">12.1 ToolOrchestrator</h3>
+
+<p>ToolOrchestrator 集中实现：</p>
+
+<pre><code class="language-text">审批 requirement
+ -&gt; 选择第一轮 sandbox
+ -&gt; 执行
+ -&gt; 若确定是 sandbox denial
+ -&gt; 检查是否允许升级
+ -&gt; 再次审批/Guardian review
+ -&gt; 第二次执行
+</code></pre>
+
+<p>它不会对任意错误都“去沙箱重试”。只有识别为 sandbox denial，并同时满足 approval 与 policy 条件，才进入升级路径。<a href="https://github.com/openai/codex/blob/822e58cc3d666166c7446c5b1ea2e52f5d09594c/codex-rs/core/src/tools/orchestrator.rs#L125-L603">ToolOrchestrator</a></p>
+
+<h3 id="122-sandboxpolicy">12.2 SandboxPolicy</h3>
+
+<p>协议层常见模式：</p>
+
+<ul>
+  <li><code>read-only</code>；</li>
+  <li><code>workspace-write</code>；</li>
+  <li><code>danger-full-access</code>。</li>
+</ul>
+
+<p><code>danger-full-access</code> 明确表示无执行限制，应谨慎使用。<code>read-only</code> 默认不开放网络。<a href="https://github.com/openai/codex/blob/822e58cc3d666166c7446c5b1ea2e52f5d09594c/codex-rs/protocol/src/protocol.rs#L1025-L1059">SandboxPolicy</a></p>
+
+<h3 id="123-linux">12.3 Linux</h3>
+
+<p>当前主要路径使用 bubblewrap 建立文件系统 namespace，并在内层使用 <code>no_new_privs</code> 与 seccomp。Legacy Landlock 是兼容路径；无法表达某些 deny-read 政策时会拒绝，而不是静默降级。</p>
+
+<h3 id="124-macos">12.4 macOS</h3>
+
+<p>macOS 固定调用 <code>/usr/bin/sandbox-exec</code>，使用 deny-default Seatbelt profile，动态加入读写根、只读 carveout、网络代理端口与 socket 规则。固定绝对路径可减少 PATH 劫持。</p>
+
+<h3 id="125-windows">12.5 Windows</h3>
+
+<p>Windows 使用 restricted token、ACL、私有 desktop、Job Object，并可用 WFP 约束网络。若某 backend 无法实现请求的 deny-read 语义，应 fail closed。</p>
+
+<h3 id="126-网络">12.6 网络</h3>
+
+<p>Managed network 通常让 sandbox 进程只能访问本地代理，再由代理执行域名策略。如果代理不可用，受管网络路径应失败。显式 <code>require_escalated</code> 可能绕过该代理，因此必须依赖审批和权限政策。</p>
+
+<h3 id="127-哪些是保证哪些只是风险降低">12.7 哪些是保证，哪些只是风险降低</h3>
+
+<p>在正确启用并由支持平台实现时，下列可作为条件性保证：</p>
+
+<ul>
+  <li>OS sandbox enforcement；</li>
+  <li>permission 结果不超过原请求；</li>
+  <li>不支持要求时 fail closed；</li>
+  <li>reserved tool name 防覆盖。</li>
+</ul>
+
+<p>下列只能视为风险降低：</p>
+
+<ul>
+  <li>命令 Read/Search 分类；</li>
+  <li>危险命令启发式；</li>
+  <li>sandbox-denial 错误识别；</li>
+  <li>按变量名过滤 secret；</li>
+  <li>模型主动决定何时申请权限；</li>
+  <li>外部 MCP server 的可信度。</li>
+</ul>
+
+<hr />
+
+<h2 id="13-工具输出截断">13. 工具输出截断</h2>
+
+<h3 id="131-为什么先截断当前结果">13.1 为什么先截断当前结果</h3>
+
+<p>一个 shell 命令可能返回数十 MB 内容。如果先把完整结果塞进 history，再等整个 thread 接近窗口时 compact，可能单次请求已经无法构建。因此 Codex 在结果进入 live model history 时就执行截断。</p>
+
+<h3 id="132-rollout-原文与模型结果分离">13.2 Rollout 原文与模型结果分离</h3>
+
+<p><code>record_annotated_items()</code> 的注释明确说明：工具输出截断只作用于 live history，原始 Rollout payload 保留。Resume 时根据保存的 truncation metadata 重新得到一致的模型视图。<a href="https://github.com/openai/codex/blob/822e58cc3d666166c7446c5b1ea2e52f5d09594c/codex-rs/core/src/context_manager/history.rs#L503-L574">History 截断</a></p>
+
+<h3 id="133-截断算法">13.3 截断算法</h3>
+
+<p>文本使用中间截断，保留前后信息。<code>formatted_truncate_text()</code> 会增加：</p>
+
+<ul>
+  <li>原始估算 token 数；</li>
+  <li>总行数；</li>
+  <li>截断后的内容。</li>
+</ul>
+
+<p>Function output 可按 byte 或 token budget 处理；序列化还增加 20% allowance。Content items 中：</p>
+
+<ul>
+  <li>文本受预算；</li>
+  <li>图片保留；</li>
+  <li>音频按估算 token 成本选择；</li>
+  <li>加密内容保留；</li>
+  <li>省略项加 marker。</li>
+</ul>
+
+<p>源码：<a href="https://github.com/openai/codex/blob/822e58cc3d666166c7446c5b1ea2e52f5d09594c/codex-rs/utils/output-truncation/src/lib.rs#L17-L251">output-truncation</a></p>
+
+<h3 id="134-与-deepseek-harness-spill-的差异">13.4 与 DeepSeek Harness Spill 的差异</h3>
+
+<p>Codex 当前通用路径更偏向“在模型 history 中截断并在 Rollout 中保留原始 payload”，不是统一把完整结果写成模型可读文件并返回句柄。模型能否重新读取原始内容取决于原工具、文件系统或外部服务是否支持按需查询。</p>
+
+<p>因此，设计自定义 Codex 工具时，仍建议工具本身支持：</p>
+
+<ul>
+  <li>分页；</li>
+  <li>字段选择；</li>
+  <li>offset/limit；</li>
+  <li>结果 handle；</li>
+  <li>可搜索制品。</li>
+</ul>
+
+<p>Rollout 保存原文不等于模型自动拥有读取 Rollout 的工具。</p>
+
+<hr />
+
+<h2 id="14-context-window-与-compaction">14. Context Window 与 Compaction</h2>
+
+<h3 id="141-三种机制必须区分">14.1 三种机制必须区分</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>机制</th>
+      <th>处理对象</th>
+      <th>时机</th>
+      <th>是否调用模型</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Tool output truncation</td>
+      <td>单个当前/历史工具结果</td>
+      <td>写入 model history 时</td>
+      <td>否</td>
+    </tr>
+    <tr>
+      <td>Local/remote compaction</td>
+      <td>整段历史</td>
+      <td>turn 前、中、后或用户手动触发</td>
+      <td>通常是</td>
+    </tr>
+    <tr>
+      <td>Provider 超窗恢复</td>
+      <td>真实 API 超窗错误</td>
+      <td>sampling 失败后</td>
+      <td>当前 turn 通常失败，推动下一 turn 预压缩</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="142-token-pressure">14.2 Token pressure</h3>
+
+<p>系统结合：</p>
+
+<ul>
+  <li>provider 报告的 usage；</li>
+  <li>本地新增尾部估算；</li>
+  <li>auto-compact threshold；</li>
+  <li>effective context hard cap</li>
+</ul>
+
+<p>判断是否需要 rollover/compact。Compaction 可以在 pre-turn、mid-turn 和 post-turn 执行。</p>
+
+<h3 id="143-local-compaction">14.3 Local Compaction</h3>
+
+<p>本地 compaction 的步骤：</p>
+
+<ol>
+  <li>使用内置 <code>SUMMARIZATION_PROMPT</code> 或自定义 compact prompt；</li>
+  <li>复制当前 history；</li>
+  <li>加入 compaction 请求；</li>
+  <li>调用 Responses API 生成 summary；</li>
+  <li>若 compaction 请求本身超窗，从最老 history item 开始逐项删除并重试；</li>
+  <li>收集真实 user messages；</li>
+  <li>最近用户文本最多保留约 20k token；</li>
+  <li>加入 <code>SUMMARY_PREFIX + summary</code>；</li>
+  <li>重新注入当前 canonical context；</li>
+  <li>写入 compacted replacement history 和 window metadata；</li>
+  <li>重新计算 usage。</li>
+</ol>
+
+<p>源码：<a href="https://github.com/openai/codex/blob/822e58cc3d666166c7446c5b1ea2e52f5d09594c/codex-rs/core/src/compact.rs#L113-L425">Local compaction</a>、<a href="https://github.com/openai/codex/blob/822e58cc3d666166c7446c5b1ea2e52f5d09594c/codex-rs/core/src/compact.rs#L673-L764">replacement history</a></p>
+
+<h3 id="144-remote-compaction-v2">14.4 Remote Compaction V2</h3>
+
+<p>Remote V2 不是普通文本 summary 请求，而是发送 compaction trigger 并接收 opaque compaction item。提交前会改写连续超大工具输出，保持 function call/output 配对，并按历史与图片预算构建 replacement history。</p>
+
+<p>它适合由服务端掌握更强压缩能力的 provider，但开源 Harness 仍负责 checkpoint、window、resume 和本地后缀。</p>
+
+<h3 id="145-provider-真实超窗">14.5 Provider 真实超窗</h3>
+
+<p>普通 sampling 收到 <code>ContextWindowExceeded</code> 时，Codex 不会简单在同一请求中无限删除历史重试。主要行为是：</p>
+
+<ul>
+  <li>将 active token usage 标记为已填满窗口；</li>
+  <li>当前 turn 返回错误；</li>
+  <li>下一 turn 的 pre-compact 判断必然触发。</li>
+</ul>
+
+<p>只有部分 Guardian 特殊路径会在同一 turn compact 后再试一次。</p>
+
+<h3 id="146-如果工具结果压缩后仍超过窗口">14.6 如果工具结果压缩后仍超过窗口</h3>
+
+<p>正确处理顺序：</p>
+
+<pre><code class="language-text">单个结果
+ -&gt; 先按工具/模型预算截断
+ -&gt; 工具设计支持分页、过滤和结果句柄
+
+整体 history 仍大
+ -&gt; local 或 remote compaction
+ -&gt; 保留近期用户目标和 canonical context
+
+compaction 请求本身超窗
+ -&gt; 删除最老 history item 后重试 compaction
+
+普通 sampling 仍被 provider 判定超窗
+ -&gt; 当前 turn 失败并标记 full
+ -&gt; 下一 turn 预压缩
+
+固定成本仍过大
+ -&gt; 减少 instructions、tools、MCP catalog、skills
+ -&gt; 或更换更大 context 的模型
+</code></pre>
+
+<p>不应把“Rollout 中有原文”误解成“模型仍能访问完整结果”；也不应让 provider 超窗进入无界重试。</p>
+
+<hr />
+
+<h2 id="15-rollout-jsonl持久化事实源">15. Rollout JSONL：持久化事实源</h2>
+
+<h3 id="151-rolloutitem">15.1 RolloutItem</h3>
+
+<p>JSONL 每行是带 timestamp/ordinal 的 RolloutItem。主要类型：</p>
+
+<ul>
+  <li><code>SessionMeta</code>；</li>
+  <li>原始 <code>ResponseItem</code>；</li>
+  <li><code>Compacted</code>；</li>
+  <li><code>TurnContext</code>；</li>
+  <li><code>TokenUsageRecord</code>；</li>
+  <li><code>WorldState</code>；</li>
+  <li>selected <code>EventMsg</code>；</li>
+  <li>inter-agent communication；</li>
+  <li>retained context。</li>
+</ul>
+
+<p>不是所有实时 delta 都持久化。原始流 delta、部分 warning/error 和临时 begin event 可被持久化策略过滤。</p>
+
+<h3 id="152-写入语义">15.2 写入语义</h3>
+
+<p>新 session 延迟创建 rollout 文件。第一次 persist/flush 先写 SessionMeta，然后按 ordinal 顺序追加 JSONL 并 flush。若写失败，未写后缀保留，重开后继续尝试。</p>
+
+<h3 id="153-resume">15.3 Resume</h3>
+
+<p>Resume 的关键步骤：</p>
+
+<ol>
+  <li>逐行读取；</li>
+  <li>坏 JSON 或未知记录可计数后跳过；</li>
+  <li>找最新可作为重建边界的 compaction；</li>
+  <li>使用 replacement history；</li>
+  <li>重放其后的 ResponseItem、rollback、world state 与 inter-agent message；</li>
+  <li>恢复最后 turn、模型设置和 context window lineage。</li>
+</ol>
+
+<p>源码：<a href="https://github.com/openai/codex/blob/822e58cc3d666166c7446c5b1ea2e52f5d09594c/codex-rs/core/src/session/rollout_reconstruction.rs#L57-L88">Rollout reconstruction</a>、<a href="https://github.com/openai/codex/blob/822e58cc3d666166c7446c5b1ea2e52f5d09594c/codex-rs/core/src/session/rollout_reconstruction.rs#L395-L535">history replay</a></p>
+
+<h3 id="154-fork">15.4 Fork</h3>
+
+<p>Legacy 模式可复制历史；Paginated 模式可通过 history base 引用祖先前缀。中途 fork 可以截到某个用户 turn 边界，并为开放的父 turn 添加与 interrupt 等价的结束标记。</p>
+
+<h3 id="155-rollout-不等于完整审计平台">15.5 Rollout 不等于完整审计平台</h3>
+
+<p>Rollout 的首要目的是 Codex session 恢复和历史重建。持久化策略会过滤事件，且可能包含敏感命令和模型内容。生产审计仍应单独设计：</p>
+
+<ul>
+  <li>访问控制；</li>
+  <li>保留周期；</li>
+  <li>脱敏；</li>
+  <li>不可抵赖日志；</li>
+  <li>合规导出。</li>
+</ul>
+
+<hr />
+
+<h2 id="16-agentsmdskills-与-prompt-注入面">16. AGENTS.md、Skills 与 Prompt 注入面</h2>
+
+<h3 id="161-agentsmd-搜索">16.1 AGENTS.md 搜索</h3>
+
+<p>Codex 从项目根到 cwd 逐层查找：</p>
+
+<ol>
+  <li><code>AGENTS.override.md</code>；</li>
+  <li><code>AGENTS.md</code>；</li>
+  <li>配置的 fallback 文件名。</li>
+</ol>
+
+<p>不越过项目根；不可信项目不加载项目指令。默认总字节预算是 32 KiB。超限内容可能被截断。<a href="https://github.com/openai/codex/blob/822e58cc3d666166c7446c5b1ea2e52f5d09594c/codex-rs/config/defaults.toml#L1-L18">默认值</a></p>
+
+<h3 id="162-动态刷新">16.2 动态刷新</h3>
+
+<p>每个 step 可刷新 global/thread/project instruction。发生变化时，系统生成替换或移除通知，而不是假设线程启动后指令永远不变。</p>
+
+<h3 id="163-skills">16.3 Skills</h3>
+
+<p>Skill 来源包括：</p>
+
+<ul>
+  <li>项目 <code>.codex/skills</code>；</li>
+  <li>逐级 <code>.agents/skills</code>；</li>
+  <li><code>$CODEX_HOME/skills</code>；</li>
+  <li><code>~/.agents/skills</code>；</li>
+  <li>管理员目录、缓存与插件。</li>
+</ul>
+
+<p>只识别 <code>SKILL.md</code>。元数据和模型可见目录有预算，避免 skill catalog 无限膨胀。</p>
+
+<h3 id="164-安全意义">16.4 安全意义</h3>
+
+<p>AGENTS.md、skill、MCP instructions 和 project config 都可能影响模型行为。项目 trust 机制只决定是否加载部分项目层内容，不会自动证明文件内容安全。应将其视为代码审查对象。</p>
+
+<hr />
+
+<h2 id="17-configprofile-与-managed-requirements">17. Config、Profile 与 Managed Requirements</h2>
+
+<h3 id="171-多层配置">17.1 多层配置</h3>
+
+<p>源码中的配置层从低到高为：</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>层</th>
+      <th style="text-align: right">precedence</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>packaged defaults</td>
+      <td style="text-align: right">-10</td>
+    </tr>
+    <tr>
+      <td>MDM</td>
+      <td style="text-align: right">0</td>
+    </tr>
+    <tr>
+      <td>system</td>
+      <td style="text-align: right">10</td>
+    </tr>
+    <tr>
+      <td>enterprise managed</td>
+      <td style="text-align: right">15</td>
+    </tr>
+    <tr>
+      <td>user</td>
+      <td style="text-align: right">20</td>
+    </tr>
+    <tr>
+      <td>selected profile</td>
+      <td style="text-align: right">21</td>
+    </tr>
+    <tr>
+      <td>project</td>
+      <td style="text-align: right">25</td>
+    </tr>
+    <tr>
+      <td>session flags</td>
+      <td style="text-align: right">30</td>
+    </tr>
+    <tr>
+      <td>legacy managed file</td>
+      <td style="text-align: right">40</td>
+    </tr>
+    <tr>
+      <td>legacy managed MDM</td>
+      <td style="text-align: right">50</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>源码：<a href="https://github.com/openai/codex/blob/822e58cc3d666166c7446c5b1ea2e52f5d09594c/codex-rs/config/src/config_layer_source.rs#L4-L50">ConfigLayerSource</a></p>
+
+<p>表递归合并，标量和数组由高层替换。项目层从项目根到 cwd 逐级读取 <code>.codex/config.toml</code>，但不可信项目的层会被禁用。</p>
+
+<h3 id="172-profile">17.2 Profile</h3>
+
+<p>当前 <code>--profile NAME</code> 使用 <code>$CODEX_HOME/NAME.config.toml</code> 并叠加到基础配置。迁移中的旧 profile 形式与新 Profile v2 可能存在兼容限制；固定版本部署应锁定 profile 文件结构，不依赖模糊兼容。</p>
+
+<h3 id="173-managed-requirements">17.3 Managed Requirements</h3>
+
+<p>Requirements 与普通配置不同：</p>
+
+<ul>
+  <li>配置给出最终候选值；</li>
+  <li>requirements 规定允许范围、禁止项和上限；</li>
+  <li>用户/项目配置不能覆盖 requirements；</li>
+  <li>某些 hooks、rules、deny-read、network 字段使用拒绝优先的专门合并规则。</li>
+</ul>
+
+<p>企业部署可用它限制：</p>
+
+<ul>
+  <li>模型/provider；</li>
+  <li>approval 与 sandbox；</li>
+  <li>Web search 和网络域；</li>
+  <li>MCP、Apps、plugins；</li>
+  <li>features 与 hooks。</li>
+</ul>
+
+<h3 id="174-关键默认值">17.4 关键默认值</h3>
+
+<p>固定 commit 的 packaged defaults 包括：</p>
+
+<ul>
+  <li>credential store：file；</li>
+  <li>MCP OAuth store：auto；</li>
+  <li>project docs：32 KiB；</li>
+  <li>background terminal max timeout：300 秒；</li>
+  <li>project root marker：<code>.git</code>；</li>
+  <li>history persistence：<code>save-all</code>。</li>
+</ul>
+
+<hr />
+
+<h2 id="18-mcp发现binding-与调用">18. MCP：发现、Binding 与调用</h2>
+
+<h3 id="181-transport">18.1 Transport</h3>
+
+<p>支持：</p>
+
+<ul>
+  <li>stdio；</li>
+  <li>streamable HTTP；</li>
+  <li>OAuth、Bearer、ChatGPT 等认证路径。</li>
+</ul>
+
+<p>常见配置位于 <code>~/.codex/config.toml</code>；可信项目可以提供 <code>.codex/config.toml</code>。</p>
+
+<h3 id="182-工具发现">18.2 工具发现</h3>
+
+<p>MCP 工具发现支持并发和分页，并设置最大页数、最大工具数和总超时。发现后应用：</p>
+
+<ul>
+  <li>enabled/disabled tools；</li>
+  <li>permission；</li>
+  <li>exposure；</li>
+  <li>名称清洗和冲突处理。</li>
+</ul>
+
+<p>模型可见名称通常是 <code>mcp__&lt;server&gt;__&lt;tool&gt;</code>，并受最大长度限制。</p>
+
+<h3 id="183-immutable-binding">18.3 Immutable Binding</h3>
+
+<p>每个 step 捕获不可变 <code>McpBinding</code>，固定：</p>
+
+<ul>
+  <li>client；</li>
+  <li>catalog revision；</li>
+  <li>permission；</li>
+  <li>timeout。</li>
+</ul>
+
+<p>如果 catalog 刷新后旧 binding 已陈旧，调用应拒绝，避免“模型看到 A 工具定义，但执行时实际变成 B”这种 TOCTOU。</p>
+
+<h3 id="184-mcp-安全边界">18.4 MCP 安全边界</h3>
+
+<p>MCP 调用会进入 Codex ToolRegistry 与 approval 流程，但 MCP server 本身的内部行为不受本机 shell sandbox 自动约束。尤其是远端 MCP，它的副作用发生在服务端。需要分别治理：</p>
+
+<ul>
+  <li>transport 信任；</li>
+  <li>server 凭据；</li>
+  <li>per-tool approval；</li>
+  <li>tool allowlist；</li>
+  <li>服务端审计和租户隔离。</li>
+</ul>
+
+<hr />
+
+<h2 id="19-hooks-与-dynamic-tools">19. Hooks 与 Dynamic Tools</h2>
+
+<h3 id="191-hooks">19.1 Hooks</h3>
+
+<p>Codex 支持多个生命周期 hook，如 SessionStart、TurnStart、PreToolUse、PostToolUse、Stop、Interrupt 等。Hook 可执行 command 或 MCP tool；配置中出现 Prompt/Agent 类型并不代表当前实现会执行它们。</p>
+
+<p>普通 hook 需要 trusted hash 才执行；managed/builtin hook 可自动可信；企业还可限制只允许运行 managed hooks。</p>
+
+<h3 id="192-hook-timeout">19.2 Hook timeout</h3>
+
+<p>普通 hook 的默认超时较长；SessionEnd/Interrupt 等关闭路径使用更短上限，避免退出被无限挂住。</p>
+
+<h3 id="193-dynamic-tools">19.3 Dynamic Tools</h3>
+
+<p>IDE/host 可在 <code>thread/start.dynamicTools</code> 注入动态工具。模型调用后：</p>
+
+<ol>
+  <li>app-server 向客户端反向发送 tool call；</li>
+  <li>客户端执行；</li>
+  <li>客户端回传文本、图片或音频结果；</li>
+  <li>Core 将结果继续作为模型 history。</li>
+</ol>
+
+<p>这使 Codex 可以接入 IDE 内部能力，而无需所有工具都编译进 CLI。</p>
+
+<hr />
+
+<h2 id="20-multi-agent">20. Multi-agent</h2>
+
+<h3 id="201-两套版本">20.1 两套版本</h3>
+
+<p>固定 commit 中：</p>
+
+<ul>
+  <li>Multi-agent V1 默认开启；</li>
+  <li>V2 为稳定 feature，但默认关闭。</li>
+</ul>
+
+<p>V1 工具包括 spawn、send、wait、resume、close；V2 改成更明确的 spawn、send_message、followup、list、wait、interrupt。</p>
+
+<h3 id="202-默认边界">20.2 默认边界</h3>
+
+<ul>
+  <li>V1 默认最多 6 个子线程；</li>
+  <li>默认嵌套深度 1；</li>
+  <li>V2 总并发默认 4，包含 root；</li>
+  <li>wait 有时间范围；</li>
+  <li>V2 默认只在特定模式开放。</li>
+</ul>
+
+<h3 id="203-子-agent-继承">20.3 子 Agent 继承</h3>
+
+<p>子 Agent 可继承：</p>
+
+<ul>
+  <li>provider/model；</li>
+  <li>approval；</li>
+  <li>sandbox；</li>
+  <li>cwd；</li>
+  <li>指令快照；</li>
+  <li>role overlay。</li>
+</ul>
+
+<p>继承必须在 <code>child_config</code> 中显式定义。不要假设父级所有动态工具、MCP 认证或临时状态都会自动、等价地传给子级。</p>
+
+<h3 id="204-fork-与-spawn-的区别">20.4 Fork 与 Spawn 的区别</h3>
+
+<ul>
+  <li>Spawn：更像新 thread，根据 child config 构造新的执行上下文；</li>
+  <li>Fork：共享/引用父 history 的一段前缀，适合保留上下文；</li>
+  <li>共享历史有利于上下文连续性，但也扩大敏感信息传播范围。</li>
+</ul>
+
+<hr />
+
+<h2 id="21-interruptsteerretry-与完成语义">21. Interrupt、Steer、Retry 与完成语义</h2>
+
+<h3 id="211-steer">21.1 Steer</h3>
+
+<p>Steer 不创建一个新的并行 turn，而是把输入加入当前 <code>TurnState.pending_input</code>。下一轮 sampling 前，turn loop 领取 pending input，运行 SteeredUserInput hook，并重新捕获 StepContext。</p>
+
+<p>这允许用户在模型运行时补充方向，又避免两个 turn 同时修改一个 Session。</p>
+
+<h3 id="212-interrupt">21.2 Interrupt</h3>
+
+<p>客户端调用 <code>turn/interrupt</code>，Core 收到 <code>Op::Interrupt</code>：</p>
+
+<ol>
+  <li>cancellation token 触发；</li>
+  <li>给任务短暂宽限收敛；</li>
+  <li>必要时 abort Tokio task；</li>
+  <li>执行 abort hooks；</li>
+  <li>写中断 marker；</li>
+  <li>发 <code>TurnAborted</code>。</li>
+</ol>
+
+<p>Interrupt 与普通模型错误不同。普通错误可以发 Error，最终仍以带 error 的 TurnComplete 收口。</p>
+
+<h3 id="213-网络与流重试">21.3 网络与流重试</h3>
+
+<p>Responses stream error 有受控重试：</p>
+
+<ul>
+  <li>最大次数；</li>
+  <li>backoff / Retry-After；</li>
+  <li>断网重连；</li>
+  <li>WebSocket 到 HTTP fallback。</li>
+</ul>
+
+<p>内部 <code>recover_turn_if_idle()</code> 可复用原 turn id 并标记 retry trigger，但不是一个普遍公开的 <code>turn/retry</code> RPC。</p>
+
+<h3 id="214-完成">21.4 完成</h3>
+
+<p>只有以下条件都不再要求继续时，turn 才真正完成：</p>
+
+<ul>
+  <li>没有 tool follow-up；</li>
+  <li>没有 pending steer/mail；</li>
+  <li>provider 没要求继续；</li>
+  <li>hook 没注入 continuation；</li>
+  <li>没有 compaction rollover；</li>
+  <li>当前 task 正常收敛。</li>
+</ul>
+
+<hr />
+
+<h2 id="22-tuiexecapp-server-与-sdk-对比">22. TUI、Exec、App-server 与 SDK 对比</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>接入面</th>
+      <th>控制协议</th>
+      <th style="text-align: right">交互审批</th>
+      <th style="text-align: right">长会话</th>
+      <th>主要用途</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>TUI</td>
+      <td>app-server</td>
+      <td style="text-align: right">是</td>
+      <td style="text-align: right">是</td>
+      <td>本地交互开发</td>
+    </tr>
+    <tr>
+      <td><code>codex exec</code></td>
+      <td>in-process app-server + JSON/文本输出</td>
+      <td style="text-align: right">否/自动拒绝</td>
+      <td style="text-align: right">有限</td>
+      <td>CI、脚本、一次性任务</td>
+    </tr>
+    <tr>
+      <td>Python SDK</td>
+      <td>启动 app-server stdio</td>
+      <td style="text-align: right">由宿主实现</td>
+      <td style="text-align: right">是</td>
+      <td>深度嵌入与并发 RPC</td>
+    </tr>
+    <tr>
+      <td>TypeScript SDK</td>
+      <td>启动 <code>codex exec --experimental-json</code></td>
+      <td style="text-align: right">受 exec 限制</td>
+      <td style="text-align: right">较弱</td>
+      <td>简单程序化调用</td>
+    </tr>
+    <tr>
+      <td>IDE</td>
+      <td>app-server + dynamic tools</td>
+      <td style="text-align: right">是</td>
+      <td style="text-align: right">是</td>
+      <td>编辑器内交互</td>
+    </tr>
+    <tr>
+      <td>daemon/remote</td>
+      <td>socket/WebSocket transport</td>
+      <td style="text-align: right">由客户端实现</td>
+      <td style="text-align: right">是</td>
+      <td>共享本地服务或远端控制</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>值得注意：Python 与 TypeScript SDK 的底层不是同一能力面。进行平台选型时不能只看方法名，必须看它连接 app-server 还是 exec JSONL。</p>
+
+<hr />
+
+<h2 id="23-可观测性与隐私">23. 可观测性与隐私</h2>
+
+<p>Codex 支持日志、trace 和 metrics。关键点：</p>
+
+<ul>
+  <li>日志和 trace 通常默认关闭；</li>
+  <li>metrics 可通过产品配置启用；</li>
+  <li>用户 prompt 默认可被 <code>[REDACTED]</code>；</li>
+  <li>响应和 Guardian 原文通常需显式 opt-in；</li>
+  <li>app-server 可接受 W3C trace context；</li>
+  <li>exec 可从环境继承 traceparent。</li>
+</ul>
+
+<p>Telemetry 不能替代 Rollout，也不能替代安全审计：</p>
+
+<ul>
+  <li>Rollout 用于 session 恢复；</li>
+  <li>telemetry 用于运行观测；</li>
+  <li>compliance audit 需要独立保证。</li>
+</ul>
+
+<hr />
+
+<h2 id="24-测试与工程质量">24. 测试与工程质量</h2>
+
+<p>源码测试覆盖的关键行为包括：</p>
+
+<ul>
+  <li>并发 TurnInput：一个 Started、另一个 Steered；</li>
+  <li>steer 到达工具 drain 期间不丢 tool output；</li>
+  <li>parallel tool 调度；</li>
+  <li>SSE 提前结束和缺失 <code>response.completed</code>；</li>
+  <li>abort hook 先于 TurnAborted；</li>
+  <li>execpolicy allow/deny/prompt；</li>
+  <li>deny-read 与 sandbox 逃逸；</li>
+  <li>Seatbelt 绕过测试；</li>
+  <li>Windows permission enforcement；</li>
+  <li>工具输出 byte/token 截断；</li>
+  <li>compaction、resume、fork 后 history 一致；</li>
+  <li>图片持久化和恢复；</li>
+  <li>SDK final output 与 usage。</li>
+</ul>
+
+<p>对于 Agent Harness，推荐沿用这种分层测试思路：</p>
+
+<ol>
+  <li>parser 与纯策略单测；</li>
+  <li>tool runtime 集成测试；</li>
+  <li>sandbox 平台测试；</li>
+  <li>stream 异常测试；</li>
+  <li>rollout replay 测试；</li>
+  <li>client protocol 测试；</li>
+  <li>真实 provider e2e。</li>
+</ol>
+
+<hr />
+
+<h2 id="25-主要架构优点">25. 主要架构优点</h2>
+
+<h3 id="251-客户端与-core-解耦">25.1 客户端与 Core 解耦</h3>
+
+<p>TUI、exec、IDE 和 SDK 不重复实现 Agent loop，统一通过 app-server/协议控制 thread 和 turn。</p>
+
+<h3 id="252-step-快照降低竞态">25.2 Step 快照降低竞态</h3>
+
+<p>工具目录、MCP binding、environment 和 model settings 在一次 sampling 前固定，避免发现和执行之间悄悄变更。</p>
+
+<h3 id="253-工具执行分层清晰">25.3 工具执行分层清晰</h3>
+
+<p>ToolPolicy、hook、approval、sandbox 和 runtime 各自拥有明确职责。OS enforcement 不依赖模型自觉。</p>
+
+<h3 id="254-rollout-与-history-分离">25.4 Rollout 与 history 分离</h3>
+
+<p>原始恢复事实和模型可见上下文分别优化。工具结果可以对模型截断，但 Rollout 仍保留来源。</p>
+
+<h3 id="255-跨平台安全实现较完整">25.5 跨平台安全实现较完整</h3>
+
+<p>Linux、macOS、Windows 都有专门实现，并对无法表达的权限选择 fail closed，而不是无提示裸跑。</p>
+
+<hr />
+
+<h2 id="26-局限与风险">26. 局限与风险</h2>
+
+<h3 id="261-复杂度高">26.1 复杂度高</h3>
+
+<p>Core、app-server、protocol、rollout、tools、sandbox、config 和扩展拥有大量交叉类型。源码学习门槛高，客户端版本和服务端协议也在快速演进。</p>
+
+<h3 id="262-两套-sdk-能力不一致">26.2 两套 SDK 能力不一致</h3>
+
+<p>Python app-server SDK 与 TypeScript exec SDK 的 thread、审批、动态工具和并发能力不同。</p>
+
+<h3 id="263-工具完整原文不一定可被模型重新读取">26.3 工具完整原文不一定可被模型重新读取</h3>
+
+<p>Rollout 保存原始 payload 主要服务恢复与审计；通用 output truncation 没有统一返回可读句柄。大数据工具仍需自己设计分页/制品协议。</p>
+
+<h3 id="264-posttooluse-不能回滚">26.4 PostToolUse 不能回滚</h3>
+
+<p>PostToolUse block 只阻止结果进入模型，不能撤销工具已完成副作用。安全决策尽量放到 PreToolUse、approval 和 sandbox。</p>
+
+<h3 id="265-apply-patch-非事务性">26.5 Apply Patch 非事务性</h3>
+
+<p>部分 patch 可能已写入。出错后必须检查 diff，不能假设工作树自动恢复。</p>
+
+<h3 id="266-mcp-与-dynamic-tool-扩大信任面">26.6 MCP 与 Dynamic Tool 扩大信任面</h3>
+
+<p>本地 shell sandbox 不会自动约束远端服务端行为。Host callback 也需要自身授权和审计。</p>
+
+<h3 id="267-compaction-有信息损失">26.7 Compaction 有信息损失</h3>
+
+<p>源码在 compact 完成后会提示：长线程和多次压缩可能降低模型准确率，建议保持 thread 小而聚焦。摘要不是无损存储。</p>
+
+<h3 id="268-配置迁移面较大">26.8 配置迁移面较大</h3>
+
+<p>Profile v2、legacy managed config、features 和 SDK protocol 共存，部署需要固定版本、配置 schema 和升级测试。</p>
+
+<hr />
+
+<h2 id="27-二次开发建议">27. 二次开发建议</h2>
+
+<h3 id="新工具">新工具</h3>
+
+<p>应同时设计：</p>
+
+<ul>
+  <li>ToolSpec 与 namespace；</li>
+  <li>exposure；</li>
+  <li>parallel safety；</li>
+  <li>Pre/Post hook payload；</li>
+  <li>approval action；</li>
+  <li>sandbox cwd/permissions；</li>
+  <li>output truncation budget；</li>
+  <li>rollout metadata；</li>
+  <li>UI item；</li>
+  <li>cancel/timeout；</li>
+  <li>tests。</li>
+</ul>
+
+<h3 id="新客户端">新客户端</h3>
+
+<p>优先接 app-server，而不是解析 TUI 文本。至少处理：</p>
+
+<ul>
+  <li>initialize；</li>
+  <li>thread/start/resume/fork；</li>
+  <li>turn/start/steer/interrupt；</li>
+  <li>item notifications；</li>
+  <li>approval/elicitation/request_user_input；</li>
+  <li>reconnect 与 idempotency；</li>
+  <li>usage 与 final response。</li>
+</ul>
+
+<h3 id="新-mcp-集成">新 MCP 集成</h3>
+
+<p>使用 per-tool allowlist 和 approval；固定 server identity；处理 catalog revision；为远端副作用建立服务端审计。</p>
+
+<h3 id="企业策略">企业策略</h3>
+
+<p>将以下内容放入 requirements/managed policy，而不是依靠用户自觉：</p>
+
+<ul>
+  <li>可用 provider/model；</li>
+  <li>approval policy；</li>
+  <li>sandbox mode；</li>
+  <li>network target；</li>
+  <li>MCP/Apps/plugin allowlist；</li>
+  <li>hooks 信任；</li>
+  <li>telemetry 与 history policy。</li>
+</ul>
+
+<h3 id="上下文治理">上下文治理</h3>
+
+<ul>
+  <li>控制 AGENTS.md 与 skill catalog；</li>
+  <li>延迟暴露非必要工具；</li>
+  <li>工具结果分页；</li>
+  <li>使用 output schema；</li>
+  <li>避免把大日志直接作为 tool output；</li>
+  <li>多次 compact 后主动开新 thread。</li>
+</ul>
+
+<hr />
+
+<h2 id="28-推荐源码阅读路径">28. 推荐源码阅读路径</h2>
+
+<h3 id="第一轮主链">第一轮：主链</h3>
+
+<ol>
+  <li><code>README.md</code></li>
+  <li><code>codex-rs/cli/src/main.rs</code></li>
+  <li><code>codex-rs/app-server/src/message_processor.rs</code></li>
+  <li><code>codex-rs/core/src/codex_thread.rs</code></li>
+  <li><code>codex-rs/core/src/session/session.rs</code></li>
+  <li><code>codex-rs/core/src/session/turn.rs</code></li>
+</ol>
+
+<h3 id="第二轮模型与工具">第二轮：模型与工具</h3>
+
+<ol>
+  <li><code>codex-rs/core/src/client.rs</code></li>
+  <li><code>codex-rs/codex-api/src/sse/responses.rs</code></li>
+  <li><code>codex-rs/core/src/stream_events_utils.rs</code></li>
+  <li><code>codex-rs/core/src/tools/spec_plan.rs</code></li>
+  <li><code>codex-rs/core/src/tools/registry.rs</code></li>
+  <li><code>codex-rs/core/src/tools/orchestrator.rs</code></li>
+</ol>
+
+<h3 id="第三轮安全与执行">第三轮：安全与执行</h3>
+
+<ol>
+  <li><code>codex-rs/core/src/tools/handlers/unified_exec/exec_command.rs</code></li>
+  <li><code>codex-rs/core/src/tools/runtimes/unified_exec.rs</code></li>
+  <li><code>codex-rs/sandboxing</code></li>
+  <li><code>codex-rs/linux-sandbox</code></li>
+  <li><code>codex-rs/windows-sandbox-rs</code></li>
+  <li><code>codex-rs/apply-patch</code></li>
+</ol>
+
+<h3 id="第四轮状态与上下文">第四轮：状态与上下文</h3>
+
+<ol>
+  <li><code>codex-rs/history</code></li>
+  <li><code>codex-rs/rollout</code></li>
+  <li><code>codex-rs/core/src/context_manager/history.rs</code></li>
+  <li><code>codex-rs/core/src/compact.rs</code></li>
+  <li><code>codex-rs/core/src/compact_remote_v2.rs</code></li>
+  <li><code>codex-rs/core/src/session/rollout_reconstruction.rs</code></li>
+</ol>
+
+<h3 id="第五轮扩展">第五轮：扩展</h3>
+
+<ol>
+  <li><code>codex-rs/config</code></li>
+  <li><code>codex-rs/codex-mcp</code></li>
+  <li><code>codex-rs/ext/skills</code></li>
+  <li><code>codex-rs/hooks</code></li>
+  <li><code>codex-rs/core/src/tools/handlers/multi_agents*.rs</code></li>
+  <li><code>sdk/python</code> 与 <code>sdk/typescript</code></li>
+</ol>
+
+<hr />
+
+<h1 id="29-60-分钟技术分享执行稿">29. 60 分钟技术分享执行稿</h1>
+
+<p>本分享按 <strong>34 分钟主讲 + 21 分钟源码/配置演示 + 5 分钟互动问答</strong> 编排。它不是朗读 60 分钟的逐字稿；必须执行每节的演示和互动。若取消演示，纯讲述约为 30–35 分钟。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>时间</th>
+      <th>主题</th>
+      <th style="text-align: right">主讲</th>
+      <th style="text-align: right">演示/互动</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>0–5</td>
+      <td>Harness 边界与项目概况</td>
+      <td style="text-align: right">3 分钟</td>
+      <td style="text-align: right">2 分钟</td>
+    </tr>
+    <tr>
+      <td>5–12</td>
+      <td>总体架构与 app-server</td>
+      <td style="text-align: right">4 分钟</td>
+      <td style="text-align: right">3 分钟</td>
+    </tr>
+    <tr>
+      <td>12–22</td>
+      <td>Session 与 Turn loop</td>
+      <td style="text-align: right">6 分钟</td>
+      <td style="text-align: right">4 分钟</td>
+    </tr>
+    <tr>
+      <td>22–32</td>
+      <td>Responses stream 与工具循环</td>
+      <td style="text-align: right">5 分钟</td>
+      <td style="text-align: right">5 分钟</td>
+    </tr>
+    <tr>
+      <td>32–42</td>
+      <td>Approval、Sandbox 与执行</td>
+      <td style="text-align: right">6 分钟</td>
+      <td style="text-align: right">4 分钟</td>
+    </tr>
+    <tr>
+      <td>42–50</td>
+      <td>Rollout、截断与 Compaction</td>
+      <td style="text-align: right">5 分钟</td>
+      <td style="text-align: right">3 分钟</td>
+    </tr>
+    <tr>
+      <td>50–55</td>
+      <td>MCP、Skills 与 Multi-agent</td>
+      <td style="text-align: right">3 分钟</td>
+      <td style="text-align: right">2 分钟</td>
+    </tr>
+    <tr>
+      <td>55–60</td>
+      <td>总结与问答</td>
+      <td style="text-align: right">2 分钟</td>
+      <td style="text-align: right">3 分钟</td>
+    </tr>
+    <tr>
+      <td><strong>合计</strong></td>
+      <td>&#160;</td>
+      <td style="text-align: right"><strong>34 分钟</strong></td>
+      <td style="text-align: right"><strong>26 分钟</strong></td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="分享前准备">分享前准备</h2>
+
+<ol>
+  <li>编辑器固定在 commit <code>822e58cc</code>；</li>
+  <li>打开 <code>cli/src/main.rs</code>、<code>session/turn.rs</code>、<code>tools/registry.rs</code>、<code>tools/orchestrator.rs</code>、<code>compact.rs</code>；</li>
+  <li>准备一份脱敏的 rollout JSONL 示例；</li>
+  <li>准备一个“高风险命令审批”示意，不现场执行破坏性命令；</li>
+  <li>准备一个 100k 字符 tool output 的虚构示例；</li>
+  <li>禁止展示 API key、auth.json 或真实企业 policy。</li>
+</ol>
+
+<h2 id="05-分钟harness-边界与项目概况">0–5 分钟：Harness 边界与项目概况</h2>
+
+<h3 id="讲稿">讲稿</h3>
+
+<p>大家好，今天我们分析 OpenAI Codex CLI 的 Harness。先说明一个术语：官方项目名是 Codex CLI，“Codex Harness”是我们用来描述模型外层运行系统的工程术语。</p>
+
+<p>如果模型返回 <code>exec_command</code>，是谁真正启动进程？是谁决定是否审批？是谁限制文件和网络？是谁在输出一百万字符时保护上下文？是谁在进程崩溃后恢复 thread？这些都属于 Harness。</p>
+
+<p>今天固定在 <code>822e58cc</code> 这个 commit。仓库有 8,980 个文件、5,141 个 Rust 文件和 161 个 Cargo manifest。它不是 CLI 包装器，而是一个由 app-server、Core、protocol、tools、sandbox、rollout、MCP 和 SDK 组成的平台。</p>
+
+<p>今天回答五个问题：</p>
+
+<ol>
+  <li>用户输入怎样变成多轮模型 sampling；</li>
+  <li>工具如何经过 policy、审批和 sandbox；</li>
+  <li>Rollout 与模型 history 为什么要分开；</li>
+  <li>大结果和长上下文怎样治理；</li>
+  <li>二次开发应该接 app-server 还是直接调用 Core。</li>
+</ol>
+
+<h3 id="演示">演示</h3>
+
+<p>展示仓库顶层和 <code>codex-rs/Cargo.toml</code>。询问听众：</p>
+
+<blockquote>
+  <p>你认为 TUI、exec 和 IDE 是三套 Agent loop，还是同一 Core 的三个客户端？</p>
+</blockquote>
+
+<p>答案留到下一节。</p>
+
+<hr />
+
+<h2 id="512-分钟总体架构与-app-server">5–12 分钟：总体架构与 App-server</h2>
+
+<h3 id="讲稿-1">讲稿</h3>
+
+<p>答案是同一 Core。CLI 入口无子命令时进入 TUI，<code>exec</code> 进入 headless 客户端，<code>app-server</code> 启动控制面。但 TUI 和 exec 最终都通过 app-server 协议管理 thread 和 turn。</p>
+
+<p>我们把架构分三层。</p>
+
+<p>第一层是控制面：thread/start、turn/start、turn/steer、turn/interrupt。第二层是运行面：ThreadManager、CodexThread、Session、TurnContext 和 run_turn。第三层是事实面：Rollout JSONL 与 ContextManager history。</p>
+
+<p>为什么需要 app-server？因为 IDE、TUI、Python SDK 和未来远程客户端都需要同样的 thread/turn/approval 语义。它比直接暴露内部 Rust 对象更容易版本化。</p>
+
+<p>需要注意，app-server 的协议接近 JSON-RPC，但不是严格 JSON-RPC 2.0。客户端应使用官方生成类型或 SDK，不要假设通用 JSON-RPC 客户端百分之百兼容。</p>
+
+<h3 id="演示-1">演示</h3>
+
+<ol>
+  <li>打开 <code>cli/src/main.rs</code> 的 <code>Subcommand</code>；</li>
+  <li>指出 TUI、exec、app-server、resume、fork；</li>
+  <li>画出：</li>
+</ol>
+
+<pre><code class="language-text">TUI ─┐
+Exec ├─&gt; app-server ─&gt; Core Session
+IDE ─┤
+SDK ─┘
+</code></pre>
+
+<ol>
+  <li>让听众说出直接解析 TUI stdout 的问题：不稳定、丢审批语义、无法可靠关联 turn/item。</li>
+</ol>
+
+<hr />
+
+<h2 id="1222-分钟session-与-turn-loop">12–22 分钟：Session 与 Turn Loop</h2>
+
+<h3 id="讲稿-2">讲稿</h3>
+
+<p>Codex 的运行态不是一个巨大的 Agent struct。ThreadManager 管理 thread，CodexThread 是句柄，Session 是真正的 Agent 线程状态。</p>
+
+<p>Session 同时最多一个 running task。用户在运行中继续输入，不会启动第二个并行 turn，而是进入 steer/pending input。</p>
+
+<p>一次新输入先被封装成 Submission 和 <code>Op::TurnInput</code>。submission loop 串行处理控制操作。在 active-turn 锁下，系统决定 Started 或 Steered。</p>
+
+<p>进入 <code>run_turn()</code> 后，先运行 hooks、记录输入、准备环境。然后进入 loop：领取 pending input、刷新 instructions 和 MCP、捕获 StepContext、从 history 构造 prompt、发 Responses 请求、处理工具，再判断是否继续。</p>
+
+<p>这里最值得学习的是 StepContext。模型、工具、MCP binding、sandbox 和 environment 在一次 sampling 前固定。这样模型看到的工具 schema 和真正执行的 handler 属于同一个 revision。</p>
+
+<p>同一个 turn 可以有很多 sampling。模型先请求 shell，执行后再 sampling；用户中途 steer，再 sampling；上下文达到阈值，compact 后再 sampling。只有没有 follow-up 时 turn 才结束。</p>
+
+<h3 id="演示-2">演示</h3>
+
+<p>打开 <code>session/turn.rs</code>：</p>
+
+<ol>
+  <li>指出 <code>loop</code>；</li>
+  <li>指出 pending input；</li>
+  <li>指出 <code>capture_step_context_with_required_mcp_servers</code>；</li>
+  <li>指出 <code>clone_history().for_prompt()</code>；</li>
+  <li>指出 <code>needs_follow_up</code> 与 <code>should_roll_over</code>；</li>
+  <li>让听众回答：为什么一个 Session 只允许一个 running task，却仍可并发执行多个工具？</li>
+</ol>
+
+<p>答案：Turn 串行，Turn 内工具可并行，这是两个不同层次。</p>
+
+<hr />
+
+<h2 id="2232-分钟responses-stream-与工具循环">22–32 分钟：Responses Stream 与工具循环</h2>
+
+<h3 id="讲稿-3">讲稿</h3>
+
+<p>模型调用优先走 Responses WebSocket，必要时回退 HTTP SSE。流中会出现 item added、delta、item done、usage 和 completed。</p>
+
+<p><code>response.completed</code> 不是用户 turn 的结束信号。它只表示这一次 upstream response 完成。如果模型输出工具调用，或者 end_turn=false，或者用户 steer 已到达，外层 loop 继续下一次 sampling。</p>
+
+<p>工具 item 完成后，ToolRouter 构造 invocation，ToolCallRuntime 处理并发，ToolRegistry 找 handler，结果放进 <code>FuturesOrdered</code>。工具可以并行执行，但写回 history 仍按模型顺序。</p>
+
+<p>工具目录来自多个源：Core、MCP、extension、host dynamic tools 和 multi-agent control。ToolPolicy 先做能力上限，exposure 决定模型可见方式，reserved name 防止外部工具覆盖 exec_command。</p>
+
+<p>PreToolUse 在副作用前，适合阻断或修改输入。PostToolUse 在工具执行后，只能影响结果和后续上下文，不能撤销副作用。</p>
+
+<h3 id="演示-3">演示</h3>
+
+<p>画一轮 sampling：</p>
+
+<pre><code class="language-text">assistant: function_call A
+assistant: function_call B
+ -&gt; A/B parallel futures
+ -&gt; FuturesOrdered
+ -&gt; output A
+ -&gt; output B
+ -&gt; next Responses request
+</code></pre>
+
+<p>打开 <code>tools/registry.rs</code>：</p>
+
+<ol>
+  <li>ToolPolicy；</li>
+  <li>reserved name；</li>
+  <li>PreToolUse；</li>
+  <li>concrete handler；</li>
+  <li>PostToolUse。</li>
+</ol>
+
+<p>互动问题：PostToolUse block 能否撤销 <code>rm</code>、网络 POST 或已写 patch？答案：不能。</p>
+
+<hr />
+
+<h2 id="3242-分钟approvalsandbox-与执行">32–42 分钟：Approval、Sandbox 与执行</h2>
+
+<h3 id="讲稿-4">讲稿</h3>
+
+<p>Codex 的工具安全不能用一个开关解释。至少有五层：ToolPolicy、execpolicy、approval、OS sandbox、network policy。</p>
+
+<p>Approval 有 OnRequest、Never、Granular 等模式。Never 不是“全允许”，而是“永远不问，需要批准的动作失败”。这对 headless exec 很重要。</p>
+
+<p>ToolOrchestrator 先判断 approval requirement，再选择 sandbox 执行。如果失败被确认是 sandbox denial，且 policy 允许，系统才可能再次审批并升级执行。普通命令失败不会自动裸跑。</p>
+
+<p>Linux 使用 bubblewrap 加 seccomp；macOS 使用 Seatbelt；Windows 使用 restricted token、ACL、Job Object 和 WFP。平台不能实现 requested deny-read 时，关键路径选择 fail closed。</p>
+
+<p>网络通常通过本地代理做域名策略。但远端 MCP 的副作用发生在服务端，不受本地 shell sandbox 约束。</p>
+
+<p>最后提醒 apply_patch 非事务性。失败时可能有部分修改，需要检查 diff。</p>
+
+<h3 id="演示-4">演示</h3>
+
+<p>使用纸面示意，不执行危险命令：</p>
+
+<pre><code class="language-text">exec request
+ -&gt; execpolicy Prompt
+ -&gt; approval
+ -&gt; sandbox attempt
+ -&gt; SandboxDenied
+ -&gt; second approval
+ -&gt; escalated attempt
+</code></pre>
+
+<p>让听众判断：</p>
+
+<ul>
+  <li>命令被分类为 Read 是否就绝对安全？否。</li>
+  <li>PostToolUse 能否代替 sandbox？否。</li>
+  <li>MCP tool 通过 Codex approval 是否代表服务端无风险？否。</li>
+</ul>
+
+<hr />
+
+<h2 id="4250-分钟rollout截断与-compaction">42–50 分钟：Rollout、截断与 Compaction</h2>
+
+<h3 id="讲稿-5">讲稿</h3>
+
+<p>Codex 有两个历史：Rollout 和 model history。</p>
+
+<p>Rollout JSONL 保存 SessionMeta、原始 ResponseItem、Compacted、TurnContext、usage 和 world state，用于 resume/fork。Model history 由 ContextManager 构建，会修复 call/output 配对、过滤不支持模态、截断工具输出并应用 compact replacement。</p>
+
+<p>工具输出在进入 live history 时按 byte/token budget 中间截断；原始 payload 仍留在 Rollout。注意：留在 Rollout 不代表模型有工具重新读取原文。</p>
+
+<p>当整个上下文接近阈值时，Codex compact。Local compaction 调模型生成 summary，保留近期用户目标，重新注入 canonical context，并替换 history。Compaction 请求本身超窗时，会删除最老 item 再试。</p>
+
+<p>普通 sampling 被 provider 判定超窗时，当前 turn 通常结束并把 usage 标成满窗，确保下一 turn 先 compact；不是当前请求无限删除历史重试。</p>
+
+<h3 id="演示-5">演示</h3>
+
+<p>准备 100k 字符工具输出：</p>
+
+<ol>
+  <li>展示 Rollout 中原始 payload；</li>
+  <li>展示 model history 中头尾截断；</li>
+  <li>展示整个 history compact 后的 summary；</li>
+  <li>问：如果固定 instructions + tools 已接近窗口，compact 能否解决？不能，需要减少固定成本或换模型。</li>
+</ol>
+
+<hr />
+
+<h2 id="5055-分钟mcpskills-与-multi-agent">50–55 分钟：MCP、Skills 与 Multi-agent</h2>
+
+<h3 id="讲稿-6">讲稿</h3>
+
+<p>MCP 支持 stdio 和 streamable HTTP。工具发现后做 allow/deny、权限、exposure 和名称去重。每个 StepContext 捕获 immutable binding，catalog 刷新后陈旧调用会被拒绝，避免 schema 和执行错位。</p>
+
+<p>AGENTS.md 从项目根到 cwd 逐级加载，override 优先，默认总预算 32 KiB；不可信项目不读项目指令。Skills 只识别 SKILL.md，并有扫描和 prompt 预算。</p>
+
+<p>Multi-agent 默认有 V1，V2 在该版本默认关闭。子 Agent 可继承模型、sandbox、approval、cwd 和指令，但继承由 child config 明确定义，不要猜测。</p>
+
+<h3 id="演示-6">演示</h3>
+
+<p>画出：</p>
+
+<pre><code class="language-text">StepContext
+ ├─ fixed model
+ ├─ fixed tool catalog
+ ├─ immutable MCP binding revision
+ ├─ permission profile
+ └─ instruction snapshot
+</code></pre>
+
+<p>讨论：如果 MCP 在模型看完 schema 后热更新，旧 call 应继续执行还是拒绝？Codex 选择拒绝陈旧 binding。</p>
+
+<hr />
+
+<h2 id="5560-分钟总结与问答">55–60 分钟：总结与问答</h2>
+
+<h3 id="讲稿-7">讲稿</h3>
+
+<p>今天带走六个结论。</p>
+
+<p>第一，Codex CLI 的核心不是 TUI，而是 app-server 加 Core Session。</p>
+
+<p>第二，一个 turn 可以包含多次 Responses sampling；response.completed 不是最终 turn complete。</p>
+
+<p>第三，工具执行必须经过 policy、hook、approval、sandbox 和 runtime，不能只依赖模型自律。</p>
+
+<p>第四，Rollout 是恢复事实，model history 是受预算约束的投影。</p>
+
+<p>第五，大结果先截断，长历史再 compact；固定 Prompt 和工具目录太大时只能减少固定成本。</p>
+
+<p>第六，二次开发优先接 app-server，并把工具的权限、截断、取消和持久化一起设计。</p>
+
+<p>如果团队准备落地，我建议做四个 POC：</p>
+
+<ol>
+  <li>app-server thread/turn 客户端；</li>
+  <li>高风险工具审批与 sandbox；</li>
+  <li>大输出、compact、resume 一致性；</li>
+  <li>MCP catalog 热更新和 stale binding。</li>
+</ol>
+
+<p>下面进入问答。</p>
+
+<hr />
+
+<h1 id="30-faq">30. FAQ</h1>
+
+<h2 id="q1codex-harness-是官方项目名吗">Q1：Codex Harness 是官方项目名吗？</h2>
+
+<p>不是。官方开源项目名是 Codex CLI。本文用 Harness 指围绕模型的运行、工具、安全、上下文和持久化系统。</p>
+
+<h2 id="q2codex-cli-只是一个终端-ui-吗">Q2：Codex CLI 只是一个终端 UI 吗？</h2>
+
+<p>不是。TUI 只是客户端；仓库还包含 app-server、Core、沙箱、Rollout、MCP、SDK 和多 Agent 能力。</p>
+
+<h2 id="q3tui-和-codex-exec-是否各自实现-agent-loop">Q3：TUI 和 <code>codex exec</code> 是否各自实现 Agent loop？</h2>
+
+<p>不是。二者都通过 app-server 控制 Core thread/turn；exec 是 headless client。</p>
+
+<h2 id="q4codex-的核心-agent-对象是什么">Q4：Codex 的核心 Agent 对象是什么？</h2>
+
+<p>没有一个包办一切的单体对象。ThreadManager 管理线程，CodexThread 是句柄，Session 保存运行态，TurnContext/StepContext 固定一次 turn/sampling 视图。</p>
+
+<h2 id="q5turn-与模型-response-是一一对应吗">Q5：Turn 与模型 Response 是一一对应吗？</h2>
+
+<p>不是。一个 turn 可包含多次 response：工具执行、steer、hook continuation、compaction 都可能触发下一次 sampling。</p>
+
+<h2 id="q6responsecompleted-是否表示-turncomplete">Q6：<code>response.completed</code> 是否表示 TurnComplete？</h2>
+
+<p>不一定。它只表示一次上游 response 完成。Core 还要检查工具、pending input、end_turn 和 hooks。</p>
+
+<h2 id="q7用户运行中继续输入会怎样">Q7：用户运行中继续输入会怎样？</h2>
+
+<p>通常进入 steer/pending input，不启动第二个并行 turn。下一次 sampling 前被领取并重新捕获 StepContext。</p>
+
+<h2 id="q8为什么一次-session-只允许一个-running-task">Q8：为什么一次 Session 只允许一个 running task？</h2>
+
+<p>为了保证 thread 状态、Rollout 和 turn 生命周期一致。Turn 内仍可并发执行声明为 parallel-safe 的工具。</p>
+
+<h2 id="q9工具执行结果为什么还要按顺序写回">Q9：工具执行结果为什么还要按顺序写回？</h2>
+
+<p>模型输出的 tool calls 有确定顺序。即使 body 并发，使用 FuturesOrdered 写回可保持 replay 和下一次模型输入稳定。</p>
+
+<h2 id="q10codex-有独立的-readgrep-工具吗">Q10：Codex 有独立的 read/grep 工具吗？</h2>
+
+<p>固定 commit 的内建 shell family 主要是 <code>exec_command</code> 和 <code>write_stdin</code>；读取/搜索通常通过 shell 命令。MCP 或扩展可提供独立工具。</p>
+
+<h2 id="q11toolpolicy-和-approval-有什么区别">Q11：ToolPolicy 和 Approval 有什么区别？</h2>
+
+<p>ToolPolicy 是 Session 能力上限，决定工具能否存在；Approval 决定某次具体调用是否需要用户或 reviewer 授权。</p>
+
+<h2 id="q12approval_policy--never-是否表示全部允许">Q12：<code>approval_policy = never</code> 是否表示全部允许？</h2>
+
+<p>不是。它表示永不询问用户；需要审批的动作直接失败并返回模型。</p>
+
+<h2 id="q13posttooluse-hook-能否阻止副作用">Q13：PostToolUse hook 能否阻止副作用？</h2>
+
+<p>不能。它运行时工具已经完成，只能阻止/替换结果。副作用控制应放在 PreToolUse、approval、sandbox 和工具内部。</p>
+
+<h2 id="q14sandbox-denial-后是否总会裸跑重试">Q14：Sandbox denial 后是否总会裸跑重试？</h2>
+
+<p>不会。只有错误被识别为 sandbox denial，并且工具、approval 和 policy 都允许升级时，才有第二次执行。</p>
+
+<h2 id="q15linux-sandbox-只使用-landlock-吗">Q15：Linux Sandbox 只使用 Landlock 吗？</h2>
+
+<p>不是。当前主要路径是 bubblewrap 文件系统 namespace 加 seccomp；Landlock 是显式 legacy 路径之一。</p>
+
+<h2 id="q16apply-patch-失败会自动回滚吗">Q16：Apply Patch 失败会自动回滚吗？</h2>
+
+<p>不会保证。它不是事务性的，部分 delta 可能保留。失败后应检查 <code>git diff</code> 和工作树。</p>
+
+<h2 id="q17工具输出太大时-codex-怎么办">Q17：工具输出太大时 Codex 怎么办？</h2>
+
+<p>进入模型 history 前按 byte/token budget 中间截断；原始 payload 可保留在 Rollout，整个 history 过大时再 compact。</p>
+
+<h2 id="q18rollout-有完整工具输出模型就能重新读取吗">Q18：Rollout 有完整工具输出，模型就能重新读取吗？</h2>
+
+<p>不一定。Rollout 服务恢复与审计，不会自动给模型一个 Rollout 读取工具。自定义工具应支持分页、搜索或结果 handle。</p>
+
+<h2 id="q19输出截断和-compaction-有什么区别">Q19：输出截断和 Compaction 有什么区别？</h2>
+
+<p>截断处理单个工具结果，不调用模型；compaction 处理整段历史，通常调用模型生成摘要或服务端 compaction item。</p>
+
+<h2 id="q20provider-报-context-overflow-后会立即无限压缩重试吗">Q20：Provider 报 context overflow 后会立即无限压缩重试吗？</h2>
+
+<p>不会。普通 sampling 通常结束当前 turn并标记满窗，让下一 turn 预压缩。特殊 Guardian 路径可能同 turn 重试一次。</p>
+
+<h2 id="q21compaction-会保留哪些信息">Q21：Compaction 会保留哪些信息？</h2>
+
+<p>Local compact 保留近期用户目标、summary 和当前 canonical context；并不保证无损。多次 compact 可能降低准确率。</p>
+
+<h2 id="q22compaction-请求本身也超窗怎么办">Q22：Compaction 请求本身也超窗怎么办？</h2>
+
+<p>Local compact 从最老 history item 开始逐项删除，再重试 compact；只剩最小输入仍超窗则失败。</p>
+
+<h2 id="q23为什么要有-rollout-和-model-history-两份视图">Q23：为什么要有 Rollout 和 model history 两份视图？</h2>
+
+<p>恢复需要比模型输入更多的状态；模型输入又必须受上下文预算、模态和配对规则约束。两者目标不同。</p>
+
+<h2 id="q24resume-如何选择历史起点">Q24：Resume 如何选择历史起点？</h2>
+
+<p>优先选择最新可安全重建的 compaction checkpoint，然后回放其后缀；没有可用 checkpoint 时重放全部可用 Rollout。</p>
+
+<h2 id="q25fork-与-resume-有什么区别">Q25：Fork 与 Resume 有什么区别？</h2>
+
+<p>Resume 延续同一个 thread；Fork 创建新 thread，并复制或引用父 history 前缀，可在指定用户边界截断。</p>
+
+<h2 id="q26mcp-工具会受-codex-shell-sandbox-保护吗">Q26：MCP 工具会受 Codex shell sandbox 保护吗？</h2>
+
+<p>MCP 调用受 ToolRegistry 和 approval 管理，但远端服务的内部副作用不受本机 OS shell sandbox 自动限制。</p>
+
+<h2 id="q27为什么-mcp-需要-immutable-binding">Q27：为什么 MCP 需要 immutable binding？</h2>
+
+<p>保证模型看到的 schema、permission、timeout 与执行时 client/catalog revision 一致，避免热更新产生 TOCTOU。</p>
+
+<h2 id="q28agentsmd-的作用域是什么">Q28：AGENTS.md 的作用域是什么？</h2>
+
+<p>从项目根到当前目录逐层加载，override 文件优先；总量受预算限制，不可信项目不加载项目指令。</p>
+
+<h2 id="q29python-sdk-与-typescript-sdk-能力相同吗">Q29：Python SDK 与 TypeScript SDK 能力相同吗？</h2>
+
+<p>不完全相同。Python SDK 直接使用 app-server；TypeScript SDK 基于 exec JSON 输出，能力面更窄。</p>
+
+<h2 id="q30做企业集成应该直接调用-core-吗">Q30：做企业集成应该直接调用 Core 吗？</h2>
+
+<p>通常优先 app-server。它提供 thread/turn、通知、审批和动态工具协议，避免耦合 Core 内部 Rust 类型。</p>
+
+<h2 id="q31exec-模式能处理人工审批吗">Q31：Exec 模式能处理人工审批吗？</h2>
+
+<p>它面向非交互自动化，默认 approval never，审批和用户问题通常被拒绝。需要交互时使用 TUI、IDE 或自建 app-server 客户端。</p>
+
+<h2 id="q32模型工具名可以被外部插件覆盖吗">Q32：模型工具名可以被外部插件覆盖吗？</h2>
+
+<p>关键默认 namespace 名如 <code>exec_command</code> 有保留规则；重复外部工具通常先注册者生效并记录冲突。</p>
+
+<h2 id="q33命令被分类为-read-就一定安全吗">Q33：命令被分类为 Read 就一定安全吗？</h2>
+
+<p>不一定。Read/Search/ListFiles 分类主要用于 UI/遥测；真正安全依赖 execpolicy、approval 和 OS sandbox。</p>
+
+<h2 id="q34environment-variable-secret-filtering-是否可靠">Q34：Environment variable secret filtering 是否可靠？</h2>
+
+<p>只是风险降低。默认按 KEY/SECRET/TOKEN 等名称过滤，但可被关闭，也无法识别伪装变量或文件中的 secret。</p>
+
+<h2 id="q35multi-agent-子线程继承什么">Q35：Multi-agent 子线程继承什么？</h2>
+
+<p>可继承模型、provider、approval、sandbox、cwd、指令和 role overlay；准确行为由 child config 决定。</p>
+
+<h2 id="q36multi-agent-越多越好吗">Q36：Multi-agent 越多越好吗？</h2>
+
+<p>不是。它增加 token、工具并发、历史传播和状态协调成本，应只并行真正独立的任务。</p>
+
+<h2 id="q37哪些状态不应只放在内存中">Q37：哪些状态不应只放在内存中？</h2>
+
+<p>影响 resume、fork 和下一次模型输入的状态应进入 Rollout、TurnContext、world state 或明确的持久化数据结构。</p>
+
+<h2 id="q38如何调试模型看到的内容不对">Q38：如何调试“模型看到的内容不对”？</h2>
+
+<p>按顺序检查 AGENTS/skills、Config layers、StepContext 工具目录、ContextManager history、truncation metadata、compaction replacement 和 app-server item 通知。</p>
+
+<h2 id="q39如何调试命令为什么被拒绝">Q39：如何调试“命令为什么被拒绝”？</h2>
+
+<p>检查 ToolPolicy、execpolicy、approval policy、permission profile、sandbox platform、network proxy 与 hook。不要只看模型提示词。</p>
+
+<h2 id="q40codex-harness-最值得借鉴的设计是什么">Q40：Codex Harness 最值得借鉴的设计是什么？</h2>
+
+<p>统一 app-server 控制面、StepContext 一致快照、工具安全分层，以及 Rollout 与 model history 分离。</p>
+
+<hr />
+
+<h2 id="31-结论与落地建议">31. 结论与落地建议</h2>
+
+<h3 id="核心结论">核心结论</h3>
+
+<ol>
+  <li><strong>Codex CLI 是完整本地 coding-agent runtime。</strong> 置信度：高。</li>
+  <li><strong>app-server 是多客户端统一控制面，Session/Turn loop 是运行核心。</strong> 置信度：高。</li>
+  <li><strong>一个 turn 可包含多次 Responses sampling 和并行工具执行。</strong> 置信度：高。</li>
+  <li><strong>安全来自 ToolPolicy、审批、execpolicy、OS sandbox 与网络控制的组合。</strong> 置信度：高。</li>
+  <li><strong>Rollout 保留恢复事实，ContextManager 生成受预算约束的模型视图。</strong> 置信度：高。</li>
+  <li><strong>大结果先截断，长历史再 compact，真实 provider 超窗不进入无界重试。</strong> 置信度：高。</li>
+</ol>
+
+<h3 id="团队行动建议">团队行动建议</h3>
+
+<ol>
+  <li>集成优先使用 app-server typed protocol；</li>
+  <li>固定 Codex commit/版本与配置 schema；</li>
+  <li>自定义工具强制声明权限、并行性、取消和输出预算；</li>
+  <li>大工具结果原生支持分页与句柄；</li>
+  <li>将 enterprise constraints 放入 managed requirements；</li>
+  <li>单独审计 MCP server、dynamic tools 和 hooks；</li>
+  <li>用真实平台测试 Linux/macOS/Windows sandbox；</li>
+  <li>做 compact -&gt; resume -&gt; fork 一致性回归；</li>
+  <li>多次 compaction 后主动启动新 thread；</li>
+  <li>不把 Rollout、telemetry 和 compliance audit 混为一谈。</li>
+</ol>
+
+<hr />
+
+<h2 id="32-参考资料">32. 参考资料</h2>
+
+<h3 id="a-级官方源码与文档">A 级：官方源码与文档</h3>
+
+<ol>
+  <li>OpenAI, <em>Codex CLI repository</em>, https://github.com/openai/codex ，访问日期 2026-10-06。</li>
+  <li>OpenAI, <em>Codex CLI documentation</em>, https://learn.chatgpt.com/docs/codex/cli ，访问日期 2026-10-06。</li>
+  <li>OpenAI, <em>Codex MCP documentation</em>, https://learn.chatgpt.com/docs/extend/mcp?surface=cli ，访问日期 2026-10-06。</li>
+  <li>OpenAI, <em>Codex Config Reference</em>, https://learn.chatgpt.com/docs/config-file/config-reference ，访问日期 2026-10-06。</li>
+  <li>OpenAI Codex source, <code>codex-rs/core/src/session/turn.rs</code>, commit <code>822e58cc</code>。</li>
+  <li>OpenAI Codex source, <code>codex-rs/core/src/tools/registry.rs</code>, commit <code>822e58cc</code>。</li>
+  <li>OpenAI Codex source, <code>codex-rs/core/src/tools/orchestrator.rs</code>, commit <code>822e58cc</code>。</li>
+  <li>OpenAI Codex source, <code>codex-rs/core/src/compact.rs</code>, commit <code>822e58cc</code>。</li>
+  <li>OpenAI Codex source, <code>codex-rs/core/src/session/rollout_reconstruction.rs</code>, commit <code>822e58cc</code>。</li>
+</ol>
+
+<h3 id="版本限定">版本限定</h3>
+
+<p>本文中的函数、默认值、工具形态、feature 状态和行号只对应 commit <code>822e58cc3d666166c7446c5b1ea2e52f5d09594c</code>。Codex 迭代频繁，使用其他版本时应重新核对。</p>
+
+<hr />
+
+<h2 id="33-研究与验证记录">33. 研究与验证记录</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>轮次</th>
+      <th>目标</th>
+      <th>主要证据</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>1</td>
+      <td>项目身份和范围</td>
+      <td>官方 README、官方 Codex 文档、Git remote</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td>启动与控制面</td>
+      <td>CLI、TUI、exec、app-server</td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td>Agent loop</td>
+      <td>ThreadManager、CodexThread、Session、turn.rs</td>
+    </tr>
+    <tr>
+      <td>4</td>
+      <td>模型与工具</td>
+      <td>client、Responses SSE、ToolRegistry、parallel runtime</td>
+    </tr>
+    <tr>
+      <td>5</td>
+      <td>安全执行</td>
+      <td>execpolicy、approval、orchestrator、三平台 sandbox</td>
+    </tr>
+    <tr>
+      <td>6</td>
+      <td>上下文</td>
+      <td>output truncation、ContextManager、local/remote compact</td>
+    </tr>
+    <tr>
+      <td>7</td>
+      <td>持久化</td>
+      <td>Rollout、reconstruction、resume、fork</td>
+    </tr>
+    <tr>
+      <td>8</td>
+      <td>扩展</td>
+      <td>config、MCP、skills、hooks、multi-agent、SDK</td>
+    </tr>
+    <tr>
+      <td>9</td>
+      <td>质量控制</td>
+      <td>固定 commit 路径/行号校验、独立技术复核</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="已明确区分的易混概念">已明确区分的易混概念</h3>
+
+<ul>
+  <li>CLI 产品与本文所称 Harness；</li>
+  <li>Turn 与单次 Responses response；</li>
+  <li>Rollout 与 model history；</li>
+  <li>tool output truncation 与 compaction；</li>
+  <li>approval never 与 danger-full-access；</li>
+  <li>command 分类与安全判定；</li>
+  <li>本地 sandbox 与远端 MCP 服务端安全；</li>
+  <li>Python app-server SDK 与 TypeScript exec SDK。</li>
+</ul>
+
+<h3 id="未执行项">未执行项</h3>
+
+<p>本次只读分析未执行 Codex、构建、测试、模型请求、MCP server 或沙箱命令。测试结论来自源码与测试代码，不代表本机实跑证明。</p>
+
+        </article>
+      </div>
+    </div>
+  </main>
+
+  <!-- Right: Category Articles -->
+  <aside class="post-category-sidebar" role="navigation" aria-label="分类文章列表">
+    <div class="category-panel">
+      
+      
+      <div class="category-sidebar-title">
+        <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
+        Agent
+      </div>
+      <ul class="category-article-list">
+        
+        
+        <li class="">
+          <a href="/2026/10/04/agent/Muse/" title="Muse">
+            <span class="article-title">Muse</span>
+            <span class="article-date">10-04</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/10/04/agent/Observability/" title="Observability">
+            <span class="article-title">Observability</span>
+            <span class="article-date">10-04</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/10/04/agent/RSI/" title="RSI">
+            <span class="article-title">RSI</span>
+            <span class="article-date">10-04</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/09/20/agent/Clarity/" title="Clarity">
+            <span class="article-title">Clarity</span>
+            <span class="article-date">09-20</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/09/20/agent/ClaudeCode-%E6%A0%B8%E5%BF%83%E6%B5%81%E7%A8%8B/" title="ClaudeCode 核心流程">
+            <span class="article-title">ClaudeCode 核心流程</span>
+            <span class="article-date">09-20</span>
+          </a>
+        </li>
+        
+        <li class="active">
+          <a href="/2026/09/20/agent/Codex/" title="Codex">
+            <span class="article-title">Codex</span>
+            <span class="article-date">09-20</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/09/20/agent/DeepSeek-Harness/" title="DeepSeek Harness">
+            <span class="article-title">DeepSeek Harness</span>
+            <span class="article-date">09-20</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/09/20/agent/Hermes/" title="Hermes">
+            <span class="article-title">Hermes</span>
+            <span class="article-date">09-20</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/09/20/agent/Orchestration/" title="Orchestration">
+            <span class="article-title">Orchestration</span>
+            <span class="article-date">09-20</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/09/20/agent/mem0/" title="mem0">
+            <span class="article-title">mem0</span>
+            <span class="article-date">09-20</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/09/14/agent/Agent-Ultimate-Edition/" title="Agent Ultimate Edition">
+            <span class="article-title">Agent Ultimate Edition</span>
+            <span class="article-date">09-14</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/08/24/agent/%E9%95%BF%E7%A8%8B%E4%BB%BB%E5%8A%A1/" title="长程任务">
+            <span class="article-title">长程任务</span>
+            <span class="article-date">08-24</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/08/21/agent/RAG/" title="RAG">
+            <span class="article-title">RAG</span>
+            <span class="article-date">08-21</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/08/21/agent/%E4%B8%8A%E4%B8%8B%E6%96%87%E5%B7%A5%E7%A8%8B/" title="上下文工程">
+            <span class="article-title">上下文工程</span>
+            <span class="article-date">08-21</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/08/21/agent/%E8%AE%B0%E5%BF%86/" title="记忆">
+            <span class="article-title">记忆</span>
+            <span class="article-date">08-21</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/08/21/agent/Agent-RL/" title="Agent RL">
+            <span class="article-title">Agent RL</span>
+            <span class="article-date">08-21</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/08/21/agent/MCP/" title="MCP">
+            <span class="article-title">MCP</span>
+            <span class="article-date">08-21</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/08/10/agent/Plan-and-Solve/" title="Plan and Solve">
+            <span class="article-title">Plan and Solve</span>
+            <span class="article-date">08-10</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/08/10/agent/Reflection/" title="Reflection">
+            <span class="article-title">Reflection</span>
+            <span class="article-date">08-10</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/07/31/agent/ReAct/" title="ReAct">
+            <span class="article-title">ReAct</span>
+            <span class="article-date">07-31</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/07/30/agent/Scaling-Laws%E4%B8%8E%E6%A8%A1%E5%9E%8B%E5%B9%BB%E8%A7%89/" title="Scaling Laws">
+            <span class="article-title">Scaling Laws</span>
+            <span class="article-date">07-30</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/07/30/agent/%E6%A8%A1%E5%9E%8B%E9%80%89%E6%8B%A9%E7%9A%84%E8%80%83%E9%87%8F/" title="模型选择的考量">
+            <span class="article-title">模型选择的考量</span>
+            <span class="article-date">07-30</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/07/30/agent/Tokenizer/" title="Tokenizer">
+            <span class="article-title">Tokenizer</span>
+            <span class="article-date">07-30</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/07/23/agent/%E6%8F%90%E7%A4%BA%E5%B7%A5%E7%A8%8B/" title="提示工程">
+            <span class="article-title">提示工程</span>
+            <span class="article-date">07-23</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/06/09/agent/%E5%A4%A7%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E9%A9%B1%E5%8A%A8%E7%9A%84%E6%99%BA%E8%83%BD%E4%BD%93/" title="初识智能体">
+            <span class="article-title">初识智能体</span>
+            <span class="article-date">06-09</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/04/23/agent/Openclaw/" title="Openclaw">
+            <span class="article-title">Openclaw</span>
+            <span class="article-date">04-23</span>
+          </a>
+        </li>
+        
+      </ul>
+      
+    </div>
+  </aside>
+</div>
+
+<!-- Theme Toggle Button -->
+<button type="button" class="theme-toggle" aria-label="Toggle Theme">
+  <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+  </svg>
+  <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="12" cy="12" r="5"></circle>
+    <line x1="12" y1="1" x2="12" y2="3"></line>
+    <line x1="12" y1="21" x2="12" y2="23"></line>
+    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+    <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+    <line x1="1" y1="12" x2="3" y2="12"></line>
+    <line x1="21" y1="12" x2="23" y2="12"></line>
+    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+    <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+  </svg>
+</button>
+
+<!-- Back to Top Button -->
+<button type="button" class="back-to-top" aria-label="Back to Top">
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <polyline points="18 15 12 9 6 15"></polyline>
+  </svg>
+</button>
+
+
+    <!-- Site Footer -->
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-content">
+      <div class="footer-info">
+        <h4>xinfan9's blog</h4>
+        <p>Actually, less is more!</p>
+      </div>
+      <div class="footer-links">
+        <a href="https://github.com/xinfan9/" target="_blank" title="GitHub">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+        </a>
+        <a href="mailto:11411619@qq.com" title="Email">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+        </a>
+        <a href="/feed.xml" title="RSS">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11a9 9 0 0 1 9 9"/><path d="M4 4a16 16 0 0 1 16 16"/><circle cx="5" cy="19" r="1"/></svg>
+        </a>
+      </div>
+      <div class="footer-copyright">
+        <p>&copy; 2026 xinfan9. Built with Jekyll.</p>
+      </div>
+    </div>
+  </div>
+</footer>
+      
+    
+    <!-- Global Buttons (for non-post pages) -->
+    
+  </body>
+</html>

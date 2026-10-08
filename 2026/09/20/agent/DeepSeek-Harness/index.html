@@ -1,0 +1,2513 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+  <head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="Content-Language" content="zh-CN">
+	<title>DeepSeek Harness - xinfan9's blog</title>
+
+	<link rel="icon" href="/styles/images/favicon.jpg">
+
+	<!-- Preconnect for CDN -->
+	
+	<link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+	<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+	
+
+
+	<!-- Inline Critical Reset (was index.css) -->
+	<style>
+		*,*::before,*::after{box-sizing:border-box}html{-ms-text-size-adjust:100%;-webkit-text-size-adjust:100%;-webkit-tap-highlight-color:rgba(0,0,0,0)}body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Microsoft YaHei",sans-serif;font-size:14px;line-height:1.42857143;color:#333;background-color:#f7f7f7}article,aside,details,figcaption,figure,footer,header,main,nav,section,summary{display:block}a{color:#43759e;text-decoration:none;background:transparent}a:hover,a:focus{color:#2c4d68;text-decoration:underline}a:focus{outline:thin dotted;outline-offset:-2px}img{vertical-align:middle;max-width:100%;height:auto}input,button,select,textarea{font-family:inherit;font-size:inherit;line-height:inherit}h1,h2,h3,h4,h5,h6{margin-top:0}.container{max-width:1200px;margin-left:auto;margin-right:auto;padding-left:15px;padding-right:15px}.clearfix::after{content:"";display:table;clear:both}.text-muted{color:#777}.sr-only{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0,0,0,0);border:0}
+	</style>
+
+	
+	<link rel="prefetch" as="image" href="/styles/images/api/background.webp">
+
+	<!-- Clarity Blog Theme -->
+	<link rel="stylesheet" href="/assets/css/clarity-blog.css?v=1791466635">
+
+	<!-- Prism.js Theme (non-blocking, only needed for code blocks) -->
+	
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" media="print" onload="this.media='all'" onerror="console.warn('Prism CSS load failed')">
+	
+	
+	<link rel="canonical" href="https://xinfang.site/2026/09/20/agent/DeepSeek-Harness/">
+	<link rel="alternate" type="application/rss+xml" title="xinfan9's blog" href="https://xinfang.site/feed.xml">
+	
+	<meta name="description" content=". 项目定位与总体印象
+DeepSeek Harness 是什么：一切皆插件（all-plugin）的 Cordis Agent Harness，开发者预览阶段
+多端形态：CLI（apps/cli）、Web（apps/web）、Desktop（apps/desktop + desktop-host）
+技术栈：Ty...">
+
+	<!-- Open Graph for social sharing -->
+	<meta property="og:title" content="DeepSeek Harness">
+	<meta property="og:description" content=". 项目定位与总体印象
+DeepSeek Harness 是什么：一切皆插件（all-plugin）的 Cordis Agent Harness，开发者预览阶段
+多端形态：CLI（apps/cli）、Web（apps/web）、Desktop（apps/desktop + desktop-host）
+技术栈：TypeScript + pnpm workspace monorepo + Nod...">
+	<meta property="og:url" content="https://xinfang.site/2026/09/20/agent/DeepSeek-Harness/">
+	<meta property="og:site_name" content="xinfan9's blog">
+	<meta property="og:type" content="article">
+	<meta property="article:published_time" content="2026-09-20T20:33:54+08:00">
+	
+	<meta property="og:image" content="https://xinfang.site/styles/images/api/background.webp">
+	<meta property="og:image:width" content="1200">
+	<meta property="og:image:height" content="630">
+	
+	<meta property="og:locale" content="zh_CN">
+
+	<!-- Twitter Card -->
+	<meta name="twitter:card" content="summary_large_image">
+	<meta name="twitter:title" content="DeepSeek Harness">
+	<meta name="twitter:description" content=". 项目定位与总体印象
+DeepSeek Harness 是什么：一切皆插件（all-plugin）的 Cordis Agent Harness，开发者预览阶段
+多端形态：CLI（apps/cli）、Web（apps/web）、Desktop（apps/desktop + desktop-host）
+技术栈：TypeScript + pnpm workspace monorepo + Nod...">
+	<meta name="twitter:image" content="https://xinfang.site/styles/images/favicon.jpg">
+	
+	<!-- Theme color for mobile browsers -->
+	<meta name="theme-color" content="#0b72d9" media="(prefers-color-scheme: light)">
+	<meta name="theme-color" content="#0f172a" media="(prefers-color-scheme: dark)">
+
+	<!-- Prevent FOUC for theme -->
+	<script>
+		(function() {
+			const savedTheme = localStorage.getItem('theme');
+			const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+			if (savedTheme) {
+				document.documentElement.setAttribute('data-theme', savedTheme);
+			} else if (prefersDark) {
+				document.documentElement.setAttribute('data-theme', 'dark');
+			}
+		})();
+	</script>
+	
+	<!-- Prism.js only on post pages with code blocks -->
+	
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" defer></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js" defer></script>
+	
+
+	<!-- Mermaid.js for diagram rendering (conditional) -->
+	
+	<script defer src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+	
+
+	<!-- MathJax for LaTeX rendering (conditional) -->
+	
+
+	<!-- Blog Interactive Features -->
+	<script src="/assets/js/blog.js?v=1791466635" defer></script>
+
+	<!-- JSON-LD Structured Data -->
+	
+	<script type="application/ld+json">
+	{
+		"@context": "https://schema.org",
+		"@type": "BlogPosting",
+		"inLanguage": "zh-CN",
+		"headline": "DeepSeek Harness",
+		"image": "https://xinfang.site/styles/images/favicon.jpg",
+		"datePublished": "2026-09-20T20:33:54+08:00",
+		"dateModified": "2026-09-20T20:33:54+08:00",
+		"author": {
+			"@type": "Person",
+			"name": "xinfan9"
+		},
+		"publisher": {
+			"@type": "Organization",
+			"name": "xinfan9's blog",
+			"logo": {
+				"@type": "ImageObject",
+				"url": "https://xinfang.site/styles/images/favicon.jpg"
+			}
+		},
+		"mainEntityOfPage": {
+			"@type": "WebPage",
+			"@id": "https://xinfang.site/2026/09/20/agent/DeepSeek-Harness/"
+		},
+		"keywords": "Agent",
+		"articleBody": ". 项目定位与总体印象\nDeepSeek Harness 是什么：一切皆插件（all-plugin）的 Cordis Agent Harness，开发者预览阶段\n多端形态：CLI（apps/cli）、Web（apps/web）、Desktop（apps/desktop + desktop-host）\n技术栈：TypeScript + pnpm workspace monorepo + Node.js，C++ 内核（cpp_src/）与 Python SDK（python/）并存\n素材来源：根 README.zh.md、docs/architecture.md\n\n  基石：Cordis 插...",
+		"description": ". 项目定位与总体印象\nDeepSeek Harness 是什么：一切皆插件（all-plugin）的 Cordis Agent Harness，开发者预览阶段\n多端形态：CLI（apps/cli）、Web（apps/web）、Desktop（apps/desktop + desktop-host）\n技术栈：Ty..."
+	}
+	</script>
+	
+</head>
+
+  <body class="index">
+
+    <!-- Reading Progress Bar -->
+<div class="reading-progress" id="reading-progress"></div>
+
+<!-- Page Background -->
+<div class="post-background"></div>
+
+<div class="post-layout">
+  <!-- Left: TOC -->
+  <aside class="post-toc-sidebar" id="post-toc-sidebar" role="navigation" aria-label="文章目录">
+    <div class="toc-panel">
+      <div class="toc-title">
+        <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="12" x2="15" y2="12"></line><line x1="3" y1="18" x2="18" y2="18"></line></svg>
+        目录
+      </div>
+      <ul class="toc-list" id="toc-list"></ul>
+    </div>
+  </aside>
+
+  <!-- Center: Article -->
+  <main class="post-main">
+    <div class="panel docs-content">
+      <div class="wrapper">
+        <header class="post-header" role="banner">
+          <a href="https://xinfang.site/" class="back-home-link">
+            <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+            返回主页
+          </a>
+          <h1 class="post-title">DeepSeek Harness</h1>
+          <div class="post-meta-info">
+            <time class="meta-item meta-date" datetime="2026-09-20T20:33:54+08:00">
+              <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+              2026-09-20
+            </time>
+            
+            <time class="meta-item meta-update" datetime="2026-10-06T13:56:01+08:00">
+              <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 2.2"/></svg>
+              2026-10-06
+            </time>
+            
+            <span class="meta-item meta-author">
+              <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+              xinfan9
+            </span>
+            
+            <span class="meta-item meta-words">
+              <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+              4026 字
+            </span>
+            
+            <span class="meta-item meta-reading">
+              <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+              约 41 分钟
+            </span>
+          </div>
+        </header>
+        <article class="post-content" role="article">
+          <p>. 项目定位与总体印象<br />
+DeepSeek Harness 是什么：一切皆插件（all-plugin）的 Cordis Agent Harness，开发者预览阶段<br />
+多端形态：CLI（apps/cli）、Web（apps/web）、Desktop（apps/desktop + desktop-host）<br />
+技术栈：TypeScript + pnpm workspace monorepo + Node.js，C++ 内核（cpp_src/）与 Python SDK（python/）并存<br />
+素材来源：根 README.zh.md、docs/architecture.md</p>
+<ol>
+  <li>基石：Cordis 插件范式<br />
+Cordis 是什么：来自“时空组合性”论文的底层框架（vendor/ 内 vendored 副本）<br />
+核心机制：ctx 注入、Service Definition/Provider、注册即副作用（ctx.effect() / ctx.on()）、Waterfall 监听链<br />
+为什么选它：对比传统依赖注入 / Hook 框架<br />
+素材来源：docs/cordis-primer.md（有中文版）</li>
+  <li>运行时三层架构（全文核心章节）<br />
+核心层（packages/core）：agent-loop、Session Event Log、prompt assembly、tool runtime——只依赖接口，不 import 具体 Provider<br />
+能力层：ctx.llm / ctx.tools / ctx.sessions 等 Provider 实现，模型调用三段式 prepare-call → stream → finish<br />
+投影层：Session Projection 提供有类型状态读取，禁止遍历原始事件日志<br />
+素材来源：docs/architecture.md 的 Core packages / Turn flow / Events 三节</li>
+  <li>事件与持久化模型（最值得深写的部分）<br />
+durable vs live 严格分离：session/event/* 可恢复事实 vs agent/* 进程内协调事件<br />
+关键不变量：“模型可见 ⟺ 可从 Session Log 重建”；失败尝试写 assistant/attempt 而非 assistant/message<br />
+工具执行管道固定顺序：tools/pre-execute → guards → execute → finalizeContent() → tools/result<br />
+格式版本策略：SESSION_FORMAT_VERSION、SQLite 单调 SCHEMA_VERSION、相邻迁移只增不改<br />
+素材来源：docs/event-producer-consumer.md、docs/tool-execution-pipeline.md、docs/persistence-catalog.md、docs/session-format-status.md</li>
+  <li>能力接缝（Capability Seam）与包生态<br />
+Seam 定义：Service Definition / Provider / Consumer 三角色齐备<br />
+换 Provider 即整体迁移的例子：替换 fs/subprocess Provider 可让 Shell、终端、LSP 整体跑在远程<br />
+57 个包组的分类学（建议按职能归组讲述，不要逐个列）：<br />
+执行域：shell、subprocess、ssh、terminal、ptc-runtime、sandbox<br />
+环境域：fs、lsp、workspace、sandbox<br />
+智能域：subagent、workflow、skill、plan、todo、goal、compaction<br />
+交互域：interaction、feedback、acp、webhook<br />
+集成域：mcp、web（搜索/抓取）、computer-use、browser-use<br />
+素材来源：docs/capability-seams.md、packages/README.md、docs/module-graph.md</li>
+  <li>配置与组合<br />
+Profile 与 Bundle 机制；配置叠加顺序：Bundle 序列 → Profile patch → $DSH_HOME patch → &#8211;patch；patch 是整块替换<br />
+应用启动规则：只有 dsh profile 能启动 Node 应用，禁止包 bin / SDK argv 逃逸（安全设计）<br />
+素材来源：docs/architecture.md、docs/config-catalog.md</li>
+  <li>工程体系（体现仓库成熟度的章节）<br />
+构建：tsc（lib/types）+ tsdown（runtime bundle），source plane vs artifact plane 分离<br />
+测试分层：unit → test:coverage（100% 覆盖门禁）→ snapshot（录制回放）→ expected → e2e（真实 API）→ web/gui<br />
+质量门禁：oxlint、hygiene、doc-sync、duplication 检测、中英双语文档同步<br />
+防御性模式与 Agent Notes 决策记录文化<br />
+素材来源：docs/testing.md、docs/development.md、docs/defensive-patterns.md、根 package.json scripts</li>
+  <li>评价与思考（如果你要写“分析”，这章决定文档档次）<br />
+亮点：接口驱动带来的可替换性、事件溯源式持久化、工程门禁之严格<br />
+代价与权衡：包粒度极细的认知成本、pre-stable API 的迁移负担、vendoring 的维护成本<br />
+风险提示：开发者预览期的兼容性破坏（参考 SAFETY.md）<br />
+两个建议<br />
+按受众裁剪：如果面向“想用 DSH 的开发者”，把第 3、5 章压缩成概览，扩写第 6 章和 CLI/Web 使用；如果面向“架构研究/技术分享”，保持现状甚至把第 4 章拆成两章。<br />
+写作时的阅读顺序：docs/architecture.md → docs/cordis-primer.zh.md → docs/glossary.zh.md → docs/capability-seams.zh.md → 挑 docs/subsystems/ 里与你主题最相关的几篇（共 63 篇，不必全读）。注意 docs 大多有 .zh.md 中文版。<br />
+需要我基于这个大纲直接开始写某一章的内容吗？</li>
+</ol>
+
+<h1 id="deepseek-harness-核心流程分析">DeepSeek Harness 核心流程分析</h1>
+
+<h2 id="项目定位">项目定位</h2>
+
+<p>DeepSeek Harness（CLI 名称 <code>dsh</code>）是 DeepSeek AI 开发的<strong>开源 Agent 运行时框架</strong>，MIT 协议，TypeScript + Cordis 插件架构。核心理念：<strong>一切皆插件</strong>——模型、工具、技能、会话、沙箱、存储、Agent 循环、调度器、甚至 UI，全部是可替换的 Cordis 插件。发布首日 5.5 万 GitHub Star，被称为 GitHub 史上最快涨星项目。</p>
+
+<hr />
+
+<h2 id="五部分核心组件">五部分核心组件</h2>
+
+<p>DeepSeek Harness 的核心组件可以分为 5 个部分：</p>
+
+<ol>
+  <li><strong>上下文工程</strong>：append-only 会话日志（模型看到的每一条消息都可从日志重构，运行时不变量断言验证）、四种运行模式（Standard/Code/Minimal/Creator）不同上下文策略、Trajectory 视图按来源查看日志</li>
+  <li><strong>工具/插件系统</strong>：Cordis 微内核（只负责插件挂载/卸载/依赖管理）+ 一切皆插件（模型适配器、工具注册表、技能系统、沙箱、存储、Agent 循环、调度器、UI 全部可替换）</li>
+  <li><strong>状态持久化</strong>：append-only 事件日志（单一日志文件，支持 resume/fork/search/replay）、插件化存储层、会话状态管理</li>
+  <li><strong>权限/安全模型</strong>：fail-closed 沙箱阶梯（read-only → workspace-write → danger-full-access，拿不到沙箱后端就拒绝执行）、argv wrapping 命令限制、审批服务缺失即拒绝</li>
+  <li><strong>可观测性和审计</strong>：会话日志即不变量（运行时断言验证 outgoing request 与 session.deriveMessages() 字节匹配）、无 Key 回放测试（真实会话日志作为 fixture，mock 模型确定性回放）、Trajectory 视图</li>
+</ol>
+
+<hr />
+
+<h2 id="一次完整请求流程">一次完整请求流程</h2>
+
+<p>用户通过 Web UI（<code>http://127.0.0.1:3080</code>）或 CLI 发起请求。</p>
+
+<p><strong>第一步：插件加载与模式选择。</strong> Cordis 微内核加载配置的插件集。四种预设模式加载不同插件组合：Standard（完整编码 Agent，文件编辑+shell+搜索+技能+规划+子Agent+工作流）、Code（Standard 全部能力 + Code Mode SDK，模型生成 TypeScript 程序组合多步操作）、Minimal（只有持久化 bash + str_replace_editor，模型评测脚手架）、Creator（Standard + 运行时检查 + 内存中插件实验）。</p>
+
+<p><strong>第二步：构建系统提示词。</strong> 根据运行模式注入对应的工具描述和技能列表。Minimal 模式只有两个工具的描述，Standard 模式注入完整工具目录。</p>
+
+<p><strong>第三步：Agent 循环。</strong> 插件化的 Agent 循环（本身也是 Cordis 插件，可替换）。模型接收用户输入 → 推理 → 输出工具调用或文本响应。工具调用时：解析调用 → 沙箱策略匹配 → 执行 → 结果追加到上下文。</p>
+
+<p><strong>第四步：工具执行与沙箱。</strong> 工具执行按调用解析沙箱策略：read-only（只读）、workspace-write（推荐默认）、danger-full-access（完全访问）。Linux 优先探测 bubblewrap，回退到原生 Landlock 启动器；macOS 使用 seatbelt；Windows 使用 write-restricted token。关键设计：<strong>fail-closed</strong>——如果请求了受限模式但没有可用的沙箱后端，直接抛 SANDBOX_UNAVAILABLE 拒绝执行，不会裸奔。</p>
+
+<p><strong>第五步：会话日志记录。</strong> 每次 LLM 调度时，<code>packages/core/agent-loop/src/invariant.ts</code> 中的断言验证 outgoing request 的 messages 与 <code>session.deriveMessages()</code> 字节匹配。记录内容包括：系统提示词、思维链（reasoning）、工具调用与结果、子 Agent 调度、每一次上下文注入。</p>
+
+<p><strong>第六步：上下文压缩。</strong> 当上下文接近窗口限制时，触发压缩策略。具体实现取决于加载的插件组合。</p>
+
+<p><strong>第七步：子 Agent 调度。</strong> 支持生成子 Agent 处理子任务。子 Agent 的调度记录同样写入 append-only 日志。</p>
+
+<p><strong>第八步：返回结果。</strong> 流式推送 Agent 输出到 Web UI 或 CLI。</p>
+
+<hr />
+
+<h2 id="关键设计决策">关键设计决策</h2>
+
+<p><strong>1. 一切皆插件。</strong> 连 Agent 循环都是可替换的 Cordis 插件。这在所有 Agent 框架中是独一无二的——大多数框架的 Agent 循环是核心，不可替换。DSH 把它降维成了一个插件。</p>
+
+<p><strong>2. 会话日志即不变量。</strong> 模型看到的每一条消息，都必须能从 append-only 会话日志中重构。这不是约定，是运行时强制执行的——每次 LLM 调度时断言验证。这是目前 Agent 运行时工程中最有纪律性的设计之一。</p>
+
+<p><strong>3. 四种运行模式。</strong> Standard（生产）、Code（批量操作）、Minimal（评测）、Creator（开发）。Minimal 模式是最大的看点——只有 shell 和文件编辑器，最小化 harness 优势来做公平的模型对比。DeepSeek V4-Flash 的发布 benchmark 就是用 Minimal 模式跑的。</p>
+
+<p><strong>4. Fail-closed 沙箱。</strong> 拿不到沙箱后端就拒绝执行，不会降级为裸奔。缺少审批服务同样意味着拒绝，而不是挂起。这是安全设计的黄金标准。</p>
+
+<p><strong>5. 无 API Key 的测试回放。</strong> 真实会话日志作为 fixture，从中派生确定性 mock 模型。同一个 .jsonl 日志文件既是 replay 输入又是期望输出。CI 中不需要 API key，不需要不稳定的 LLM-as-judge。循环行为的任何偏移都会表现为日志 diff。</p>
+
+<p><strong>6. 模型无关。</strong> 默认 catalog 支持 DeepSeek V4，但模型适配器是插件，支持 Anthropic、OpenAI、Bedrock、Vertex、Azure、Codex、自定义端点。第一天就支持竞品模型。</p>
+
+<p><strong>7. 沙箱升级作为模型 UX。</strong> bash 工具的描述教会模型：被拒绝是一种策略结果，正确的应对是在同一轮重试时带上更宽的 sandbox_permissions 和 justification，触发用户的审批提示。</p>
+
+<p><strong>8. 1M 上下文 + 256K 输出。</strong> 默认模型参数：上下文窗口 1,000,000 token，最大输出 256,000 token。这是 DeepSeek 自己的工具链对 V4 的假设。</p>
+
+<p><strong>9. vendored Cordis fork。</strong> DeepSeek 不仅依赖 Cordis，还 source-vendored 了一个 fork，pin 在 cordis 4.0.0-rc.7，打了 18 个本地 patch，重命名到 @deepseek-ai scope 下，完全拥有框架层。</p>
+
+<hr />
+
+<h2 id="与-claude-code-的对比">与 Claude Code 的对比</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>维度</th>
+      <th>DeepSeek Harness</th>
+      <th>Claude Code</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>架构</td>
+      <td>插件化薄内核（Cordis）</td>
+      <td>单体架构</td>
+    </tr>
+    <tr>
+      <td>开源</td>
+      <td>MIT 完全开源</td>
+      <td>闭源（仓库只是 issue tracker）</td>
+    </tr>
+    <tr>
+      <td>模型绑定</td>
+      <td>模型是插件，可换任意模型</td>
+      <td>绑定 Anthropic 模型</td>
+    </tr>
+    <tr>
+      <td>运行模式</td>
+      <td>4 种预设，可自定义</td>
+      <td>单一编码 Agent 模式</td>
+    </tr>
+    <tr>
+      <td>可观测性</td>
+      <td>只追加事件日志，可恢复/分叉/重放</td>
+      <td>有日志，可重放能力弱</td>
+    </tr>
+    <tr>
+      <td>沙箱</td>
+      <td>沙箱是插件，fail-closed</td>
+      <td>内置沙箱</td>
+    </tr>
+    <tr>
+      <td>当前状态</td>
+      <td>v0.1 开发者预览</td>
+      <td>相对成熟</td>
+    </tr>
+  </tbody>
+</table>
+
+<h1 id="deepseek-harness-源码与运行流程深度解析">DeepSeek Harness 源码与运行流程深度解析</h1>
+
+<hr />
+
+<h2 id="摘要">摘要</h2>
+
+<p>DeepSeek Harness（CLI 名称 <code>dsh</code>）不是一个把“提示词、模型调用、几个工具”写进单体循环的轻量 Agent Demo，而是一个以 <strong>Cordis 插件运行时、事件溯源 Session、可替换能力接缝和可逆生命周期</strong> 为中心的 Agent Harness。它的核心设计不是“某个 Agent 类足够强”，而是“模型适配器、系统提示词、工具注册表、执行环境、审批、压缩、会话持久化、子 Agent、Web/SDK 入口乃至 AgentLoop 本身都可作为插件组合、替换和卸载”。</p>
+
+<p>一次典型任务的主链是：</p>
+
+<ol>
+  <li><code>dsh</code> CLI 解析 profile、环境变量和 patch；</li>
+  <li>profile 将 bundle、用户 patch、全局 patch 和命令行 patch 叠加为 Cordis 插件树；</li>
+  <li>Agent 创建事务同时准备 Session、Agent scope 和持久化写句柄；</li>
+  <li><code>ReactLoopAgent</code> 从 inbox 领取输入，组装提示词和工具 schema；</li>
+  <li>LLM adapter 绑定本次调用配置并流式返回 reasoning、text 和 tool call；</li>
+  <li>工具调用经过准入、审批、单调 guard、执行、结果转换、spill/压缩等流水线；</li>
+  <li>所有模型可见事实写入 append-only Session log，再由 surface 投影得到下一次模型请求；</li>
+  <li>当上下文承压时，先处理超大工具结果，再裁剪历史工具结果，最后摘要旧历史；若仍没有可安全压缩的区域，则保留并返回 <code>CONTEXT_WINDOW_EXCEEDED</code>，不会无上限重试。</li>
+</ol>
+
+<p>最值得借鉴的工程思想有三点：</p>
+
+<ul>
+  <li><strong>模型可见即日志可重建</strong>：进入模型请求的状态必须由 Session log 重建，不能只藏在内存变量里。</li>
+  <li><strong>插件而非修改 Loop</strong>：新能力优先挂到 service、event、tool pipeline 或 profile 层，不直接扩张核心循环。</li>
+  <li><strong>大结果不等于摘要 50%</strong>：当前工具结果采用 spill + 首尾预览；历史工具结果采用确定性裁剪；整个历史才采用模型摘要。三层策略解决的是不同阶段的问题。</li>
+</ul>
+
+<hr />
+
+<h2 id="1-研究对象与版本边界">1. 研究对象与版本边界</h2>
+
+<h3 id="11-项目身份">1.1 项目身份</h3>
+
+<p>仓库 README 明确写明：DeepSeek Harness 是 DeepSeek AI 开发的开源 Agent Harness，使用 “everything-is-a-plugin” 架构并由 Cordis 驱动，当前处于 developer preview，许可证为 MIT。<a href="https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/README.md#L1-L15">README</a></p>
+
+<p>本地仓库核验结果：</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>项目</th>
+      <th>值</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>远端</td>
+      <td><code>https://github.com/deepseek-ai/deepseek-harness.git</code></td>
+    </tr>
+    <tr>
+      <td>分支</td>
+      <td><code>master</code></td>
+    </tr>
+    <tr>
+      <td>提交</td>
+      <td><code>46a7f68b0922371ce7144b668b90e377d8e799f4</code></td>
+    </tr>
+    <tr>
+      <td>Tag</td>
+      <td><code>dsh-v0.1.7-rc.1</code></td>
+    </tr>
+    <tr>
+      <td>package version</td>
+      <td><code>0.1.7-rc.1</code></td>
+    </tr>
+    <tr>
+      <td>跟踪文件</td>
+      <td>13,302</td>
+    </tr>
+    <tr>
+      <td>TypeScript/TSX 文件</td>
+      <td>4,909</td>
+    </tr>
+    <tr>
+      <td><code>packages/*/*</code> package manifests</td>
+      <td>316</td>
+    </tr>
+    <tr>
+      <td>Node.js</td>
+      <td><code>^22.19.0 || &gt;=24.0.0</code></td>
+    </tr>
+    <tr>
+      <td>包管理器</td>
+      <td><code>pnpm@11.7.0</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<p>这是一个大型 TypeScript monorepo，而非只有几十个文件的示例工程。当前代码仍标记为预览版，公开 API、Session 格式和插件组合可能继续发生破坏性变化。</p>
+
+<h3 id="12-本报告如何使用源码">1.2 本报告如何使用源码</h3>
+
+<p>本报告以以下证据顺序判断事实：</p>
+
+<ol>
+  <li>当前 commit 的实现代码与测试；</li>
+  <li>同 commit 的架构文档、package README 和配置；</li>
+  <li>官方仓库与官方文档；</li>
+  <li>Cordis 论文；</li>
+  <li>社区文章仅用于发现线索，不作为核心结论。</li>
+</ol>
+
+<p>本地工作区存在未跟踪目录 <code>cpp_src/</code>。由于它不属于 commit <code>46a7f68</code>，报告不将其视为官方源码，也不对其作结论。</p>
+
+<hr />
+
+<h2 id="2-harness-到底负责什么">2. Harness 到底负责什么</h2>
+
+<p>模型只负责根据输入产生输出或工具调用意图。Harness 负责模型外层的工程系统：</p>
+
+<ul>
+  <li>选择 provider/model 和解析配置；</li>
+  <li>构建 system prompt、上下文和工具 schema；</li>
+  <li>管理 turn、step、重试、取消和停止条件；</li>
+  <li>校验、授权和真正执行工具；</li>
+  <li>管理文件系统、进程、终端、沙箱与审批；</li>
+  <li>记录可恢复的会话历史；</li>
+  <li>控制上下文窗口、工具结果、图片和压缩；</li>
+  <li>管理子 Agent、后台任务、工作流和 UI/SDK 接入；</li>
+  <li>提供日志、回放、测试与安全边界。</li>
+</ul>
+
+<p>因此，Agent 的实际行为可以近似写成：</p>
+
+<pre><code class="language-text">Agent behavior
+= Model weights
++ system prompt
++ visible tools
++ tool execution policy
++ context/surface projection
++ memory and persistence
++ retry/cancellation policy
++ sandbox and approval
++ orchestration
+</code></pre>
+
+<p>DeepSeek Harness 主要实现等式右边除“模型权重”外的部分。</p>
+
+<blockquote>
+  <p>个人理解为：</p>
+
+  <ul>
+    <li>模型管理</li>
+    <li>模型调用流程管理（上下文压缩与裁剪、prompt拼接）</li>
+    <li>工具调用流程管理（参数校验、结果解析、重试、失败等、发现机制）</li>
+    <li>记忆管理</li>
+    <li>turn 和 step 管理</li>
+    <li>权限与沙箱</li>
+    <li>可观测性（日志、回放测试与安全边界等）。</li>
+  </ul>
+</blockquote>
+
+<hr />
+
+<h2 id="3-架构总览everything-is-a-plugin">3. 架构总览：Everything is a Plugin</h2>
+
+<h3 id="31-cordis-的五个核心概念">3.1 Cordis 的五个核心概念</h3>
+
+<p>Cordis 在 DSH 中提供以下基础语义：</p>
+
+<ol>
+  <li><strong>Plugin</strong>：函数插件或 <code>Service</code> 子类；</li>
+  <li><strong>Context</strong>：按稳定 key 提供服务，例如 <code>ctx.llm</code>、<code>ctx.tools</code>、<code>ctx.sessions</code>；</li>
+  <li><strong>Inject</strong>：插件声明依赖，依赖满足时才激活；</li>
+  <li><strong>Typed Event</strong>：通过 <code>emit</code>、<code>waterfall</code>、<code>parallel</code>、<code>serial</code>、<code>bail</code> 等模式连接插件；</li>
+  <li><strong>Effect</strong>：注册行为带 disposer，插件卸载时按生命周期撤销。</li>
+</ol>
+
+<p>官方架构文档明确指出：模型适配器、工具注册表、Session log 和 AgentLoop 本身都是插件，没有需要不断打补丁的“特权核心”。<a href="https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/docs/architecture.md#L9-L14">Architecture</a></p>
+
+<p>Cordis 论文将其理论基础概括为时空可组合性：</p>
+
+<ul>
+  <li><strong>时间可组合性</strong>：组件移除时能撤销其副作用；</li>
+  <li><strong>空间可组合性</strong>：组件声明依赖，并随上下文变化激活或停用；</li>
+  <li>二者通过统一 Context 协调。</li>
+</ul>
+
+<p>论文并没有逐一规定 DSH 的 service、AgentLoop 或工具协议；这些是 DSH 在 Cordis 机制上的具体工程映射。</p>
+
+<h3 id="32-serviceproviderconsumer">3.2 Service、Provider、Consumer</h3>
+
+<p>DSH 把可替换能力建模为 capability seam：</p>
+
+<pre><code class="language-text">Service Definition  -&gt;  Service Provider  -&gt;  Consumer
+接口声明                具体实现               工具/Agent/UI 调用者
+</code></pre>
+
+<p>例如文件能力：</p>
+
+<pre><code class="language-text">ctx.fs 接口 -&gt; Local / Sandbox / SSH FS Provider -&gt; read/write/edit 工具
+</code></pre>
+
+<p>例如进程能力：</p>
+
+<pre><code class="language-text">ctx.subprocess -&gt; Local / Remote Provider -&gt; Bash / Terminal / LSP
+</code></pre>
+
+<p>Consumer 依赖接口包，不依赖具体 provider。这样把本地 provider 换成 SSH/远程沙箱后，Shell、PTY、LSP 可以整体迁移到同一个“执行世界”，而无需复制 AgentLoop。</p>
+
+<h3 id="33-核心服务图">3.3 核心服务图</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>服务</th>
+      <th>关键包</th>
+      <th>职责</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>ctx.sessions</code></td>
+      <td><code>packages/core/session</code></td>
+      <td>append-only Session 事件日志与模型消息投影</td>
+    </tr>
+    <tr>
+      <td><code>ctx.systemPrompt</code></td>
+      <td><code>packages/core/system-prompt</code></td>
+      <td>system prompt、变量和 tool schema 组装</td>
+    </tr>
+    <tr>
+      <td><code>ctx.tools</code></td>
+      <td><code>packages/core/tools</code></td>
+      <td>工具注册、过滤、校验和执行流水线</td>
+    </tr>
+    <tr>
+      <td><code>ctx.agents</code></td>
+      <td><code>packages/core/agent</code></td>
+      <td>Agent 注册表、工厂委托和 initiator 作用域</td>
+    </tr>
+    <tr>
+      <td><code>ctx.agentLoop</code></td>
+      <td><code>packages/core/agent-loop</code></td>
+      <td>默认 turn/step/model/tool 驱动器</td>
+    </tr>
+    <tr>
+      <td><code>ctx.llm</code></td>
+      <td><code>packages/llm/llm</code></td>
+      <td>provider-neutral 模型调用与流协议</td>
+    </tr>
+    <tr>
+      <td><code>ctx.compaction</code></td>
+      <td><code>packages/compaction/*</code></td>
+      <td>历史裁剪、摘要与溢出恢复</td>
+    </tr>
+    <tr>
+      <td><code>ctx.sandbox</code></td>
+      <td><code>packages/sandbox/*</code></td>
+      <td>进程约束策略与 provider</td>
+    </tr>
+    <tr>
+      <td><code>ctx.subagents</code></td>
+      <td><code>packages/subagent/*</code></td>
+      <td>子 Agent provider 与委托工具</td>
+    </tr>
+    <tr>
+      <td><code>ctx.jobs</code></td>
+      <td><code>packages/jobs/*</code></td>
+      <td>后台任务生命周期</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="34-仓库模块地图">3.4 仓库模块地图</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>目录</th>
+      <th>主要内容</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>apps/cli</code></td>
+      <td><code>dsh</code> 命令、profile 启动、config dump、插件管理</td>
+    </tr>
+    <tr>
+      <td><code>apps/web</code> / <code>apps/desktop</code></td>
+      <td>Web 与 Electron 产品入口</td>
+    </tr>
+    <tr>
+      <td><code>packages/core</code></td>
+      <td>Agent、AgentLoop、Session、Tools、System Prompt</td>
+    </tr>
+    <tr>
+      <td><code>packages/llm</code></td>
+      <td>DeepSeek 与多 provider 适配、重试、token meter</td>
+    </tr>
+    <tr>
+      <td><code>packages/boot</code></td>
+      <td>profile、bundle、patch、Loader、HMR、插件安装</td>
+    </tr>
+    <tr>
+      <td><code>packages/bundle</code></td>
+      <td><code>base</code>、<code>web-app</code>、<code>headless</code>、<code>sdk-app</code> 等组合层</td>
+    </tr>
+    <tr>
+      <td><code>packages/fs/shell/subprocess/terminal/sandbox</code></td>
+      <td>执行世界和安全策略</td>
+    </tr>
+    <tr>
+      <td><code>packages/compaction/spill/attachment</code></td>
+      <td>上下文控制和大结果恢复</td>
+    </tr>
+    <tr>
+      <td><code>packages/subagent/jobs/workflow/mcp</code></td>
+      <td>多 Agent、后台任务、工作流与外部工具</td>
+    </tr>
+    <tr>
+      <td><code>packages/session*</code></td>
+      <td>Session 持久化、迁移、查询和投影缓存</td>
+    </tr>
+    <tr>
+      <td><code>packages/client/host/api/sdk/acp</code></td>
+      <td>UI、Host、RPC、SDK 与 ACP 接入</td>
+    </tr>
+    <tr>
+      <td><code>python</code></td>
+      <td>Python SDK；通过 stdio JSON-RPC 启动匹配的 DSH runtime</td>
+    </tr>
+    <tr>
+      <td><code>vendor</code></td>
+      <td>固定版本的 Cordis 等源码</td>
+    </tr>
+    <tr>
+      <td><code>snapshots</code> / <code>benchmarks</code></td>
+      <td>录制会话回放与性能门禁</td>
+    </tr>
+  </tbody>
+</table>
+
+<hr />
+
+<h2 id="4-启动流程从-dsh-web-到插件树">4. 启动流程：从 <code>dsh web</code> 到插件树</h2>
+
+<h3 id="41-cli-分发">4.1 CLI 分发</h3>
+
+<p>入口是 <code>apps/cli/src/bin.ts</code> 的 <code>runCli()</code>：</p>
+
+<ol>
+  <li>获取 runtime 版本；</li>
+  <li><code>parseDshArgs(process.argv.slice(2), version)</code>；</li>
+  <li>按 <code>profile</code>、<code>plugin</code>、<code>dump-config</code>、<code>dump-config-schema</code> 分支；</li>
+  <li>profile 模式调用 <code>runProfile()</code>；</li>
+  <li><code>StartupError</code> 被格式化并以退出码 1 结束。</li>
+</ol>
+
+<p>源码：<a href="https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/apps/cli/src/bin.ts#L18-L68">apps/cli/src/bin.ts:18-68</a></p>
+
+<h3 id="42-环境快照">4.2 环境快照</h3>
+
+<p><code>loadLayeredEnv()</code> 按优先级组合：</p>
+
+<pre><code class="language-text">进程环境 &gt; 当前项目 .env &gt; DSH_HOME/.env
+</code></pre>
+
+<p>但 PATH、Node 启动选项、解释器 hook、Git 命令、CA/TLS、DSH/XDG/DYLD 等 bootstrap 变量不能从普通 <code>.env</code> 注入。两个文件先全部解析与校验，再统一物化，防止第二层失败时第一层已污染进程状态。</p>
+
+<p>源码：<a href="https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/packages/boot/app-boot/src/index.ts#L129-L253">packages/boot/app-boot/src/index.ts:129-253</a></p>
+
+<h3 id="43-profile-与-bundle">4.3 Profile 与 Bundle</h3>
+
+<p>Profile 位于 <code>$DSH_HOME/profiles/&lt;name&gt;</code>，包含：</p>
+
+<ul>
+  <li><code>package.json</code>：声明有序 bundle 列表和外部插件依赖；</li>
+  <li><code>cordis.patch.yml</code>：profile 私有覆盖层；</li>
+  <li><code>pnpm-workspace.yaml</code>：外部插件安装布局。</li>
+</ul>
+
+<p>内置模板：</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Profile</th>
+      <th>Bundle</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>web</code></td>
+      <td><code>dsh-base</code> + <code>dsh-web-app</code></td>
+    </tr>
+    <tr>
+      <td><code>headless</code></td>
+      <td><code>dsh-base</code> + <code>dsh-headless</code></td>
+    </tr>
+    <tr>
+      <td><code>sdk</code></td>
+      <td><code>dsh-base</code> + <code>dsh-sdk-app</code></td>
+    </tr>
+    <tr>
+      <td><code>acp</code></td>
+      <td><code>dsh-base</code> + <code>dsh-acp-app</code></td>
+    </tr>
+    <tr>
+      <td><code>sdk-minimal</code></td>
+      <td>仅 <code>dsh-sdk-minimal</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<p>源码：<a href="https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/packages/boot/app-boot/src/profile.ts#L142-L182">packages/boot/app-boot/src/profile.ts:142-182</a></p>
+
+<h3 id="44-配置叠加顺序">4.4 配置叠加顺序</h3>
+
+<p>实际配置不是直接读取一棵最终 YAML，而是从空 entry list 开始依次打 patch：</p>
+
+<pre><code class="language-text">空根配置
+  -&gt; profile 声明的 bundle patches（按顺序）
+  -&gt; profile/cordis.patch.yml
+  -&gt; DSH_HOME/cordis.patch.yml
+  -&gt; 命令行 --patch（按 argv 顺序）
+  -&gt; 启动器派生的 telemetry 等开关
+</code></pre>
+
+<p>Patch 可以按 id 替换整个 config、禁用条目或插入新插件。后层优先级更高。<code>composeProfile()</code> 解析 runtime resolution 和 overlay；<code>runProfile()</code> 将 <code>profileContext</code>、冻结的环境快照、插件包解析服务和命令行参数提供给根 Context。</p>
+
+<p>源码：</p>
+
+<ul>
+  <li><a href="https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/apps/cli/src/profile-boot.ts#L173-L206">apps/cli/src/profile-boot.ts:173-206</a></li>
+  <li><a href="https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/apps/cli/src/profile-boot.ts#L242-L323">apps/cli/src/profile-boot.ts:242-323</a></li>
+</ul>
+
+<h3 id="45-loader-激活">4.5 Loader 激活</h3>
+
+<p><code>boot()</code> 的核心步骤：</p>
+
+<ol>
+  <li>创建根 <code>Context</code>；</li>
+  <li>提供 <code>dshHomePath</code>；</li>
+  <li>安装 Cordis <code>Loader</code>；</li>
+  <li>执行 host prepare；</li>
+  <li><code>mountRootInclude()</code> 挂载根 Include；</li>
+  <li>Loader 导入配置中的插件，并根据 <code>inject</code> 等待依赖；</li>
+  <li><code>loader.await()</code> 等待初始树稳定；</li>
+  <li><code>auditStartupEntries()</code> 检查 <code>agent-loop</code>、<code>webserver</code>、<code>headless-runner</code> 等关键条目；</li>
+  <li>失败时 dispose 已挂载资源，保留原始失败链。</li>
+</ol>
+
+<p>源码：<a href="https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/packages/boot/app-boot/src/index.ts#L939-L1036">packages/boot/app-boot/src/index.ts:939-1036</a></p>
+
+<h3 id="46-为什么可热更新可回滚">4.6 为什么可热更新、可回滚</h3>
+
+<p>工具、Prompt section、模型 adapter、event listener 等注册通过 <code>ctx.effect()</code> 或 <code>ctx.on()</code> 返回 disposer。插件卸载时 Fiber 执行逆向清理；HMR 重新应用完整 patch generation，并等待旧 Fiber dispose 与新树稳定。启动失败不会让半棵插件树继续运行。</p>
+
+<p>这就是 Cordis “时间可组合性”在 DSH 中最直接的体现。</p>
+
+<hr />
+
+<h2 id="5-默认-base-profile-装了什么">5. 默认 Base Profile 装了什么</h2>
+
+<p><code>packages/bundle/base/cordis.patch.yml</code> 是理解产品默认行为的最佳清单。关键挂载包括：</p>
+
+<ul>
+  <li><code>dsh-session-persistence-jsonl</code>：Session JSONL 持久化；</li>
+  <li><code>dsh-session-projection</code> 与 projection cache；</li>
+  <li><code>dsh-subprocess-local</code>；</li>
+  <li><code>dsh-sandbox-local</code>、sandbox policy 与 approval；</li>
+  <li><code>dsh-tool-bash</code> / <code>dsh-tool-pwsh</code>；</li>
+  <li>文件读写与搜索工具；</li>
+  <li>skill、goal、plan mode、todo；</li>
+  <li>token meter 与 <code>dsh-compaction-basic</code>；</li>
+  <li>in-process subagent、fork subagent、workflow；</li>
+  <li>timeout policy、spill store 和 spill policy；</li>
+  <li>tool-result pruner 与 image offload；</li>
+  <li>repeat-tool reminder；</li>
+  <li>web search/fetch；</li>
+  <li>tools、system-prompt、agent-loop、fs-sandbox；</li>
+  <li><code>dsh-llm-deepseek</code> 与可选多 provider adapter。</li>
+</ul>
+
+<p>默认关键参数：</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>参数</th>
+      <th style="text-align: right">默认值</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>spill <code>maxInlineTokens</code></td>
+      <td style="text-align: right">12,500</td>
+    </tr>
+    <tr>
+      <td>历史工具结果裁剪阈值</td>
+      <td style="text-align: right">8,192 字符</td>
+    </tr>
+    <tr>
+      <td>历史工具结果保留头部</td>
+      <td style="text-align: right">4,096 字符</td>
+    </tr>
+    <tr>
+      <td>历史工具结果保留尾部</td>
+      <td style="text-align: right">1,024 字符</td>
+    </tr>
+    <tr>
+      <td>repeat tool 提示阈值</td>
+      <td style="text-align: right">3 / 5 / 8 次</td>
+    </tr>
+    <tr>
+      <td>Bash sandbox timeout</td>
+      <td style="text-align: right">60 秒</td>
+    </tr>
+    <tr>
+      <td>默认 permission mode</td>
+      <td style="text-align: right"><code>workspace-write</code></td>
+    </tr>
+    <tr>
+      <td>默认 approval</td>
+      <td style="text-align: right"><code>ask</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<p>源码：<a href="https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/packages/bundle/base/cordis.patch.yml#L219-L267">packages/bundle/base/cordis.patch.yml:219-267</a>、<a href="https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/packages/bundle/base/cordis.patch.yml#L337-L427">337-427</a>、<a href="https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/packages/bundle/base/cordis.patch.yml#L494-L525">494-525</a></p>
+
+<hr />
+
+<h2 id="6-agent-创建一个回滚覆盖的事务">6. Agent 创建：一个回滚覆盖的事务</h2>
+
+<h3 id="61-关键对象">6.1 关键对象</h3>
+
+<ul>
+  <li><code>AgentRegistry</code>：保存 live Agent，代理 create/resume，使用 <code>AsyncLocalStorage</code> 传播当前 initiator；</li>
+  <li><code>AgentLoop</code>：实现 <code>AgentFactory</code>，创建/恢复 Session 和具体 driver；</li>
+  <li><code>ReactLoopAgent</code>：运行 turn/step 状态机；</li>
+  <li><code>SessionStore</code>：保存 live Session；</li>
+  <li><code>SessionPersistence</code>：持久化 provider；</li>
+  <li><code>Scope</code>：每个 Agent 独立的插件注册作用域。</li>
+</ul>
+
+<h3 id="62-创建事务顺序">6.2 创建事务顺序</h3>
+
+<p><code>AgentLoop.createAgent()</code> / <code>create()</code> 的主要顺序是：</p>
+
+<pre><code class="language-text">SessionStore.prepare()
+  -&gt; 若有 persistence，先获取 write handle
+  -&gt; prepare(): 构造 ReactLoopAgent + agent scope + memoized dispose
+  -&gt; 可选 setup(agentCtx, agent)
+  -&gt; setupCommit.commit()
+  -&gt; 写入尚未持久化的 Session suffix
+  -&gt; sessions.enter(session)
+  -&gt; agents.enter(agent)
+  -&gt; sessions.announce(session)
+  -&gt; await agents.announce(agent, source)
+  -&gt; 返回 AgentHandle
+</code></pre>
+
+<p>任何 setup、commit、持久化或 <code>agent/created</code> listener 失败，都会沿同一个 dispose 边界回滚。Teardown 的逻辑顺序为：</p>
+
+<pre><code class="language-text">取消 Agent
+  -&gt; 等待 driver idle
+  -&gt; dispose agent scope
+  -&gt; 关闭并 drain Session write handle
+  -&gt; detach Agent
+  -&gt; detach Session
+</code></pre>
+
+<p>关键源码：</p>
+
+<ul>
+  <li><a href="https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/packages/core/agent-loop/src/index.ts#L473-L640">AgentLoop.prepare(): packages/core/agent-loop/src/index.ts:473-640</a></li>
+  <li><a href="https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/packages/core/agent-loop/src/index.ts#L642-L750">create/createAgent: 642-750</a></li>
+  <li><a href="https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/packages/core/agent-loop/src/index.ts#L753-L799">setupAndPublish: 753-799</a></li>
+</ul>
+
+<h3 id="63-resume-与崩溃修复">6.3 Resume 与崩溃修复</h3>
+
+<p>恢复时先以 write 模式打开持久化句柄，排除同一 Session 的并发 resume；读取物理有效日志后，<code>interruptedTurnClosers()</code> 为进程崩溃留下的未闭合 turn 补充缺失工具结果、<code>step/end</code> 和 <code>turn/end</code>，再构造当前内存 Session。</p>
+
+<p>源码：<a href="https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/packages/core/agent-loop/src/index.ts#L801-L890">packages/core/agent-loop/src/index.ts:801-890</a></p>
+
+<hr />
+
+<h2 id="7-一次任务的端到端流程">7. 一次任务的端到端流程</h2>
+
+<h3 id="71-总体时序">7.1 总体时序</h3>
+
+<pre><code class="language-mermaid">sequenceDiagram
+    participant U as User/UI/SDK
+    participant A as ReactLoopAgent
+    participant S as Session
+    participant P as SystemPrompt
+    participant L as LLM Adapter
+    participant T as ToolRuntime
+    participant E as Execution World
+
+    U-&gt;&gt;A: followup/steer/inject
+    A-&gt;&gt;S: turn/start
+    A-&gt;&gt;A: inbox.claim
+    A-&gt;&gt;P: assemble(agent context)
+    P--&gt;&gt;A: prompt sections + tool schemas
+    A-&gt;&gt;A: agent/pre-step waterfall
+    A-&gt;&gt;S: step/start
+    A-&gt;&gt;A: agent/request waterfall
+    A-&gt;&gt;L: prepareCall(config)
+    A-&gt;&gt;S: system/message + user/message + request/header/context
+    A-&gt;&gt;S: deriveMessages()
+    A-&gt;&gt;L: stream(frozen request)
+    L--&gt;&gt;A: reasoning/text/tool-call chunks
+    A-&gt;&gt;S: assistant/message or assistant/attempt
+    loop each tool call group
+      A-&gt;&gt;T: pre-execute -&gt; execute -&gt; post-execute
+      T-&gt;&gt;E: fs/shell/subprocess/MCP/etc.
+      E--&gt;&gt;T: result
+      T--&gt;&gt;A: frozen ToolExecutionResult
+      A-&gt;&gt;S: tool/call + tool/result
+    end
+    A-&gt;&gt;S: step/end
+    alt tool result or injected context requires next step
+      A-&gt;&gt;P: assemble next step
+    else no work owed
+      A-&gt;&gt;S: turn/end
+    end
+</code></pre>
+
+<h3 id="72-inbox-与唤醒">7.2 Inbox 与唤醒</h3>
+
+<p><code>ReactLoopAgent</code> 的阶段状态为：</p>
+
+<pre><code class="language-ts">idle | maintenance | running
+</code></pre>
+
+<ul>
+  <li><code>followup()</code>：写入 <code>next-turn</code> 并唤醒；</li>
+  <li><code>steer()</code>：写入 <code>next-step</code> 并唤醒；</li>
+  <li><code>inject()</code>：写入 <code>next-step</code>，但不主动唤醒；</li>
+  <li><code>cancel()</code>：可清 inbox，并 abort 当前 controller。</li>
+</ul>
+
+<p><code>wakeDriver()</code> 只创建一个 driver。非 idle 时新的 wake 会被当前 driver 接管，或在 maintenance/已 abort 场景下置为 <code>wakeRequested</code>，待当前 activity 收敛后重放。</p>
+
+<p>源码：<a href="https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/packages/core/agent-loop/src/agent.ts#L121-L240">packages/core/agent-loop/src/agent.ts:121-240</a></p>
+
+<h3 id="73-turn">7.3 Turn</h3>
+
+<p><code>turn()</code> 的核心流程：</p>
+
+<ol>
+  <li>追加 <code>turn/start</code>；</li>
+  <li>首次从 <code>next-turn</code> 原子领取输入；后续 step 只领 <code>next-step</code>；</li>
+  <li><code>preStep()</code> 组装 Prompt，并触发 <code>agent/pre-step</code> waterfall；</li>
+  <li>reject 则以 <code>blocked</code> 结束；首次输入被改写为空则零 step 完成；</li>
+  <li>追加 <code>step/start</code>；</li>
+  <li>调用 <code>step()</code>；</li>
+  <li>无论成功失败均追加 <code>step/end</code>；</li>
+  <li>若暂时没有 next-step 输入，触发 <code>agent/turn-stopping</code>；</li>
+  <li>无待处理工作则 <code>turn/end</code>；仍有 next-turn 输入则复用 driver 开下一 turn。</li>
+</ol>
+
+<p>源码：<a href="https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/packages/core/agent-loop/src/agent.ts#L266-L378">packages/core/agent-loop/src/agent.ts:266-378</a></p>
+
+<h3 id="74-step-与模型调用">7.4 Step 与模型调用</h3>
+
+<p><code>step()</code> 中最重要的顺序约束是：</p>
+
+<pre><code class="language-text">agent/request
+  -&gt; llm.prepareCall()
+  -&gt; 根据实际 prepared route 协调 system prompt
+  -&gt; 首次 attempt 写入 user/message
+  -&gt; 记录 request/header 与 request/context
+  -&gt; Session.deriveMessages()
+  -&gt; 冻结请求
+  -&gt; preparedCall.stream()
+</code></pre>
+
+<p><code>agent/request</code> 和 <code>prepareCall()</code> 完成前，待接纳的 system/user 输入还没有写入历史；若此时取消，不会留下半接纳输入。Retry 重用同一次 assembly 和 user admission，不再次执行 <code>agent/pre-step</code>。</p>
+
+<p>流式返回由 <code>AssistantStreamAttempt</code> 收集：</p>
+
+<ul>
+  <li>成功：落 <code>assistant/message</code>，保留完整紧凑 stream 与 usage；</li>
+  <li>失败/重试：落 <code>assistant/attempt</code>，不进入模型历史；</li>
+  <li>中途取消且已有可见输出：落 <code>assistant/message(interrupted: true)</code>，保证下一请求看到用户已经看到的前缀。</li>
+</ul>
+
+<p>若消息没有 tool call，则 step 完成；否则进入 <code>executeToolCalls()</code>。</p>
+
+<p>源码：<a href="https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/packages/core/agent-loop/src/agent.ts#L380-L526">packages/core/agent-loop/src/agent.ts:380-526</a></p>
+
+<h3 id="75-request-构建">7.5 Request 构建</h3>
+
+<p><code>prepareRequest()</code>：</p>
+
+<ul>
+  <li>从 AgentOptions 和最近 request header 建议 provider/model；</li>
+  <li>移除 adapter 自动补的默认项，让下一次 route 重新解析；</li>
+  <li>允许 <code>agent/request</code> waterfall 改写配置；</li>
+  <li>调用 <code>ctx.llm.prepareCall()</code> 绑定 adapter；</li>
+  <li>缺 provider/model 立即失败。</li>
+</ul>
+
+<p><code>buildRequest()</code>：</p>
+
+<ul>
+  <li>规范化并按需追加 <code>request/header</code>；</li>
+  <li>记录 provider/model/contextWindow/systemPromptUpdate 的变化；</li>
+  <li>从 Session surface 派生模型历史；</li>
+  <li>深度冻结消息与本次请求；</li>
+  <li>保留 live AbortSignal。</li>
+</ul>
+
+<p>源码：<a href="https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/packages/core/agent-loop/src/agent.ts#L528-L646">packages/core/agent-loop/src/agent.ts:528-646</a></p>
+
+<hr />
+
+<h2 id="8-工具系统">8. 工具系统</h2>
+
+<h3 id="81-schema-如何进入模型">8.1 Schema 如何进入模型</h3>
+
+<p>工具插件通过 <code>ctx.tools.register()</code> 注册。每次 system prompt assembly 时，<code>ctx.tools.schemas(scope)</code> 投影当前 Agent 可见的 schema。模型只会看到：</p>
+
+<ul>
+  <li>name；</li>
+  <li>description；</li>
+  <li>parameters；</li>
+  <li>可选 <code>deferLoading</code>。</li>
+</ul>
+
+<p>执行函数、超时、输出渲染器和 UI presenter 不会上 wire。Agent scope 的 <code>restrict()</code>、同名 shadow 和插件卸载都会改变最终可见工具集。</p>
+
+<h3 id="82-固定执行流水线">8.2 固定执行流水线</h3>
+
+<p>一个工具调用依次通过：</p>
+
+<pre><code class="language-text">参数解析与冻结
+  -&gt; tools/pre-execute
+  -&gt; monotonic guards
+  -&gt; tools/execute around-waterfall
+  -&gt; ToolDefinition.execute()
+  -&gt; output schema validation/render
+  -&gt; projectContent
+  -&gt; tools/post-execute
+  -&gt; finalizeContent
+  -&gt; tools/result observer
+  -&gt; Session tool/result
+</code></pre>
+
+<p>关键性质：</p>
+
+<ul>
+  <li><code>pre-execute</code> 可 allow / deny / ask / cancel；</li>
+  <li>guard 是单调拒绝，后续插件不能把 deny 改回 allow；</li>
+  <li>tool throw、unknown tool、deny 都变成结构化 error result，通常不会直接结束 turn；</li>
+  <li>timeout 由外部 <code>dsh-tool-call-timeout-policy</code> 执行，ToolDefinition 里的 <code>timeoutMs</code> 只是声明；</li>
+  <li>取消是 cooperative；工具必须响应 signal，timeout 也不是强制杀线程。</li>
+</ul>
+
+<p>参考：<a href="https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/packages/core/tools/README.md#L95-L138">Tools README</a></p>
+
+<h3 id="83-并发调度">8.3 并发调度</h3>
+
+<p><code>executeToolCalls()</code> 先把模型输出解析为 planned calls：</p>
+
+<ul>
+  <li><code>exclusive</code> 调用单独形成 barrier；</li>
+  <li><code>parallel</code> 调用进入有界 rolling pool；</li>
+  <li>默认每 step 最多 10 个并发安全调用；</li>
+  <li>dispatch/body 可以并发，但 <code>pre-execute</code>、结果 finalize、Session commit 按模型顺序；</li>
+  <li>在后续 call 启动前重新读取 execution mode，插件热变更可把它变为 barrier；</li>
+  <li>取消后停止补充新调用，等待已启动调用收敛；未启动调用写入 <code>ABORTED_BEFORE_DISPATCH</code> 配对结果，保证 replay 合法。</li>
+</ul>
+
+<p>源码：<a href="https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/packages/core/agent-loop/src/tool-calls.ts#L60-L102">packages/core/agent-loop/src/tool-calls.ts:60-102</a>、<a href="https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/packages/core/agent-loop/src/tool-calls.ts#L122-L247">122-247</a></p>
+
+<h3 id="84-ptc-模式">8.4 PTC 模式</h3>
+
+<p>工具可按 <code>native</code>、<code>ptc</code> 或 <code>both</code> 呈现。PTC 模式不是直接给模型所有工具 schema，而是暴露 <code>run_code</code> 和生成的 SDK，让模型编写一次短程序并在程序内调用多个工具。</p>
+
+<p>它适合：</p>
+
+<ul>
+  <li>多个独立读取并发；</li>
+  <li>中间结果不进入对话；</li>
+  <li>只抽取最后所需字段；</li>
+  <li>减少多轮 “调用—回传—再调用”。</li>
+</ul>
+
+<p>但中间值是执行态内存，不进入 Session replay，且可能消耗内存；只有外层 <code>run_code</code> 结果有硬大小限制。</p>
+
+<hr />
+
+<h2 id="9-session模型历史的唯一事实源">9. Session：模型历史的唯一事实源</h2>
+
+<h3 id="91-append-only-event-log">9.1 Append-only Event Log</h3>
+
+<p>Session 采用连续 <code>seq</code> 的 append-only 事件日志。核心事件包括：</p>
+
+<ul>
+  <li>生命周期：<code>turn/start</code>、<code>turn/end</code>、<code>step/start</code>、<code>step/end</code>；</li>
+  <li>模型表面：<code>system/message</code>、<code>user/message</code>、<code>assistant/message</code>、<code>tool/result</code>；</li>
+  <li>追踪：<code>assistant/attempt</code>、<code>tool/call</code>；</li>
+  <li>请求：<code>request/header</code>、<code>request/context</code>；</li>
+  <li>seed/fork 边界：<code>session/end-seed</code>；</li>
+  <li>插件通过 declaration merging 扩展事件类型。</li>
+</ul>
+
+<p><code>Session.append()</code> 先做 lossless JSON snapshot、事件数据校验和 surface transition 校验，确认合法后再加入 log；observer 失败只记录，不反向撤销已提交 append。</p>
+
+<p>源码：<a href="https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/packages/core/session/src/index.ts#L683-L771">packages/core/session/src/index.ts:683-771</a></p>
+
+<h3 id="92-surfaceappend-only-日志上的可替换视图">9.2 Surface：Append-only 日志上的可替换视图</h3>
+
+<p>日志不可删，但模型历史需要压缩和替换。DSH 通过 <code>surfaceOp</code> 构建可替换 surface：</p>
+
+<pre><code class="language-ts">'append'
+| { op: 'replace', startSeq, endSeq }
+</code></pre>
+
+<p>替换事件必须：</p>
+
+<ul>
+  <li>指向当前 surface 中连续存在的节点；</li>
+  <li><code>sourceEventSeqs</code> 包含所有被 shadow 的节点；</li>
+  <li>不能任意改写 system head；</li>
+  <li>tool-result replacement 只能改内容，不能偷偷改变 call id、错误状态等语义。</li>
+</ul>
+
+<p>因此，原始历史仍在日志里，下一次模型请求只看到 surface 投影后的版本。</p>
+
+<p>源码：<a href="https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/packages/core/session/src/types.ts#L430-L478">packages/core/session/src/types.ts:430-478</a>、<a href="https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/packages/core/session/src/surface.ts#L515-L590">packages/core/session/src/surface.ts:515-590</a></p>
+
+<h3 id="93-derivemessages">9.3 <code>deriveMessages()</code></h3>
+
+<p><code>Session.deriveMessages()</code> 遍历 surface 节点，把五种 message-producing event 转成模型消息；turn/step、失败 attempt 等日志事件不会进入模型上下文。纯 append 只增量处理新节点；一旦发生 replacement 或消息投影，<code>contentGeneration</code> 变化并触发重建。</p>
+
+<p>源码：<a href="https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/packages/core/session/src/index.ts#L817-L873">packages/core/session/src/index.ts:817-873</a></p>
+
+<h3 id="94-model-visible--logged">9.4 “Model-visible ⟺ Logged”</h3>
+
+<p>这是整个设计的关键不变量：任何进入模型请求的输入，都必须能从 Session log 和注册的纯投影重建。否则：</p>
+
+<ul>
+  <li>resume 后行为会漂移；</li>
+  <li>fork 无法保持语义；</li>
+  <li>telemetry、回放、测试和 UI 会看到不同事实；</li>
+  <li>压缩前后无法证明来源。</li>
+</ul>
+
+<hr />
+
+<h2 id="10-deepseek-模型适配器">10. DeepSeek 模型适配器</h2>
+
+<h3 id="101-provider-路由">10.1 Provider 路由</h3>
+
+<p><code>LlmRuntime</code> 按 provider 名注册 adapter。DeepSeek 官方插件注册路由 <code>deepseek-official</code>。<code>prepareCall()</code> 把一次调用的：</p>
+
+<ul>
+  <li>连接配置；</li>
+  <li>模型能力；</li>
+  <li>默认 reasoning/maxTokens；</li>
+  <li>retry policy；</li>
+  <li>system prompt update 模式</li>
+</ul>
+
+<p>绑定为 <code>PreparedLlmCall</code>，防止请求进行中配置热更新造成半次调用使用两套参数。</p>
+
+<h3 id="102-wire-协议">10.2 Wire 协议</h3>
+
+<p>当前 adapter 使用 DeepSeek Messages-compatible endpoint，核心行为包括：</p>
+
+<ul>
+  <li>文本、thinking、tool call、tool result 作为 content blocks；</li>
+  <li>reasoning effort 映射到 <code>output_config.effort</code>；</li>
+  <li>流响应使用 SSE；</li>
+  <li>SSE 的 event 名和 JSON <code>type</code> 必须一致；</li>
+  <li>text/thinking/tool_use delta 转成统一 Harness stream chunk；</li>
+  <li>结束时输出 usage、finish 和 replay metadata；</li>
+  <li>过早 EOF 归一为 <code>STREAM_CLOSED</code>。</li>
+</ul>
+
+<p>Adapter 识别并标准化 <code>AUTH</code>、<code>RATE_LIMIT</code>、<code>CONTEXT_WINDOW_EXCEEDED</code>、<code>SERVER</code>、<code>TIMEOUT</code> 等错误，使上层 retry/compaction 无需解析脆弱的自然语言。</p>
+
+<p>官方 package 文档：<a href="https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/packages/llm/llm-deepseek/README.md">dsh-llm-deepseek README</a></p>
+
+<h3 id="103-默认模型容量不是整个系统的承诺">10.3 默认模型容量不是整个系统的承诺</h3>
+
+<p>该版本默认 catalog 为部分模型声明 1,000,000 token context window，并把 adapter <code>maxTokens</code> 默认设为 256,000；但实际可用模型、网关能力、计费和上下文上限仍由目标 endpoint 决定。Harness 使用 adapter 暴露的 capacity 做 compaction 规划，provider 最终响应仍是权威事实。</p>
+
+<hr />
+
+<h2 id="11-上下文窗口与大工具结果三层防线">11. 上下文窗口与大工具结果：三层防线</h2>
+
+<p>这是理解 DSH 最有实践价值的部分。</p>
+
+<h3 id="111-第一层当前工具结果-spill">11.1 第一层：当前工具结果 Spill</h3>
+
+<p>工具执行完成后，<code>dsh-spill-policy</code> 在 <code>tools/post-execute</code> 阶段处理当前结果：</p>
+
+<ol>
+  <li>计算文本与图片的共享预算；</li>
+  <li>超预算时将完整格式化结果存入 <code>SpillStore</code>；</li>
+  <li>模型只看到按原顺序保留的头部/尾部；</li>
+  <li>加入遗漏字节数、图片数和完整结果路径；</li>
+  <li>模型随后可用 <code>read(offset, limit)</code> 或 <code>grep</code> 按需读取。</li>
+</ol>
+
+<p>默认 <code>maxInlineTokens = 12500</code>。所谓“50%”不是把完整结果压缩到 50%，而是<strong>扣除 notice 成本后，把剩余预览预算大致平分给头和尾</strong>。</p>
+
+<p>如果连 notice 都放不下，或者 storage/owner/image pricing 不可用，策略 fail-open：记录警告并保留原结果，避免返回一个模型无法访问的假路径。</p>
+
+<p>参考：<a href="https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/packages/spill/spill-policy/README.md#L25-L69">Spill Policy README</a></p>
+
+<h3 id="112-第二层历史-tool-result-pruner">11.2 第二层：历史 Tool Result Pruner</h3>
+
+<p>当整个对话接近压力阈值，compaction 前先运行工具结果 pruner。默认对超过 8,192 字符的历史 tool result：</p>
+
+<ul>
+  <li>头部保留 4,096 字符；</li>
+  <li>尾部保留 1,024 字符；</li>
+  <li>中间替换为 marker；</li>
+  <li>使用 surface replacement 写入可回放的新结果。</li>
+</ul>
+
+<p>它不调用模型，成本低、结果确定，常常可直接让请求重新回到阈值内。</p>
+
+<h3 id="113-第三层conversation-compaction">11.3 第三层：Conversation Compaction</h3>
+
+<p>若 pruning 后仍超阈值，<code>dsh-compaction-basic</code>：</p>
+
+<ol>
+  <li>用同一个 token meter 计算压力；</li>
+  <li>从 system head 之后选择最老、语义平衡且可安全替换的 span；</li>
+  <li>保留最近历史；</li>
+  <li>额外调用一次模型生成结构化 checkpoint；</li>
+  <li>验证摘要确实比原区域更小；</li>
+  <li>记录 <code>compaction/start</code>、<code>compaction/summary</code>、surface replacement 和 <code>compaction/end</code>；</li>
+  <li>下一次请求只看到 checkpoint + 最近历史。</li>
+</ol>
+
+<p>默认策略：</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>参数</th>
+      <th style="text-align: right">默认值</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>thresholdRatio</code></td>
+      <td style="text-align: right">0.8</td>
+    </tr>
+    <tr>
+      <td><code>retainRatio</code></td>
+      <td style="text-align: right">0.16</td>
+    </tr>
+    <tr>
+      <td><code>headroomTokens</code></td>
+      <td style="text-align: right">65,536</td>
+    </tr>
+    <tr>
+      <td><code>maxTokens</code></td>
+      <td style="text-align: right">65,536 或解析后的 headroom</td>
+    </tr>
+    <tr>
+      <td><code>compactionRetries</code></td>
+      <td style="text-align: right">1</td>
+    </tr>
+    <tr>
+      <td><code>maxOverflowRetries</code></td>
+      <td style="text-align: right">1</td>
+    </tr>
+    <tr>
+      <td><code>auto</code></td>
+      <td style="text-align: right">true</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>触发阈值：</p>
+
+<pre><code class="language-text">floor(min(W × 0.8, W − O − 65536))
+</code></pre>
+
+<p>其中 <code>W</code> 是 context window，<code>O</code> 是本次输出预留。</p>
+
+<h3 id="114-provider-明确报超窗时">11.4 Provider 明确报超窗时</h3>
+
+<p>收到 <code>CONTEXT_WINDOW_EXCEEDED</code> 后，自动恢复会：</p>
+
+<ul>
+  <li>绕过普通 80% 阈值；</li>
+  <li>先 prune；</li>
+  <li>把最近保留量降为 0，尝试最大安全 head reduction；</li>
+  <li>只有 surface replacement generation 确实前进，才授权重试；</li>
+  <li>默认最多一次 overflow retry。</li>
+</ul>
+
+<h3 id="115-回答压缩-50-仍不够怎么办">11.5 回答“压缩 50% 仍不够怎么办”</h3>
+
+<p>在该源码中，正确答案不是“继续按 50% 无限压缩”，而是：</p>
+
+<pre><code class="language-text">当前超大工具结果
+  -&gt; Spill 到文件，模型只拿首尾预览和路径
+历史超大工具结果
+  -&gt; 确定性裁剪
+整体历史仍超窗
+  -&gt; 摘要最老的安全区域
+仍超窗
+  -&gt; 检查不可压缩部分：system prompt、tool schemas、prefix、单个不可拆单元
+  -&gt; 有新的安全替换区域才有限重试
+  -&gt; 无安全区域或重试耗尽，返回 CONTEXT_WINDOW_EXCEEDED
+</code></pre>
+
+<p>不能压缩的典型情况：</p>
+
+<ul>
+  <li>system prompt + tool schemas + 输出预留本身已逼近窗口；</li>
+  <li>一个不可拆的非工具消息本身过大；</li>
+  <li>单个 tool call/result 对的不可裁剪部分仍超窗；</li>
+  <li>spill notice 太长而预算太小，导致 spill 替换被放弃；</li>
+  <li>token meter 估算偏差，特别是 CJK 与大型 JSON Schema。</li>
+</ul>
+
+<p>工程改进顺序应是：</p>
+
+<ol>
+  <li>让工具原生支持分页、字段过滤和句柄；</li>
+  <li>降低工具 schema 与 system prompt；</li>
+  <li>确保 spill backend 可用，并让 locator 足够短；</li>
+  <li>单独调整 pruner 阈值和保留长度；</li>
+  <li>按模型调整 compaction headroom/retention；</li>
+  <li>对不可拆单元改协议，而不是继续摘要；</li>
+  <li>最终明确失败，避免无界重试与账单失控。</li>
+</ol>
+
+<p>参考：<a href="https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/packages/compaction/compaction-basic/README.md#L60-L90">Compaction README</a>、<a href="https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/packages/compaction/compaction-basic/README.md#L111-L125">自动恢复与限制</a></p>
+
+<hr />
+
+<h2 id="12-执行世界安全和权限">12. 执行世界、安全和权限</h2>
+
+<h3 id="121-shell-路径">12.1 Shell 路径</h3>
+
+<p>典型 Bash 调用链：</p>
+
+<pre><code class="language-text">tool-bash
+  -&gt; 解析当前 sandbox policy / 可选一次性升级
+  -&gt; ctx.shell.resolve/execute
+  -&gt; SandboxBashExecutor.confine(['bash', '-c', command])
+  -&gt; ctx.subprocess.spawn
+  -&gt; 进程输出
+  -&gt; ToolRuntime post-execute/finalize
+</code></pre>
+
+<p><code>danger-full-access</code> 可绕过 confinement；受限模式没有可用 runner 时应 fail closed。</p>
+
+<h3 id="122-文件路径">12.2 文件路径</h3>
+
+<p>文件工具经 <code>ctx.fs</code>；sandbox provider 对 canonical path、父目录和 symlink 做检查；observation policy 增加 read-before-edit 和版本 CAS。需要明确：这是降低风险的用户态约束，不是完整内核隔离。</p>
+
+<p>一个值得注意的例外是 glob/grep：实现通过固定 ripgrep argv 调用 <code>ctx.subprocess.spawn</code>，不走 shell 字符串；它使用 <code>--no-config</code> 避免宿主 ripgrep 配置注入。</p>
+
+<h3 id="123-审批">12.3 审批</h3>
+
+<p>权限升级只有严格更宽的模式才需要审批；缺少审批服务、无 Agent、拒绝、取消或无响应都按失败处理。授权是 <code>allowed-once</code>，不是永久扩大 Session 权限。</p>
+
+<p>默认 profile：</p>
+
+<ul>
+  <li><code>read-only</code>：sandbox read-only + ask；</li>
+  <li><code>workspace-write</code>：sandbox workspace-write + ask；</li>
+  <li><code>danger-full-access</code>：sandbox danger-full-access + approval never。</li>
+</ul>
+
+<h3 id="124-安全声明">12.4 安全声明</h3>
+
+<p>官方 SAFETY 明确指出：项目尚未安全审计，不能视为生产安全软件；它能执行模型生成的命令、加载第三方插件并访问文件、网络、进程和凭据；沙箱、审批和权限控制只能降低风险，不保证隔离。<a href="https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/SAFETY.md#L5-L23">SAFETY</a></p>
+
+<p>生产评估时至少应补充：</p>
+
+<ul>
+  <li>一次性 VM/容器；</li>
+  <li>最小权限与最小文件范围；</li>
+  <li>网络出口策略；</li>
+  <li>短期凭据；</li>
+  <li>不可信插件审计；</li>
+  <li>执行日志与人工审批；</li>
+  <li>独立备份和恢复演练。</li>
+</ul>
+
+<hr />
+
+<h2 id="13-子-agentjobsworkflow-与-mcp">13. 子 Agent、Jobs、Workflow 与 MCP</h2>
+
+<h3 id="131-in-process-subagent">13.1 In-process Subagent</h3>
+
+<p>In-process 子 Agent 有独立工具 scope 和 Session。父 Agent 可显式传递 sandbox override 与 tool filter；子 Agent 的 approval 固定为 <code>never</code>，避免它直接弹出人机审批。Delegation depth 持久化到 Session header，防止 resume 后递归预算重置。</p>
+
+<h3 id="132-fork-subagent">13.2 Fork Subagent</h3>
+
+<p>Fork 模式从父 Session 的某个 event boundary 复制前缀，必要时为开放的 step/turn 添加合成 closer；父子保持共同历史，有利于 DeepSeek KV cache 复用。默认 base 中 fork child 为 one-shot。</p>
+
+<h3 id="133-jobs">13.3 Jobs</h3>
+
+<p>Jobs 按 Session owner 精确隔离，<code>list/read/kill/wait</code> 均检查 owner；owner dispose 或 archive 时取消任务。它适合把长任务从当前 turn 解耦，但仍需控制每 owner 并发上限。</p>
+
+<h3 id="134-workflow--ptc">13.4 Workflow / PTC</h3>
+
+<p>Workflow 让模型生成 JavaScript，由 PTC runtime 执行并在程序中调用工具。它适合多步固定流程，但 VM 不是强安全边界；应把它视为与 Bash 接近的执行权限，并由 sandbox、审批和环境隔离共同约束。</p>
+
+<h3 id="135-mcp">13.5 MCP</h3>
+
+<p>MCP server 暴露的工具注册为 <code>mcp__&lt;server&gt;__&lt;tool&gt;</code>，沿用 ToolRuntime pipeline。HTTP MCP 可复用代理策略；stdio MCP 的子进程由 MCP SDK 启动，当前实现不天然继承 <code>ctx.subprocess</code> 的进程树与 shell sandbox，这是一项部署时应单独评审的边界。</p>
+
+<hr />
+
+<h2 id="14-错误恢复与停止语义">14. 错误恢复与停止语义</h2>
+
+<h3 id="141-错误分类">14.1 错误分类</h3>
+
+<ul>
+  <li>模型适配器错误：结构化 <code>LlmFailure</code>；</li>
+  <li><code>agent/request-error</code> listener 可决定 retry；</li>
+  <li>tool error：通常转换为 error result，交给模型继续；</li>
+  <li>plugin/middleware/result processing error：结束当前 turn，但 AgentLoop driver 本身被边界捕获，可接受后续工作；</li>
+  <li>process 未处理异常：fail loud，先尝试有界释放资源再退出。</li>
+</ul>
+
+<h3 id="142-取消">14.2 取消</h3>
+
+<p>取消使用 AbortSignal，但遵循 cooperative + quiescent：</p>
+
+<ul>
+  <li>取消阻止新的模型块或工具开始；</li>
+  <li>已启动工具需等待其响应取消并收敛；</li>
+  <li>已经展示给用户的模型前缀要落为 interrupted assistant message；</li>
+  <li>未 dispatch 的 tool calls 写入合成错误结果；</li>
+  <li><code>turn/end</code> 记录结构化 cancel cause。</li>
+</ul>
+
+<h3 id="143-无内置-turn-budget">14.3 无内置 Turn Budget</h3>
+
+<p>AgentLoop 没有内置最大 step/turn 工具调用预算。模型持续产生工具调用或插件持续注入 next-step 时，turn 可继续。需要部署通过 <code>agent/turn-stopping</code>、成本监控或自定义 guard 实现总预算。</p>
+
+<hr />
+
+<h2 id="15-持久化迁移与可回放性">15. 持久化、迁移与可回放性</h2>
+
+<p>当前 writer 的 <code>SESSION_FORMAT_VERSION = 4</code>，但该 checkout 文档记录的最新已发布格式为 V3；V4 已完成兼容基线，但发布记录独立维护。新的 release candidate 也必须把已落地的 Session 数据视为兼容性义务。</p>
+
+<p>持久化设计要点：</p>
+
+<ul>
+  <li>JSONL generation 文件不可覆盖旧 generation；</li>
+  <li>打开旧格式时按相邻迁移链转换；</li>
+  <li>只读打开可在内存迁移；</li>
+  <li>写打开先编码、验证，再排他发布新 generation；</li>
+  <li>原始 generation 不重命名、不覆盖、不删除；</li>
+  <li>未识别且非 <code>ignorable</code> 的事件必须拒绝读取，防止静默丢失语义。</li>
+</ul>
+
+<p>参考：<a href="https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/docs/session-format-status.md">Session format status</a></p>
+
+<hr />
+
+<h2 id="16-扩展开发应该改哪里">16. 扩展开发应该改哪里</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>目标</th>
+      <th>推荐扩展点</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>新模型 provider</td>
+      <td>在 <code>ctx.llm</code> 注册 adapter</td>
+    </tr>
+    <tr>
+      <td>新工具</td>
+      <td><code>ctx.tools.register()</code>；同时设计 schema、错误、超时、UI、测试</td>
+    </tr>
+    <tr>
+      <td>单 Agent 工具差异</td>
+      <td>Agent preset / Agent scope / <code>restrict()</code></td>
+    </tr>
+    <tr>
+      <td>请求改写或路由</td>
+      <td><code>agent/request</code> waterfall</td>
+    </tr>
+    <tr>
+      <td>输入接纳/上下文注入</td>
+      <td><code>agent/pre-step</code> 或 <code>agent.inject()</code></td>
+    </tr>
+    <tr>
+      <td>工具准入与审批</td>
+      <td><code>tools/pre-execute</code> / monotonic guard</td>
+    </tr>
+    <tr>
+      <td>工具 wrapper</td>
+      <td><code>tools/execute</code></td>
+    </tr>
+    <tr>
+      <td>大结果处理</td>
+      <td><code>tools/post-execute</code></td>
+    </tr>
+    <tr>
+      <td>新执行环境</td>
+      <td>实现 <code>ctx.fs</code>、<code>ctx.subprocess</code>、<code>ctx.sandbox</code> provider</td>
+    </tr>
+    <tr>
+      <td>新持久化后端</td>
+      <td>实现 <code>SessionPersistence</code></td>
+    </tr>
+    <tr>
+      <td>新模型可见状态</td>
+      <td>Session event + pure message projection</td>
+    </tr>
+    <tr>
+      <td>外部事件启动任务</td>
+      <td>webhook runtime</td>
+    </tr>
+    <tr>
+      <td>子 Agent 策略</td>
+      <td>subagent provider / preset</td>
+    </tr>
+    <tr>
+      <td>GUI 功能</td>
+      <td>Host/Client 插件 + session/event 渲染</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>除非要改变所有默认 Agent 的 turn/step 语义，否则不应直接修改 <code>agent-loop</code>。</p>
+
+<hr />
+
+<h2 id="17-测试体系与工程质量">17. 测试体系与工程质量</h2>
+
+<p>仓库把测试分为多层：</p>
+
+<ul>
+  <li>单元测试：<code>pnpm run test</code>；</li>
+  <li>100% per-file coverage gate：<code>pnpm run test:coverage</code>；</li>
+  <li>Real API：<code>pnpm run test:e2e</code>，无 key 自动跳过；</li>
+  <li>Recorded Session replay：<code>pnpm run test:snapshot</code>；</li>
+  <li>Web snapshot/performance/stress；</li>
+  <li>Typecheck、lint、duplicate detection；</li>
+  <li>package hygiene 与 NodeNext consumer；</li>
+  <li>文档、链接、类型等价、module graph、tool catalog、persistence catalog 等生成物门禁；</li>
+  <li>Node 22.19、24、26 的 CI 兼容矩阵。</li>
+</ul>
+
+<p>对 Agent 项目而言，最值得借鉴的是“模型/用户可见变化必须更新 keyless recorded-session snapshot”。它比单纯断言函数返回值更接近真实 Agent 行为回归。</p>
+
+<hr />
+
+<h2 id="18-关键限制与风险">18. 关键限制与风险</h2>
+
+<h3 id="181-产品阶段">18.1 产品阶段</h3>
+
+<p>Developer preview，公开 API 和插件组合可能破坏兼容，不宜未经封装直接作为强 SLA 生产基础设施。</p>
+
+<h3 id="182-安全">18.2 安全</h3>
+
+<ul>
+  <li>sandbox 不是完整隔离；</li>
+  <li>network 与 credential 的能力可能独立于文件策略；</li>
+  <li>第三方 plugin 是同进程高信任代码；</li>
+  <li>MCP stdio 与 dynamic code 路径需额外审计；</li>
+  <li>PTC/Workflow VM 不等于安全沙箱。</li>
+</ul>
+
+<h3 id="183-上下文控制">18.3 上下文控制</h3>
+
+<ul>
+  <li>token meter 对文本可能使用启发式估算；</li>
+  <li>CJK 与大 JSON Schema 可能被低估；</li>
+  <li>compaction 不能缩 system prompt、tool schemas 或单个不可拆单元；</li>
+  <li>spill 失败会保留原始超大内容；</li>
+  <li>provider 错误分类依赖 adapter 维护。</li>
+</ul>
+
+<h3 id="184-控制循环">18.4 控制循环</h3>
+
+<ul>
+  <li>无内置总 turn budget；</li>
+  <li>repeat tool reminder 只提示，不阻断；</li>
+  <li>timeout 是 cooperative；</li>
+  <li>工具是否 parallel-safe 是单调用分类，依赖跨调用资源冲突的工具应保持 exclusive。</li>
+</ul>
+
+<h3 id="185-配置复杂度">18.5 配置复杂度</h3>
+
+<p>“所有都是插件”换来灵活性，也带来 profile、bundle、patch、scope、provider 与 HMR 的认知成本。排障时应先执行 <code>dsh --profile &lt;name&gt; --dump-config</code>，而不是只读单个 YAML。</p>
+
+<hr />
+
+<h2 id="19-推荐的源码阅读路径">19. 推荐的源码阅读路径</h2>
+
+<h3 id="第一轮30-分钟建立主链">第一轮：30 分钟建立主链</h3>
+
+<ol>
+  <li><code>README.md</code></li>
+  <li><code>docs/architecture.md</code></li>
+  <li><code>apps/cli/src/bin.ts</code></li>
+  <li><code>apps/cli/src/profile-boot.ts</code></li>
+  <li><code>packages/core/agent-loop/README.md</code></li>
+  <li><code>packages/core/agent-loop/src/agent.ts</code></li>
+</ol>
+
+<h3 id="第二轮60-分钟理解事实源">第二轮：60 分钟理解事实源</h3>
+
+<ol>
+  <li><code>packages/core/session/src/types.ts</code></li>
+  <li><code>packages/core/session/src/index.ts</code></li>
+  <li><code>packages/core/session/src/surface.ts</code></li>
+  <li><code>packages/core/agent-loop/src/tool-calls.ts</code></li>
+  <li><code>packages/core/tools/src/index.ts</code></li>
+</ol>
+
+<h3 id="第三轮60-分钟理解上下文与恢复">第三轮：60 分钟理解上下文与恢复</h3>
+
+<ol>
+  <li><code>packages/spill/spill-policy/src/index.ts</code></li>
+  <li><code>packages/spill/spill-policy/src/retention.ts</code></li>
+  <li><code>packages/compaction/compaction-tool-result-pruner/src/index.ts</code></li>
+  <li><code>packages/compaction/compaction-basic/src/index.ts</code></li>
+  <li><code>packages/compaction/compaction-basic/src/region.ts</code></li>
+  <li><code>packages/compaction/compaction-basic/src/summarizer.ts</code></li>
+</ol>
+
+<h3 id="第四轮按场景深入">第四轮：按场景深入</h3>
+
+<ul>
+  <li>模型：<code>packages/llm/llm-deepseek</code></li>
+  <li>Shell：<code>packages/shell</code>、<code>packages/subprocess</code>、<code>packages/sandbox</code></li>
+  <li>多 Agent：<code>packages/subagent</code></li>
+  <li>SDK：<code>packages/sdk</code> 与 <code>python/sdk</code></li>
+  <li>GUI：<code>packages/host</code>、<code>packages/client</code>、<code>apps/web</code></li>
+  <li>配置：<code>packages/bundle/base/cordis.patch.yml</code></li>
+</ul>
+
+<hr />
+
+<h1 id="20-一小时技术分享稿">20. 一小时技术分享稿</h1>
+
+<p>下面是一份可直接使用的 60 分钟分享稿。默认听众了解 LLM、Function Calling 和基础 TypeScript，但不要求熟悉 Cordis。</p>
+
+<h2 id="05-分钟开场与问题定义">0–5 分钟：开场与问题定义</h2>
+
+<h3 id="目标">目标</h3>
+
+<p>让听众明确 Harness 与模型、Agent Framework、工具执行器之间的边界。</p>
+
+<h3 id="讲稿">讲稿</h3>
+
+<p>大家好，今天分享的是 DeepSeek Harness 的源码和运行流程。这里的 Harness 不是模型本身，也不是只包含一个 ReAct prompt 的 Agent 示例。它是模型外层的完整运行系统。</p>
+
+<p>我们先用一个问题开场：模型返回了一个 Bash tool call，究竟是谁执行命令、谁检查权限、谁处理超时、谁把结果放回上下文、谁保证重启后还能继续？答案都不是模型，而是 Harness。</p>
+
+<p>因此今天我们不重点讨论 DeepSeek 模型权重，而是讨论六个工程问题：</p>
+
+<p>第一，系统如何组装；第二，Agent 循环如何推进；第三，工具如何真正执行；第四，会话如何持久化并可回放；第五，上下文爆炸时怎么办；第六，插件化和安全边界如何设计。</p>
+
+<p>这份源码快照是 <code>dsh-v0.1.7-rc.1</code>，对应 commit <code>46a7f68</code>。仓库有一万三千多个跟踪文件、三百多个 package manifest，是一个真正的平台型 monorepo。它仍处于 developer preview，所以今天既讲设计亮点，也讲不能忽略的限制。</p>
+
+<p>我希望大家在分享结束后得到一个判断框架：做 Agent 平台时，哪些逻辑属于模型，哪些属于 Harness；哪些状态必须持久化；哪些大结果应该落盘而不是摘要；哪些能力应该做成插件，而不是塞进核心循环。</p>
+
+<h3 id="页面演示">页面/演示</h3>
+
+<ul>
+  <li>展示 README 的项目定义与 developer preview；</li>
+  <li>展示仓库顶层目录；</li>
+  <li>给出公式：<code>Agent = Model + Harness</code>。</li>
+</ul>
+
+<h3 id="过渡">过渡</h3>
+
+<p>接下来先看它最核心的架构选择：为什么叫 Everything is a Plugin。</p>
+
+<hr />
+
+<h2 id="513-分钟cordis-与插件架构">5–13 分钟：Cordis 与插件架构</h2>
+
+<h3 id="目标-1">目标</h3>
+
+<p>解释 Context、Service、Inject、Event、Effect，以及它们如何解决大型 Agent 系统的组合问题。</p>
+
+<h3 id="讲稿-1">讲稿</h3>
+
+<p>DeepSeek Harness 构建在 Cordis 上。理解 Cordis，不需要先读完整论文，只要抓住五个概念。</p>
+
+<p>第一，插件是最小组合单元。它可以是一个函数，也可以是 Service 子类。第二，Context 是服务容器，插件不直接依赖具体实现，而是通过 <code>ctx.tools</code>、<code>ctx.llm</code>、<code>ctx.sessions</code> 这样的 key 找能力。第三，插件用 inject 声明依赖；服务没准备好时，插件等待，而不是靠程序员手写启动顺序。第四，Typed Event 是插件间的拦截和通知机制。第五，所有注册都应该是 Effect，也就是带反向清理动作。</p>
+
+<p>这里的关键不是“插件多”，而是插件生命周期可逆。比如一个模型 adapter 注册到 <code>ctx.llm</code>，热更新时旧插件卸载，adapter 注册随 effect 撤销；新插件再注册。工具、Prompt section、listener 都遵循同一个模式。</p>
+
+<p>Cordis 论文把这种思路称为时空可组合性。时间维度解决卸载时如何撤销副作用，空间维度解决依赖变化时组件如何激活和停用。DSH 把这套机制用于 Agent Runtime。</p>
+
+<p>再看 capability seam。一个完整能力通常有三种角色：Service Definition、Provider 和 Consumer。以文件系统为例，<code>ctx.fs</code> 是接口，Local/SSH/Sandbox 是 provider，read/write/edit 是 consumer。这样把本地 provider 换成远端 provider，AgentLoop 不需要改。</p>
+
+<p>这也是为什么官方规范强调“插件，而不是改 Loop”。如果我们新增一个模型 provider，应注册到 <code>ctx.llm</code>；新增一个工具，应注册到 <code>ctx.tools</code>；新增工具审批，应拦截 <code>tools/pre-execute</code>。只有改变所有 Agent 的基本 turn/step 语义时才考虑修改 loop。</p>
+
+<h3 id="页面演示-1">页面/演示</h3>
+
+<p>展示：</p>
+
+<pre><code class="language-text">Service Definition -&gt; Provider -&gt; Consumer
+</code></pre>
+
+<p>再展示：</p>
+
+<pre><code class="language-text">ctx.fs -&gt; sandbox/local/ssh -&gt; read/write/edit/bash/lsp
+</code></pre>
+
+<h3 id="过渡-1">过渡</h3>
+
+<p>插件最终要组合成一个可运行产品。下面看 <code>dsh web</code> 到底如何把三百多个包中的一部分装起来。</p>
+
+<hr />
+
+<h2 id="1320-分钟启动profilebundle-与-patch">13–20 分钟：启动、Profile、Bundle 与 Patch</h2>
+
+<h3 id="目标-2">目标</h3>
+
+<p>讲清楚配置不是一棵固定 YAML，而是有序 patch layering。</p>
+
+<h3 id="讲稿-2">讲稿</h3>
+
+<p>CLI 入口在 <code>apps/cli/src/bin.ts</code>。<code>runCli()</code> 先解析参数，然后分成 profile、plugin、dump-config 和 dump-config-schema。我们平时运行 <code>dsh web</code>，实际进入 profile boot。</p>
+
+<p>Profile 是一个运行产品的组合定义，保存在 Harness home。内置有 web、headless、sdk、sdk-minimal 和 acp。Profile 不直接写出整棵插件树，而是声明 bundle 列表。</p>
+
+<p>例如 web 等于 base bundle 加 web-app bundle。Base 提供模型、工具、Session、压缩、沙箱等公共能力，web-app 再增加 Web Host 与客户端相关插件。</p>
+
+<p>配置叠加顺序很关键：先是 bundle patches，再是 profile 自己的 patch，再是 home 级 patch，再是命令行 <code>--patch</code>。后层覆盖前层。因此排查“为什么这个工具出现了”时，不能只看 base YAML，而要看最终 composed config。</p>
+
+<p><code>runProfile()</code> 还会冻结本次启动的环境快照，安装代理，准备 package runtime resolution，然后调用 <code>boot()</code>。<code>boot()</code> 创建根 Context、加载 Cordis Loader、挂载 root Include、等待插件树稳定，最后审计关键条目。比如 profile 中存在并启用了 <code>agent-loop</code>，它却没激活，启动必须失败；可选插件失败则告警并保留成功的兄弟插件。</p>
+
+<p>这类 fail-loud 行为很重要。Agent 系统最危险的状态之一是“看起来启动成功，但审批插件、持久化插件或安全插件其实没加载”。DSH 对关键入口选择显式失败。</p>
+
+<h3 id="建议现场演示">建议现场演示</h3>
+
+<pre><code class="language-bash">dsh --profile web --dump-config
+</code></pre>
+
+<p>讲解如何从输出查找：</p>
+
+<ul>
+  <li><code>agent-loop</code></li>
+  <li><code>llm-deepseek</code></li>
+  <li><code>tools</code></li>
+  <li><code>spill-policy</code></li>
+  <li><code>compaction-basic</code></li>
+  <li><code>sandbox-policy</code></li>
+</ul>
+
+<p>不要在生产或包含凭据的环境直接展示完整配置。</p>
+
+<h3 id="过渡-2">过渡</h3>
+
+<p>插件树启动后，真正处理一条用户消息的是 AgentLoop。下面进入核心调用链。</p>
+
+<hr />
+
+<h2 id="2032-分钟agentloopturn-与-step">20–32 分钟：AgentLoop、Turn 与 Step</h2>
+
+<h3 id="目标-3">目标</h3>
+
+<p>让听众能沿源码追踪从输入到下一次模型请求。</p>
+
+<h3 id="讲稿-3">讲稿</h3>
+
+<p>核心类是 <code>ReactLoopAgent</code>。它只有三个宏观阶段：idle、maintenance 和 running。用户输入进入 inbox，分成 next-turn 和 next-step。</p>
+
+<p><code>followup</code> 是下一轮普通用户输入；<code>steer</code> 是希望尽快进入下一 step 的方向调整；<code>inject</code> 也是 next-step，但不会主动唤醒，适合文件变化或后台上下文等待下一次自然请求。</p>
+
+<p>Agent 被唤醒后，<code>kick()</code> 循环执行 <code>turn()</code>。每个 turn 先写 <code>turn/start</code>，再领取输入并执行 <code>preStep()</code>。这里先组装 system prompt 和 tool schema，再触发 <code>agent/pre-step</code> waterfall。插件可以拒绝本 step，也可以改写消息，例如压缩插件就在这里检查上下文压力。</p>
+
+<p>如果输入被接纳，就写 <code>step/start</code> 并进入 <code>step()</code>。一个 step 的定义是“一次模型请求加这次请求产生的工具调用”。</p>
+
+<p><code>step()</code> 的顺序非常讲究。先运行 <code>agent/request</code>，再执行 <code>llm.prepareCall()</code>。只有实际 provider route 和能力确定后，才协调 system prompt，写入用户消息，记录 request header/context，然后从 Session 派生 history。</p>
+
+<p>为什么不先把 user message 写进去？因为 request middleware 或 adapter prepare 可能异步失败或被取消。DSH 希望在真正接纳请求前，日志里不出现一半成功的输入。</p>
+
+<p>模型流返回时，系统把 reasoning、text、tool call 组装成 AssistantStreamAttempt。成功后落 <code>assistant/message</code>；失败并准备重试时落 <code>assistant/attempt</code>，它用于审计但不进入下一次模型历史。中途取消且用户已经看到一部分输出时，则把可见前缀记录成 <code>interrupted: true</code> 的 assistant message。这样下一次请求知道用户见过什么。</p>
+
+<p>如果 assistant 没有 tool call，step 完成；有 tool call，就进入工具调度。工具结果写入 Session 后，下一 step 再从 Session 派生完整历史。</p>
+
+<p>Turn 结束前还有 <code>agent/turn-stopping</code> 扩展点。插件可以在这里注入工作让 turn 继续。因为默认没有总 turn budget，生产部署应该在这里或相邻扩展点加总成本、总步骤、总时长限制。</p>
+
+<h3 id="建议展示的源码">建议展示的源码</h3>
+
+<ul>
+  <li><code>ReactLoopAgent.turn()</code>：<code>packages/core/agent-loop/src/agent.ts:294-378</code></li>
+  <li><code>ReactLoopAgent.step()</code>：<code>:380-526</code></li>
+  <li><code>prepareRequest()</code>：<code>:528-578</code></li>
+  <li><code>buildRequest()</code>：<code>:580-646</code></li>
+</ul>
+
+<h3 id="过渡-3">过渡</h3>
+
+<p>目前我们看到的日志很多，但模型并不读取整个日志。下面看 Session 如何同时做到“历史不丢”和“模型上下文可替换”。</p>
+
+<hr />
+
+<h2 id="3240-分钟session-event-sourcing-与-surface">32–40 分钟：Session Event Sourcing 与 Surface</h2>
+
+<h3 id="目标-4">目标</h3>
+
+<p>解释 append-only log、surface replacement 和 deriveMessages。</p>
+
+<h3 id="讲稿-4">讲稿</h3>
+
+<p>DSH 的 Session 不是一个可随意修改的 messages 数组，而是一串 seq 连续的事件。turn、step、user、assistant、tool、request header 都是事件。</p>
+
+<p>最重要的规则叫 “Model-visible means logged”。任何进入模型的内容都必须能够从日志重建。如果插件偷偷在内存中给 request 拼了一段内容，却不留事件，那么重启、fork、回放、压缩和 UI 都会看到不同世界。</p>
+
+<p>但 append-only 日志遇到一个问题：我们要压缩历史，怎么删除旧消息？DSH 的答案是不删日志，而是在日志之上维护 surface。</p>
+
+<p>一个模型可见事件携带 <code>surfaceOp</code>。普通消息是 append；压缩结果是 replace，声明它替换当前 surface 上从 startSeq 到 endSeq 的一段。替换事件还要在 <code>sourceEventSeqs</code> 中列出所有被覆盖节点。</p>
+
+<p>这样原始事件仍存在，可做审计、回放和迁移；模型只读取 surface 当前节点。</p>
+
+<p><code>deriveMessages()</code> 就是这个投影入口。只有 system、developer、user、assistant 和 tool result 进入模型；turn boundary、失败 attempt 等都不进入。纯 append 时增量更新；发生 replacement 时 generation 变化，缓存重建。</p>
+
+<p>这个设计比直接把 messages 数组就地改写更复杂，但解决了四个问题：可追溯、可恢复、可迁移、可验证。压缩摘要还能明确证明它来自哪些原消息。</p>
+
+<h3 id="页面演示-2">页面/演示</h3>
+
+<pre><code class="language-text">Event log:  [u1][a1][tool1][result1][u2][summary]
+Surface:                                  [summary] replaces u1..result1, then [u2]
+</code></pre>
+
+<p>强调原始节点仍在 log 中，只是被 shadow。</p>
+
+<h3 id="过渡-4">过渡</h3>
+
+<p>有了 Session 事实源，再看最容易失控的部分：工具结果和整个上下文变大时，系统如何逐层处理。</p>
+
+<hr />
+
+<h2 id="4050-分钟工具流水线与上下文控制">40–50 分钟：工具流水线与上下文控制</h2>
+
+<h3 id="目标-5">目标</h3>
+
+<p>回答大结果、50% 压缩仍不够、溢出重试等工程问题。</p>
+
+<h3 id="讲稿-5">讲稿</h3>
+
+<p>先看工具流水线。模型输出的 call 不会直接执行。参数先解析和冻结，然后经过 <code>tools/pre-execute</code>。这里可以做 allow、deny、ask。之后还有单调 guard：一旦拒绝，后续插件不能重新放行。</p>
+
+<p>真正执行在 <code>tools/execute</code> around-waterfall 中，timeout、retry、metrics 都可以包在这里。执行完成后做 output schema 校验、渲染、<code>projectContent</code>，再进入 <code>tools/post-execute</code>。Spill policy 就挂在 post-execute。最后才运行工具自己的 finalize，然后发布 immutable result。</p>
+
+<p>工具调度支持并发，但只并发工具 body。准入和结果 commit 仍按模型顺序。Exclusive call 形成 barrier；parallel-safe calls 使用默认上限 10 的 rolling pool。取消时，不再启动后续工具，但会等待已经启动的工具收敛，并为未启动调用生成固定错误结果。</p>
+
+<p>接下来回答最常见的问题：一个工具结果太大，压缩 50% 仍然塞不进窗口怎么办？</p>
+
+<p>DSH 并没有一条“所有内容压缩 50%”的规则。它用了三层不同机制。</p>
+
+<p>第一层是 spill，处理当前工具结果。完整结果写到文件，模型只拿首尾预览和路径。这里的 50% 指剩余预览预算在头尾之间均分，不是压缩比例。</p>
+
+<p>第二层是 tool-result pruner，处理已经在历史里的大工具结果。默认 8192 字符以上保留头 4096、尾 1024，中间放 marker。它不调用模型。</p>
+
+<p>第三层才是 conversation compaction，选择最老的安全历史区域，让模型生成结构化 checkpoint，并用 surface replacement 替换旧区域。</p>
+
+<p>如果 provider 已明确报 context overflow，系统绕过普通阈值，尽可能做最大安全压缩，再有限重试。默认 overflow recovery 只有一次。</p>
+
+<p>最关键的是：如果不可压缩部分本身太大，例如 system prompt、工具 schema、输出预留，或者只有一个不可拆单元，系统不会无限摘要。没有新的 surface replacement，或者重试耗尽，就保留原始 <code>CONTEXT_WINDOW_EXCEEDED</code>。</p>
+
+<p>这给我们的工程建议是：大结果首先改工具协议，支持分页、字段过滤、结果句柄和按需读取；不要把所有压力都交给对话摘要。摘要是最后一道防线，不是数据传输协议。</p>
+
+<h3 id="建议现场演示-1">建议现场演示</h3>
+
+<p>展示 base 配置：</p>
+
+<pre><code class="language-yaml">spill-policy.maxInlineTokens: 12500
+tool-result-pruner.thresholdChars: 8192
+headChars: 4096
+tailChars: 1024
+</code></pre>
+
+<p>展示 compaction 公式：</p>
+
+<pre><code class="language-text">trigger = floor(min(W*0.8, W-O-headroom))
+</code></pre>
+
+<h3 id="过渡-5">过渡</h3>
+
+<p>上下文控制解决“能不能继续跑”，但还没有回答“执行是否安全”。最后看执行世界和安全边界。</p>
+
+<hr />
+
+<h2 id="5056-分钟执行世界审批与子-agent">50–56 分钟：执行世界、审批与子 Agent</h2>
+
+<h3 id="目标-6">目标</h3>
+
+<p>说明 sandbox 不是万能边界，子 Agent 与 MCP 也有独立权限问题。</p>
+
+<h3 id="讲稿-6">讲稿</h3>
+
+<p>DSH 把文件系统和 subprocess 视为同一个执行世界。Bash 最终调用 <code>ctx.subprocess.spawn</code>；在 sandbox 模式下先通过 <code>ctx.sandbox.confine</code> 包装 argv。文件写入通过 <code>ctx.fs</code> 和 sandbox provider 检查 workspace、canonical path 和 symlink。</p>
+
+<p>默认是 workspace-write 加 ask。权限升级只对更宽权限生效，而且一般是 allowed-once。审批服务缺失、用户拒绝、取消或无答复都失败。</p>
+
+<p>但官方安全声明非常明确：项目没有安全审计，sandbox 和审批只能降低风险，不能保证隔离。网络、凭据、第三方插件、MCP stdio、VM 中的动态代码都是需要单独评估的攻击面。</p>
+
+<p>子 Agent 也不是“自动安全”。In-process child 有独立 scope，子 Agent 默认不能直接向用户申请审批；fork child 继承一段历史以复用上下文。外部 ACP/Claude/Codex provider 可能有自己的工具和权限模型，不能想当然地认为父 Agent 的 tool filter 自动覆盖外部 runtime。</p>
+
+<p>MCP 的 HTTP 路径和 stdio 路径也不同。特别是 stdio 进程由 MCP SDK 启动时，不天然获得 DSH subprocess provider 的完整进程树和 shell sandbox 行为。因此把 MCP server 接进来前要做单独的进程与凭据审计。</p>
+
+<h3 id="过渡-6">过渡</h3>
+
+<p>最后四分钟总结这套架构最值得复用的原则，并回答常见问题。</p>
+
+<hr />
+
+<h2 id="5660-分钟总结与-qa-引导">56–60 分钟：总结与 Q&amp;A 引导</h2>
+
+<h3 id="讲稿-7">讲稿</h3>
+
+<p>今天可以带走五个结论。</p>
+
+<p>第一，Harness 是 Agent 的操作系统层。模型只提出动作，Harness 决定是否执行、如何记录、如何恢复。</p>
+
+<p>第二，DeepSeek Harness 的核心竞争力不是某个超级 Agent 类，而是插件树、能力接缝和可逆生命周期。它允许模型、工具、存储、执行环境和 UI 分别演化。</p>
+
+<p>第三，Session event log 是全系统事实源，surface 是模型当前看到的可替换视图。原始事实和模型上下文不再是同一个可变数组。</p>
+
+<p>第四，上下文治理必须分层。当前大结果用 spill，历史大结果用确定性裁剪，整体历史用摘要；不可拆部分超窗时必须显式失败。</p>
+
+<p>第五，灵活性不等于安全性。Developer preview、未审计、第三方插件和动态执行决定了生产部署必须增加外部隔离与权限治理。</p>
+
+<p>如果团队准备借鉴，我建议先复用三项：</p>
+
+<ol>
+  <li>Model-visible 必须 logged；</li>
+  <li>工具流水线固定阶段化；</li>
+  <li>大结果使用外部制品与句柄，而不是持续向窗口塞摘要。</li>
+</ol>
+
+<p>如果准备直接采用 DSH，则先做三个 POC：</p>
+
+<ol>
+  <li>用自己的模型路由跑一套 recorded session replay；</li>
+  <li>用真实大结果验证 spill、pruner 和 compaction；</li>
+  <li>在一次性环境验证 sandbox、MCP、凭据与审批的组合边界。</li>
+</ol>
+
+<p>下面进入问题讨论。</p>
+
+<hr />
+
+<h1 id="21-faq">21. FAQ</h1>
+
+<h2 id="q1deepseek-harness-与-deepseek-模型是什么关系">Q1：DeepSeek Harness 与 DeepSeek 模型是什么关系？</h2>
+
+<p>Harness 是模型外层运行系统。它可接 DeepSeek 官方 adapter，也可同时挂多 provider adapter。模型生成文本和工具调用意图，Harness 负责组装请求、执行工具、记录状态与恢复。</p>
+
+<h2 id="q2它和普通-react-agent-最大区别是什么">Q2：它和普通 ReAct Agent 最大区别是什么？</h2>
+
+<p>普通 ReAct 示例通常只有一个内存 messages 数组和 while-loop。DSH 还包含插件生命周期、事件溯源 Session、profile composition、工具政策、沙箱、持久化、迁移、压缩、子 Agent、UI/SDK 和测试基础设施。</p>
+
+<h2 id="q3为什么-agentloop-也要做成插件">Q3：为什么 AgentLoop 也要做成插件？</h2>
+
+<p>因为不同产品可能需要不同驱动语义。UI、工具和 hook 依赖抽象 <code>Agent</code>/<code>AgentRegistry</code>，不应直接绑定默认 loop。</p>
+
+<h2 id="q4为什么不用一个-di-容器就够了">Q4：为什么不用一个 DI 容器就够了？</h2>
+
+<p>普通 DI 主要解决构造依赖。Cordis 还解决运行中服务出现/消失、插件激活/停用、effect 撤销、事件 waterfall 和 HMR 生命周期。</p>
+
+<h2 id="q5waterfall-和普通事件有什么区别">Q5：Waterfall 和普通事件有什么区别？</h2>
+
+<p>Waterfall 是 around-middleware。Listener 调用 <code>next()</code> 才把控制交给下游；不调用可短路并返回自己的结果。它适合请求改写、工具策略和 retry 决策。</p>
+
+<h2 id="q6turn-与-step-有什么区别">Q6：Turn 与 Step 有什么区别？</h2>
+
+<p>Step 是一次模型请求及其工具调用；Turn 从领取一条用户输入开始，可包含多个 step，直到没有工具、steering、goal 或其他 next-step 工作。</p>
+
+<h2 id="q7为什么重试不重新运行-agentpre-step">Q7：为什么重试不重新运行 <code>agent/pre-step</code>？</h2>
+
+<p>因为 retry 属于同一个已接纳 step。重新 assembly 和 pre-step 可能重复注入上下文或产生不同用户 admission。DSH 重用同一 assembly，只在需要时让 compaction 改变 surface。</p>
+
+<h2 id="q8流式输出中途取消历史会不会丢">Q8：流式输出中途取消，历史会不会丢？</h2>
+
+<p>如果已有可见内容，会以 <code>assistant/message</code> 和 <code>interrupted: true</code> 落日志；没有可见内容则记录 attempt。下一请求能看到用户已经见过的前缀。</p>
+
+<h2 id="q9工具失败会结束-turn-吗">Q9：工具失败会结束 Turn 吗？</h2>
+
+<p>通常不会。Unknown、deny、throw、timeout 等会成为 error tool result，由模型决定下一步。工具流水线插件自身抛出且未归一化的错误可能结束当前 turn。</p>
+
+<h2 id="q10多个工具如何并发">Q10：多个工具如何并发？</h2>
+
+<p>Parallel-safe calls 进入有界 rolling pool，exclusive calls 是 barrier。工具 body 可并发，但准入、结果 finalize 和日志 commit 保持模型顺序。</p>
+
+<h2 id="q11为什么未执行的工具也要写错误结果">Q11：为什么未执行的工具也要写错误结果？</h2>
+
+<p>模型已输出 tool call。若日志只有 call 没有配对 result，恢复和 provider replay 可能非法。取消时用 <code>ABORTED_BEFORE_DISPATCH</code> 补齐配对。</p>
+
+<h2 id="q12session-为什么不用直接保存-messages">Q12：Session 为什么不用直接保存 messages？</h2>
+
+<p>事件日志同时需要保存请求边界、失败 attempt、工具原始参数、压缩来源、持久化和回放事实。messages 只是日志 surface 的一个投影。</p>
+
+<h2 id="q13compaction-会删除原始历史吗">Q13：Compaction 会删除原始历史吗？</h2>
+
+<p>不会。它追加 replacement 事件，旧节点仍在 append-only log 中，只是不再出现在当前模型 surface。</p>
+
+<h2 id="q14compaction-会压缩-system-prompt-和工具-schema-吗">Q14：Compaction 会压缩 system prompt 和工具 schema 吗？</h2>
+
+<p>不会。system head 被保护，工具 schema 属于 request header，不在可摘要的普通历史 span 中。它们本身太大时要减少 Prompt/工具集或换更大窗口。</p>
+
+<h2 id="q15工具结果压缩-50仍不够怎么办">Q15：工具结果“压缩 50%”仍不够怎么办？</h2>
+
+<p>先澄清：50% 是 spill 预览头尾预算分配，不是通用压缩率。完整结果应落盘并返回路径；历史结果再裁剪；整体历史再摘要。不可拆部分仍超窗时应显式失败，而不是无限重试。</p>
+
+<h2 id="q16为什么-spill-失败时反而保留完整结果">Q16：为什么 spill 失败时反而保留完整结果？</h2>
+
+<p>因为返回不可读路径会让信息永久丢失。当前策略选择 fail-open 保留原始内容并告警；部署方应监控该告警并修复 storage/locator 配置。</p>
+
+<h2 id="q17如何避免-spill-notice-本身太大">Q17：如何避免 spill notice 本身太大？</h2>
+
+<p>缩短持久化路径或改用短 opaque handle；避免在 notice 里输出冗长 URI；给 notice 保留最低预算；必要时把读取工具改成 <code>result_get(handle, offset, limit)</code>。</p>
+
+<h2 id="q18token-meter-是精确-tokenizer-吗">Q18：Token Meter 是精确 tokenizer 吗？</h2>
+
+<p>不总是。部分路径使用启发式字符估算；provider usage 最权威。CJK 和大型 JSON Schema 可能被低估，应留足 headroom 并用真实流量校准。</p>
+
+<h2 id="q19profilebundlepatch-怎么理解">Q19：Profile、Bundle、Patch 怎么理解？</h2>
+
+<p>Profile 是一个产品运行实例；Bundle 是可分发配置层；Patch 是对有 id 插件条目的替换、禁用或插入。最终运行树是有序 patch 的合成结果。</p>
+
+<h2 id="q20怎样查看某台机器实际运行的插件树">Q20：怎样查看某台机器实际运行的插件树？</h2>
+
+<p>使用 <code>dsh --profile &lt;name&gt; --dump-config</code>。不要只看仓库里的 base bundle，因为 profile、home 和命令行 patch 都可能覆盖它。</p>
+
+<h2 id="q21如何增加一个模型-provider">Q21：如何增加一个模型 provider？</h2>
+
+<p>实现 LLM adapter，注册到 <code>ctx.llm</code>；明确模型能力、context window、retry policy、错误归一、流协议和 system prompt update 能力。不要修改 AgentLoop。</p>
+
+<h2 id="q22如何增加一个工具">Q22：如何增加一个工具？</h2>
+
+<p>用 <code>defineTool()</code> 声明 name、description、参数、输出、执行、并发分类和超时；注册到 <code>ctx.tools</code>；同时补工具 UI、错误语义、权限、单测和 recorded-session snapshot。</p>
+
+<h2 id="q23sandbox-是否足够在生产执行不可信代码">Q23：Sandbox 是否足够在生产执行不可信代码？</h2>
+
+<p>官方答案是否定的。它只是降低风险，不是唯一安全控制。仍需容器/VM、最小权限、网络隔离、短期凭据和外部审计。</p>
+
+<h2 id="q24subagent-会自动继承父-agent-的所有限制吗">Q24：Subagent 会自动继承父 Agent 的所有限制吗？</h2>
+
+<p>不能这样假设。In-process provider 有显式继承规则；外部 provider 有自己的工具与权限系统。每个 provider 都要审查 tool filter、sandbox、approval 和 recursion depth 支持。</p>
+
+<h2 id="q25mcp-工具是否和原生工具一样安全">Q25：MCP 工具是否和原生工具一样安全？</h2>
+
+<p>它们进入相同 ToolRuntime 策略链，但 server transport 和进程边界不同。特别是 stdio server 的创建、环境和进程树管理需要单独审查。</p>
+
+<h2 id="q26为什么没有内置最大-turn-步数">Q26：为什么没有内置最大 Turn 步数？</h2>
+
+<p>默认 Loop 把停止策略留给插件和部署。生产环境应增加 wall-clock、steps、tool calls、tokens 和 cost 多维预算。</p>
+
+<h2 id="q27如何保证插件卸载不泄漏-listener-和工具">Q27：如何保证插件卸载不泄漏 listener 和工具？</h2>
+
+<p>注册必须通过 <code>ctx.effect()</code> / <code>ctx.on()</code> 并返回 disposer；相关资源放进同一个 effect，确保按预期顺序逆向释放。</p>
+
+<h2 id="q28为什么-session-format-版本管理这么严格">Q28：为什么 Session format 版本管理这么严格？</h2>
+
+<p>因为会话是用户已发布的数据。旧 runtime 如果不能完整理解新结构，就可能静默恢复出错误上下文。版本与相邻迁移避免“能 parse 但语义错误”。</p>
+
+<h2 id="q29生产采用前最需要做什么">Q29：生产采用前最需要做什么？</h2>
+
+<p>固定 commit/profile/patch；运行自己的回放测试；验证真实 provider 的超窗错误分类；压测大工具结果；审计 plugin、MCP、sandbox 和 credentials；在隔离环境运行。</p>
+
+<h2 id="q30这个项目最值得其他-agent-框架借鉴的设计是什么">Q30：这个项目最值得其他 Agent 框架借鉴的设计是什么？</h2>
+
+<p>不是插件数量，而是三项不变量：模型可见状态可从日志重建、注册都有生命周期 disposer、上下文替换保留来源关系。</p>
+
+<hr />
+
+<h2 id="22-结论与建议">22. 结论与建议</h2>
+
+<h3 id="核心结论">核心结论</h3>
+
+<ol>
+  <li><strong>DeepSeek Harness 是完整 Agent Runtime，不是模型封装层。</strong> 置信度：高。</li>
+  <li><strong>Cordis 插件树和可逆 effect 是其架构中心；AgentLoop 只是其中一个可替换插件。</strong> 置信度：高。</li>
+  <li><strong>Session append-only log + surface replacement 是持久化、压缩和回放的共同基础。</strong> 置信度：高。</li>
+  <li><strong>大工具结果采用 spill、历史裁剪和对话摘要三层处理，不存在无限 50% 压缩策略。</strong> 置信度：高。</li>
+  <li><strong>安全能力属于风险降低而非完整隔离，当前 developer preview 不应未经外部控制直接承担高风险生产执行。</strong> 置信度：高。</li>
+</ol>
+
+<h3 id="给-agent-平台研发团队的行动建议">给 Agent 平台研发团队的行动建议</h3>
+
+<ol>
+  <li>先把工具输出协议改成分页、过滤、句柄、按需读取；</li>
+  <li>让每次模型请求都能从 durable events 重建；</li>
+  <li>固化 tool pipeline 阶段，避免每个工具自行实现审批、timeout 和日志；</li>
+  <li>对 compaction 设置“必须实际缩小才允许重试”的不变量；</li>
+  <li>对每个 provider 归一 context overflow、rate limit、auth、timeout；</li>
+  <li>为 turn 增加总步数、时间、token、成本预算；</li>
+  <li>把 sandbox、network、credential 和 plugin trust 分开建模；</li>
+  <li>使用 recorded session replay 做 Agent 行为回归测试。</li>
+</ol>
+
+<hr />
+
+<h2 id="23-参考资料">23. 参考资料</h2>
+
+<h3 id="a-级官方源码与文档">A 级：官方源码与文档</h3>
+
+<ol>
+  <li>DeepSeek-AI, <em>DeepSeek Harness repository</em>, https://github.com/deepseek-ai/deepseek-harness ，访问日期 2026-10-06。</li>
+  <li>DeepSeek Harness, <em>Architecture</em>, https://deepseek-harness.github.io/deepseek-harness/architecture ，访问日期 2026-10-06。</li>
+  <li>DeepSeek Harness, <em>Cordis Primer</em>, https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/docs/cordis-primer.md ，访问日期 2026-10-06。</li>
+  <li>DeepSeek Harness, <em>Agent Loop README</em>, https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/packages/core/agent-loop/README.md ，访问日期 2026-10-06。</li>
+  <li>DeepSeek Harness, <em>Compaction Basic README</em>, https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/packages/compaction/compaction-basic/README.md ，访问日期 2026-10-06。</li>
+  <li>DeepSeek Harness, <em>Spill Policy README</em>, https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/packages/spill/spill-policy/README.md ，访问日期 2026-10-06。</li>
+  <li>DeepSeek Harness, <em>Safety Notice</em>, https://github.com/deepseek-ai/deepseek-harness/blob/46a7f68b0922371ce7144b668b90e377d8e799f4/SAFETY.md ，访问日期 2026-10-06。</li>
+  <li>Yifan Shi, Wei Zhang, Tianyi Cui, <em>A Programming Paradigm for Spatiotemporal Composability</em>, https://arxiv.org/abs/2608.25512 ，2026。</li>
+</ol>
+
+<h3 id="版本限定">版本限定</h3>
+
+<p>本报告中的函数名、配置默认值和行号均针对 commit <code>46a7f68b0922371ce7144b668b90e377d8e799f4</code>。项目迭代快速，使用其他版本时应重新核对源码。</p>
+
+<hr />
+
+<h2 id="24-研究与验证记录">24. 研究与验证记录</h2>
+
+<h3 id="检索与阅读路径">检索与阅读路径</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>轮次</th>
+      <th>目的</th>
+      <th>资料</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>1</td>
+      <td>辨识项目身份</td>
+      <td>DeepSeek-AI 官方 GitHub、README、远端与 commit</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td>建立架构框架</td>
+      <td><code>docs/architecture.md</code>、Cordis Primer、Cordis 论文</td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td>还原运行流程</td>
+      <td>CLI、profile boot、app boot、AgentLoop、Session、Tools</td>
+    </tr>
+    <tr>
+      <td>4</td>
+      <td>深挖上下文治理</td>
+      <td>spill、pruner、compaction、DeepSeek adapter</td>
+    </tr>
+    <tr>
+      <td>5</td>
+      <td>安全与协作</td>
+      <td>shell、fs、subprocess、sandbox、approval、subagent、jobs、MCP</td>
+    </tr>
+    <tr>
+      <td>6</td>
+      <td>交叉验证</td>
+      <td>package README、base bundle 默认配置、测试路径和版本记录</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="已验证的关键事实">已验证的关键事实</h3>
+
+<ul>
+  <li>官方项目身份：本地 <code>origin</code>、官方 README 和 GitHub 仓库一致；</li>
+  <li>版本：commit、tag 和 package version 一致；</li>
+  <li>Turn/Step 主链：架构文档与 <code>ReactLoopAgent</code> 实现一致；</li>
+  <li>工具结果三层控制：base 配置、spill README、compaction README 与源码一致；</li>
+  <li>Session 事实源：类型定义、append、surface fold 与 deriveMessages 一致；</li>
+  <li>安全边界：SAFETY 与 sandbox/approval 执行路径一致。</li>
+</ul>
+
+<h3 id="未执行项">未执行项</h3>
+
+<p>本次为只读源码研究，没有执行依赖安装、构建、单测、Real API e2e、未知脚本，也没有修改本地仓库。测试结论来自测试代码与项目文档，而非本机实跑结果。</p>
+
+        </article>
+      </div>
+    </div>
+  </main>
+
+  <!-- Right: Category Articles -->
+  <aside class="post-category-sidebar" role="navigation" aria-label="分类文章列表">
+    <div class="category-panel">
+      
+      
+      <div class="category-sidebar-title">
+        <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
+        Agent
+      </div>
+      <ul class="category-article-list">
+        
+        
+        <li class="">
+          <a href="/2026/10/04/agent/Muse/" title="Muse">
+            <span class="article-title">Muse</span>
+            <span class="article-date">10-04</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/10/04/agent/Observability/" title="Observability">
+            <span class="article-title">Observability</span>
+            <span class="article-date">10-04</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/10/04/agent/RSI/" title="RSI">
+            <span class="article-title">RSI</span>
+            <span class="article-date">10-04</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/09/20/agent/Clarity/" title="Clarity">
+            <span class="article-title">Clarity</span>
+            <span class="article-date">09-20</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/09/20/agent/ClaudeCode-%E6%A0%B8%E5%BF%83%E6%B5%81%E7%A8%8B/" title="ClaudeCode 核心流程">
+            <span class="article-title">ClaudeCode 核心流程</span>
+            <span class="article-date">09-20</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/09/20/agent/Codex/" title="Codex">
+            <span class="article-title">Codex</span>
+            <span class="article-date">09-20</span>
+          </a>
+        </li>
+        
+        <li class="active">
+          <a href="/2026/09/20/agent/DeepSeek-Harness/" title="DeepSeek Harness">
+            <span class="article-title">DeepSeek Harness</span>
+            <span class="article-date">09-20</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/09/20/agent/Hermes/" title="Hermes">
+            <span class="article-title">Hermes</span>
+            <span class="article-date">09-20</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/09/20/agent/Orchestration/" title="Orchestration">
+            <span class="article-title">Orchestration</span>
+            <span class="article-date">09-20</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/09/20/agent/mem0/" title="mem0">
+            <span class="article-title">mem0</span>
+            <span class="article-date">09-20</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/09/14/agent/Agent-Ultimate-Edition/" title="Agent Ultimate Edition">
+            <span class="article-title">Agent Ultimate Edition</span>
+            <span class="article-date">09-14</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/08/24/agent/%E9%95%BF%E7%A8%8B%E4%BB%BB%E5%8A%A1/" title="长程任务">
+            <span class="article-title">长程任务</span>
+            <span class="article-date">08-24</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/08/21/agent/RAG/" title="RAG">
+            <span class="article-title">RAG</span>
+            <span class="article-date">08-21</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/08/21/agent/%E4%B8%8A%E4%B8%8B%E6%96%87%E5%B7%A5%E7%A8%8B/" title="上下文工程">
+            <span class="article-title">上下文工程</span>
+            <span class="article-date">08-21</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/08/21/agent/%E8%AE%B0%E5%BF%86/" title="记忆">
+            <span class="article-title">记忆</span>
+            <span class="article-date">08-21</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/08/21/agent/Agent-RL/" title="Agent RL">
+            <span class="article-title">Agent RL</span>
+            <span class="article-date">08-21</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/08/21/agent/MCP/" title="MCP">
+            <span class="article-title">MCP</span>
+            <span class="article-date">08-21</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/08/10/agent/Plan-and-Solve/" title="Plan and Solve">
+            <span class="article-title">Plan and Solve</span>
+            <span class="article-date">08-10</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/08/10/agent/Reflection/" title="Reflection">
+            <span class="article-title">Reflection</span>
+            <span class="article-date">08-10</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/07/31/agent/ReAct/" title="ReAct">
+            <span class="article-title">ReAct</span>
+            <span class="article-date">07-31</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/07/30/agent/Scaling-Laws%E4%B8%8E%E6%A8%A1%E5%9E%8B%E5%B9%BB%E8%A7%89/" title="Scaling Laws">
+            <span class="article-title">Scaling Laws</span>
+            <span class="article-date">07-30</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/07/30/agent/%E6%A8%A1%E5%9E%8B%E9%80%89%E6%8B%A9%E7%9A%84%E8%80%83%E9%87%8F/" title="模型选择的考量">
+            <span class="article-title">模型选择的考量</span>
+            <span class="article-date">07-30</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/07/30/agent/Tokenizer/" title="Tokenizer">
+            <span class="article-title">Tokenizer</span>
+            <span class="article-date">07-30</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/07/23/agent/%E6%8F%90%E7%A4%BA%E5%B7%A5%E7%A8%8B/" title="提示工程">
+            <span class="article-title">提示工程</span>
+            <span class="article-date">07-23</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/06/09/agent/%E5%A4%A7%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E9%A9%B1%E5%8A%A8%E7%9A%84%E6%99%BA%E8%83%BD%E4%BD%93/" title="初识智能体">
+            <span class="article-title">初识智能体</span>
+            <span class="article-date">06-09</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/04/23/agent/Openclaw/" title="Openclaw">
+            <span class="article-title">Openclaw</span>
+            <span class="article-date">04-23</span>
+          </a>
+        </li>
+        
+      </ul>
+      
+    </div>
+  </aside>
+</div>
+
+<!-- Theme Toggle Button -->
+<button type="button" class="theme-toggle" aria-label="Toggle Theme">
+  <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+  </svg>
+  <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="12" cy="12" r="5"></circle>
+    <line x1="12" y1="1" x2="12" y2="3"></line>
+    <line x1="12" y1="21" x2="12" y2="23"></line>
+    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+    <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+    <line x1="1" y1="12" x2="3" y2="12"></line>
+    <line x1="21" y1="12" x2="23" y2="12"></line>
+    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+    <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+  </svg>
+</button>
+
+<!-- Back to Top Button -->
+<button type="button" class="back-to-top" aria-label="Back to Top">
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <polyline points="18 15 12 9 6 15"></polyline>
+  </svg>
+</button>
+
+
+    <!-- Site Footer -->
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-content">
+      <div class="footer-info">
+        <h4>xinfan9's blog</h4>
+        <p>Actually, less is more!</p>
+      </div>
+      <div class="footer-links">
+        <a href="https://github.com/xinfan9/" target="_blank" title="GitHub">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+        </a>
+        <a href="mailto:11411619@qq.com" title="Email">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+        </a>
+        <a href="/feed.xml" title="RSS">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11a9 9 0 0 1 9 9"/><path d="M4 4a16 16 0 0 1 16 16"/><circle cx="5" cy="19" r="1"/></svg>
+        </a>
+      </div>
+      <div class="footer-copyright">
+        <p>&copy; 2026 xinfan9. Built with Jekyll.</p>
+      </div>
+    </div>
+  </div>
+</footer>
+      
+    
+    <!-- Global Buttons (for non-post pages) -->
+    
+  </body>
+</html>
