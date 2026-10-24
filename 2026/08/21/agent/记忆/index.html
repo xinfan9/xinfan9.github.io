@@ -1,0 +1,1303 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+  <head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="Content-Language" content="zh-CN">
+	<title>记忆 - xinfan9's blog</title>
+
+	<link rel="icon" href="/styles/images/favicon.jpg">
+
+	<!-- Preconnect for CDN -->
+	
+	<link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+	<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+	
+
+
+	<!-- Inline Critical Reset (was index.css) -->
+	<style>
+		*,*::before,*::after{box-sizing:border-box}html{-ms-text-size-adjust:100%;-webkit-text-size-adjust:100%;-webkit-tap-highlight-color:rgba(0,0,0,0)}body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Microsoft YaHei",sans-serif;font-size:14px;line-height:1.42857143;color:#333;background-color:#f7f7f7}article,aside,details,figcaption,figure,footer,header,main,nav,section,summary{display:block}a{color:#43759e;text-decoration:none;background:transparent}a:hover,a:focus{color:#2c4d68;text-decoration:underline}a:focus{outline:thin dotted;outline-offset:-2px}img{vertical-align:middle;max-width:100%;height:auto}input,button,select,textarea{font-family:inherit;font-size:inherit;line-height:inherit}h1,h2,h3,h4,h5,h6{margin-top:0}.container{max-width:1200px;margin-left:auto;margin-right:auto;padding-left:15px;padding-right:15px}.clearfix::after{content:"";display:table;clear:both}.text-muted{color:#777}.sr-only{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0,0,0,0);border:0}
+	</style>
+
+	
+	<link rel="prefetch" as="image" href="/styles/images/api/background.webp">
+
+	<!-- Clarity Blog Theme -->
+	<link rel="stylesheet" href="/assets/css/clarity-blog.css?v=1792846386">
+
+	<!-- Prism.js Theme (non-blocking, only needed for code blocks) -->
+	
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" media="print" onload="this.media='all'" onerror="console.warn('Prism CSS load failed')">
+	
+	
+	<link rel="canonical" href="https://xinfang.site/2026/08/21/agent/%E8%AE%B0%E5%BF%86/">
+	<link rel="alternate" type="application/rss+xml" title="xinfan9's blog" href="https://xinfang.site/feed.xml">
+	
+	<meta name="description" content="
+  参考文档：https://javaguide.cn/ai-coding/principles/claude-code-memory.html
+
+">
+
+	<!-- Open Graph for social sharing -->
+	<meta property="og:title" content="记忆">
+	<meta property="og:description" content="
+  参考文档：https://javaguide.cn/ai-coding/principles/claude-code-memory.html
+
+">
+	<meta property="og:url" content="https://xinfang.site/2026/08/21/agent/%E8%AE%B0%E5%BF%86/">
+	<meta property="og:site_name" content="xinfan9's blog">
+	<meta property="og:type" content="article">
+	<meta property="article:published_time" content="2026-08-21T21:41:47+08:00">
+	
+	<meta property="og:image" content="https://xinfang.site/styles/images/api/background.webp">
+	<meta property="og:image:width" content="1200">
+	<meta property="og:image:height" content="630">
+	
+	<meta property="og:locale" content="zh_CN">
+
+	<!-- Twitter Card -->
+	<meta name="twitter:card" content="summary_large_image">
+	<meta name="twitter:title" content="记忆">
+	<meta name="twitter:description" content="
+  参考文档：https://javaguide.cn/ai-coding/principles/claude-code-memory.html
+
+">
+	<meta name="twitter:image" content="https://xinfang.site/styles/images/favicon.jpg">
+	
+	<!-- Theme color for mobile browsers -->
+	<meta name="theme-color" content="#0b72d9" media="(prefers-color-scheme: light)">
+	<meta name="theme-color" content="#0f172a" media="(prefers-color-scheme: dark)">
+
+	<!-- Prevent FOUC for theme -->
+	<script>
+		(function() {
+			const savedTheme = localStorage.getItem('theme');
+			const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+			if (savedTheme) {
+				document.documentElement.setAttribute('data-theme', savedTheme);
+			} else if (prefersDark) {
+				document.documentElement.setAttribute('data-theme', 'dark');
+			}
+		})();
+	</script>
+	
+	<!-- Prism.js only on post pages with code blocks -->
+	
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" defer></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js" defer></script>
+	
+
+	<!-- Mermaid.js for diagram rendering (conditional) -->
+	
+	<script defer src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+	
+
+	<!-- MathJax for LaTeX rendering (conditional) -->
+	
+
+	<!-- Blog Interactive Features -->
+	<script src="/assets/js/blog.js?v=1792846386" defer></script>
+
+	<!-- JSON-LD Structured Data -->
+	
+	<script type="application/ld+json">
+	{
+		"@context": "https://schema.org",
+		"@type": "BlogPosting",
+		"inLanguage": "zh-CN",
+		"headline": "记忆",
+		"image": "https://xinfang.site/styles/images/favicon.jpg",
+		"datePublished": "2026-08-21T21:41:47+08:00",
+		"dateModified": "2026-08-21T21:41:47+08:00",
+		"author": {
+			"@type": "Person",
+			"name": "xinfan9"
+		},
+		"publisher": {
+			"@type": "Organization",
+			"name": "xinfan9's blog",
+			"logo": {
+				"@type": "ImageObject",
+				"url": "https://xinfang.site/styles/images/favicon.jpg"
+			}
+		},
+		"mainEntityOfPage": {
+			"@type": "WebPage",
+			"@id": "https://xinfang.site/2026/08/21/agent/%E8%AE%B0%E5%BF%86/"
+		},
+		"keywords": "Agent",
+		"articleBody": "\n  参考文档：https://javaguide.cn/ai-coding/principles/claude-code-memory.html\n\n",
+		"description": "\n  参考文档：https://javaguide.cn/ai-coding/principles/claude-code-memory.html\n\n"
+	}
+	</script>
+	
+</head>
+
+  <body class="index">
+
+    <!-- Reading Progress Bar -->
+<div class="reading-progress" id="reading-progress"></div>
+
+<!-- Page Background -->
+<div class="post-background"></div>
+
+<div class="post-layout">
+  <!-- Left: TOC -->
+  <aside class="post-toc-sidebar" id="post-toc-sidebar" role="navigation" aria-label="文章目录">
+    <div class="toc-panel">
+      <div class="toc-title">
+        <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="12" x2="15" y2="12"></line><line x1="3" y1="18" x2="18" y2="18"></line></svg>
+        目录
+      </div>
+      <ul class="toc-list" id="toc-list"></ul>
+    </div>
+  </aside>
+
+  <!-- Center: Article -->
+  <main class="post-main">
+    <div class="panel docs-content">
+      <div class="wrapper">
+        <header class="post-header" role="banner">
+          <a href="https://xinfang.site/" class="back-home-link">
+            <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+            返回主页
+          </a>
+          <h1 class="post-title">记忆</h1>
+          <div class="post-meta-info">
+            <time class="meta-item meta-date" datetime="2026-08-21T21:41:47+08:00">
+              <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+              2026-08-21
+            </time>
+            
+            <time class="meta-item meta-update" datetime="2026-10-22T21:18:14+08:00">
+              <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 2.2"/></svg>
+              2026-10-22
+            </time>
+            
+            <span class="meta-item meta-author">
+              <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+              xinfan9
+            </span>
+            
+            <span class="meta-item meta-words">
+              <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+              1403 字
+            </span>
+            
+            <span class="meta-item meta-reading">
+              <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+              约 15 分钟
+            </span>
+          </div>
+        </header>
+        <article class="post-content" role="article">
+          <blockquote>
+  <p>参考文档：https://javaguide.cn/ai-coding/principles/claude-code-memory.html</p>
+</blockquote>
+
+<p>在构建智能体记忆系统前，我们需要系统性了解人类的记忆系统。</p>
+
+<h1 id="人类记忆系统">人类记忆系统</h1>
+
+<p>人类记忆可以分为以下几个层次：</p>
+
+<ul>
+  <li>感知记忆(Sensory Memory)：持续时间短（0.5-3s），容量巨大，负责保存感官接收到的信息。</li>
+  <li>工作记忆（short-term Memory）：持续时间短（15-30s），容量有限（5-9个项目），负责当前任务的信息处理。</li>
+  <li>长期记忆（Long-term Memory）：持续时间长，容量无限，又分为程序性记忆（如骑自行车等技能和习惯）和陈述性记忆（可用语言表达的记忆，如知识等）。</li>
+</ul>
+
+<h1 id="为何智能体需要记忆">为何智能体需要记忆</h1>
+
+<p>对于基于LLM的智能体，通常存在以下局限：</p>
+
+<ul>
+  <li>对话状态遗忘：模型的上下文窗口有限，早期对话中潜在的重要信息、用户习惯、需求等容易丢失。</li>
+  <li>内置知识有限：大模型的知识时效性截止到最晚训练样本的时间点，并且可能存在对某些专业领域的知识深度不足。</li>
+</ul>
+
+<h1 id="记忆系统的工作流程">记忆系统的工作流程</h1>
+
+<p><img src="/post-images/Agent/2026-08-21-记忆.assets/agent-memory-arch.webp" alt="AI Agent 记忆系统架构" /></p>
+
+<h1 id="claude-code-的记忆系统">Claude code 的记忆系统</h1>
+
+<p><img src="/post-images/Agent/2026-08-21-记忆.assets/claude-code-memory-layers.webp" alt="Claude Code 记忆分层" /></p>
+
+<h2 id="规则与经验">规则与经验</h2>
+
+<p>Claude Code 的长期上下文可以先分成两类：<strong>人写给 Claude 的规则，以及 Claude 工作时自己攒下来的经验。</strong></p>
+
+<h3 id="规则">规则</h3>
+
+<p><code>CLAUDE.md</code> 。它更像会话开始前的工作说明书：编码规范、常用命令、目录约束、团队流程、不要碰的区域，都应该写在这里。官方文档把它归到 instructions and rules。</p>
+
+<p><img src="/post-images/Agent/2026-08-21-记忆.assets/claude-md-best-practices-file-hierarchy.webp" alt="CLAUDE.md 层级与优先级" /></p>
+
+<table>
+  <thead>
+    <tr>
+      <th>位置</th>
+      <th>路径</th>
+      <th>适合内容</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>组织级</td>
+      <td>macOS: <code>/Library/Application Support/ClaudeCode/CLAUDE.md</code>；Linux/WSL: <code>/etc/claude-code/CLAUDE.md</code>；Windows: <code>C:\Program Files\ClaudeCode\CLAUDE.md</code></td>
+      <td>IT/DevOps 统一下发的编码规范、安全策略、合规要求</td>
+    </tr>
+    <tr>
+      <td>用户级</td>
+      <td><code>~/.claude/CLAUDE.md</code></td>
+      <td>个人所有项目通用的偏好和工具习惯</td>
+    </tr>
+    <tr>
+      <td>项目级</td>
+      <td><code>./CLAUDE.md</code> 或 <code>./.claude/CLAUDE.md</code></td>
+      <td>团队共享的项目架构、命令、代码标准</td>
+    </tr>
+    <tr>
+      <td>本地级</td>
+      <td><code>./CLAUDE.local.md</code></td>
+      <td>当前项目里的个人配置，例如沙箱 URL、测试数据偏好</td>
+    </tr>
+    <tr>
+      <td>子目录级</td>
+      <td><code>./subdir/CLAUDE.md</code>，以及同目录下的 <code>CLAUDE.local.md</code></td>
+      <td>某个模块或子目录的规则，Claude 读取该目录文件时才会按需加载</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>这些文件不是谁覆盖谁。Claude 会把启动路径上能看到的 <code>CLAUDE.md</code> 和 <code>CLAUDE.local.md</code> 拼进上下文，范围越大越先加载，越靠近当前目录越后加载；子目录里的文件不在启动时加载，要等 Claude 读到那个目录下的文件才会补进来。组织级 managed policy 不能被个人配置排除。</p>
+
+<p><code>.claude/rules/</code>。放按文件触发的规则。假设你有一份前端规则，只在处理 <code>src/**/*.tsx</code> 时才需要。后端任务每次都把它加载进来，就是在浪费上下文。<code>.claude/rules/</code> 适合放这类条件规则。每条规则是一个 Markdown 文件，可以在 frontmatter 里写 <code>paths</code>：</p>
+
+<pre><code>---
+paths:
+  - "src/**/*.{ts,tsx}"
+  - "tests/**/*.test.ts"
+---
+
+# TypeScript Rules
+
+- API 入参必须做校验。
+- 测试文件优先复用已有 fixture。
+</code></pre>
+
+<p>带 <code>paths</code> 的规则不会在启动时全量塞进去。Claude 读取匹配 glob 的文件时，才会触发对应规则。这样一来，那些长期有效、但只在某类任务里有用的内容，就不用全塞进 <code>CLAUDE.md</code>。</p>
+
+<blockquote>
+  <ul>
+    <li>每次会话都要看到的规则，放 <code>CLAUDE.md</code>；</li>
+    <li>只在某类文件或目录下才有用的规则，放 <code>.claude/rules/</code>；</li>
+    <li>多步骤、可复用的操作流程，做成 skill，按需触发；</li>
+    <li>必须硬拦的行为，用 hook 或权限配置，不要只写在 Markdown 里。</li>
+  </ul>
+</blockquote>
+
+<h3 id="经验">经验</h3>
+
+<p><code>Auto Memory</code> 是 Claude Code 官方提供的自动记忆机制。它的自动，主要体现在 Claude 会在工作中自己写 notes：比如构建命令、调试经验、架构信息、代码风格偏好和工作习惯。</p>
+
+<p>它不是每轮会话都写，而是由 Claude 判断哪些内容以后还会用到。你可以用 <code>/memory</code> 直接打开对应的文件夹。</p>
+
+<p>按官方文档，Auto Memory 从 Claude Code v2.1.59 开始可用，并且默认开启。它会把项目记忆放到 <code>~/.claude/projects/&lt;project&gt;/memory/</code>，启动时先读 <code>MEMORY.md</code> 的前 200 行或 25KB。更细的内容不会一次性全塞进来，而是放在 topic files 里，需要时再打开；<code>/memory</code> 可以查看和编辑。</p>
+
+<pre><code>~/.claude/projects/&lt;project&gt;/memory/
+├── MEMORY.md
+├── debugging.md
+├── api-conventions.md
+└── ...
+</code></pre>
+
+<p><code>MEMORY.md</code> 只做入口索引，启动时自动加载前 200 行或 25KB，哪个先到就停。更细的说明放在 topic files 里，Claude 需要时再读，这个设计很像Skill 渐进式披露：先让模型知道“有什么”，别一上来就把“全部内容”塞满上下文。</p>
+
+<p>官方文档没有要求 topic file 一定使用某个 schema，也没有公开承诺“记忆类型必须是 user / feedback / project / reference”。</p>
+
+<p>这四类是根据之前的源码泄露分析得出的：</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>类型</th>
+      <th>适合保存</th>
+      <th>不适合保存</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>user</code></td>
+      <td>用户长期偏好、技术背景、沟通习惯</td>
+      <td>用户刚才说的一次性临时想法</td>
+    </tr>
+    <tr>
+      <td><code>feedback</code></td>
+      <td>用户明确纠正过的做法</td>
+      <td>Agent 自己猜出来的偏好</td>
+    </tr>
+    <tr>
+      <td><code>project</code></td>
+      <td>项目阶段、决策原因、短期冻结规则</td>
+      <td>当前代码结构、文件行号这类会变的事实</td>
+    </tr>
+    <tr>
+      <td><code>reference</code></td>
+      <td>信息去哪查、哪个文档是权威来源</td>
+      <td>大段复制的文档正文</td>
+    </tr>
+  </tbody>
+</table>
+
+<pre><code>---
+type: feedback
+created_at: 2026-06-17
+updated_at: 2026-06-17
+---
+
+# 集成测试连接真实 MySQL
+
+集成测试只要验证数据库行为，就连接真实 MySQL，不使用 H2 内存库替代。
+
+原因：之前有用例在 H2 上通过，但上线后因为 MySQL 的事务和 SQL 方言差异暴露问题。
+
+适用范围：参数校验、纯分支逻辑测试可以继续使用更轻的替代方案；涉及事务、索引、SQL 方言和并发行为时，必须回到 MySQL。
+</code></pre>
+
+<p>Auto Memory 会自动写 notes，但不等于可以完全不管。你让 Claude “记住某件事”、事后用 <code>/memory</code> 审核自动写入的内容，或者自己做类似系统时，都要有一套筛选标准（价值判断：下次做决定会不会用到-&gt;来源确认：是不是用户明确确认过-&gt;过期边界：过期了有没有人能发现）。</p>
+
+<p><img src="/post-images/Agent/2026-08-21-记忆.assets/claude-code-memory-write-governance.webp" alt="记忆写入治理" /></p>
+
+<p>以下内容不适合放到Auto Memory：</p>
+
+<ul>
+  <li>某个文件现在有多少行、某个函数现在在哪；</li>
+  <li>本轮命令输出、临时日志、一次性报错和排查中间状态；</li>
+  <li>Git 里能查到的修改历史，README、接口文档里已有的稳定内容；</li>
+  <li>Agent 自己推出来、但用户没有确认过的偏好或判断。</li>
+</ul>
+
+<p>时间最好也落到具体日期。</p>
+
+<h4 id="auto-memory-召回流程">Auto Memory 召回流程</h4>
+
+<p><img src="/post-images/Agent/2026-08-21-记忆.assets/claude-code-memory-recall-flow.webp" alt="Auto Memory 召回流程" /></p>
+
+<h3 id="两者类比">两者类比</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>机制</th>
+      <th>谁写</th>
+      <th>适合存什么</th>
+      <th>默认加载方式</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>CLAUDE.md</code></td>
+      <td>人</td>
+      <td>稳定规则、项目约定、协作流程</td>
+      <td>每次会话加载</td>
+    </tr>
+    <tr>
+      <td>Auto Memory</td>
+      <td>Claude</td>
+      <td>工作中发现的经验、偏好、模式</td>
+      <td>每次会话加载 <code>MEMORY.md</code> 前 200 行或 25KB</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>上下文腐化（Context Rot）问题。<strong>上下文越长，信息越杂，模型利用上下文的稳定性就越可能变差。</strong></p>
+
+<h1 id="hermes-agent-的记忆系统">Hermes Agent 的记忆系统</h1>
+
+<p><strong>总结</strong>：Hermes 记忆系统采用 <strong>分层编排</strong> 架构。<code>MemoryManager</code> 作为中央编排器，同时管理一个始终在线的 <strong>内置记忆Provider</strong>（文件存储）和至多 <strong>一个外部插件Provider</strong>。内置记忆通过 <code>MEMORY.md</code> 和 <code>USER.md</code> 两个 Markdown 文件实现持久化，外部插件（Honcho、Hindsight、Mem0 等 8 种）通过统一的 <code>MemoryProvider</code> 接口接入，各自提供差异化的记忆能力（知识图谱、语义搜索、辩证推理等）。</p>
+
+<p><code>session_search</code> 工具基于 SQLite FTS5 提供跨会话的长期记忆检索，<code>TodoStore</code> 提供会话内的任务记忆。</p>
+
+<h2 id="memorymanager-编排器">MemoryManager 编排器</h2>
+
+<p><code>MemoryManager</code>（定义在 <code>agent/memory_manager.py</code>）是记忆系统的 <strong>单一集成点</strong>。核心设计原则：</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>原则</th>
+      <th>说明</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>一外一内</strong></td>
+      <td>始终注册内置 Provider + 至多一个外部 Provider，防止工具 Schema 膨胀和后端冲突</td>
+    </tr>
+    <tr>
+      <td><strong>工具名索引路由</strong></td>
+      <td><code>_tool_to_provider</code> 字典实现 O(1) 工具调用路由</td>
+    </tr>
+    <tr>
+      <td><strong>优雅降级</strong></td>
+      <td>所有 provider 操作都有 try-catch 包裹，一个 provider 失败不影响其他</td>
+    </tr>
+    <tr>
+      <td><strong>遍历编排</strong></td>
+      <td><code>prefetch_all()</code> / <code>sync_all()</code> 等方法遍历所有 provider 收集/分发数据</td>
+    </tr>
+    <tr>
+      <td><strong>反向关闭</strong></td>
+      <td><code>shutdown_all()</code> 按反向顺序关闭，确保依赖关系的安全清理</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="memoryprovider">MemoryProvider</h2>
+
+<p><code>MemoryProvider</code>（定义在 <code>agent/memory_provider.py</code>）是所有记忆提供者必须实现的抽象基类。它定义了 <strong>三层方法</strong>：</p>
+
+<ul>
+  <li><strong>核心生命周期</strong>：<code>is_available()</code> / <code>initialize()</code> / <code>shutdown()</code> — 可用性检查、连接建立、资源清理</li>
+  <li><strong>数据流方法</strong>：<code>prefetch()</code> / <code>sync_turn()</code> / <code>system_prompt_block()</code> — 每轮预取上下文、同步对话、注入系统提示</li>
+  <li><strong>可选钩子</strong>：<code>on_turn_start()</code> / <code>on_session_end()</code> / <code>on_pre_compress()</code> / <code>on_memory_write()</code> / <code>on_delegation()</code> — 提供者可选择性参与的生命周期事件</li>
+</ul>
+
+<h2 id="memorystore-存储引擎">MemoryStore 存储引擎</h2>
+
+<p><code>MemoryStore</code>（定义在 <code>tools/memory_tool.py</code>）是内置记忆的核心存储引擎，具备以下关键特性：</p>
+
+<ol>
+  <li><strong>双状态模式</strong>：维护 <code>_system_prompt_snapshot</code>（加载时冻结，整个会话不变）和活跃条目列表（工具调用实时更新）。冻结快照保护前缀缓存稳定性，活跃状态确保工具响应最新。</li>
+  <li><strong>安全扫描</strong>：写入前检测 prompt 注入模式（如 <code>ignore previous instructions</code>）、数据窃取尝试（如 <code>curl $API_KEY</code>）和不可见 Unicode 字符。</li>
+  <li><strong>原子写入</strong>：使用 <code>tempfile + os.replace()</code> 实现原子文件替换，避免并发读取者看到截断文件。</li>
+  <li><strong>文件锁</strong>：使用 <code>fcntl.LOCK_EX</code> 排他锁保护读-改-写操作的一致性。</li>
+  <li><strong>字符配额</strong>：基于字符数（而非 token 数）实现限额，保持模型无关性。</li>
+</ol>
+
+<h2 id="记忆的完整生命周期">记忆的完整生命周期</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>阶段</th>
+      <th>关键操作</th>
+      <th>触发时机</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>会话启动</strong></td>
+      <td>加载磁盘文件 → 捕获冻结快照 → 初始化所有 Provider</td>
+      <td>Agent 创建时</td>
+    </tr>
+    <tr>
+      <td><strong>系统提示组装</strong></td>
+      <td>身份文本 + 记忆指导 + 冻结快照 + 外部 Provider 文本</td>
+      <td>每次 <code>_build_system_prompt()</code></td>
+    </tr>
+    <tr>
+      <td><strong>轮次预取</strong></td>
+      <td><code>prefetch_all()</code> → XML 围栏包裹 → 注入 user message</td>
+      <td>每轮 API 调用前</td>
+    </tr>
+    <tr>
+      <td><strong>轮次后处理</strong></td>
+      <td><code>sync_all()</code> + <code>queue_prefetch_all()</code> + 后台审查</td>
+      <td>每轮完成后</td>
+    </tr>
+    <tr>
+      <td><strong>会话结束</strong></td>
+      <td><code>on_session_end()</code> → <code>shutdown_all()</code></td>
+      <td>CLI 退出 / /reset / Gateway 会话过期</td>
+    </tr>
+  </tbody>
+</table>
+
+<pre><code class="language-mermaid">
+sequenceDiagram
+    participant U as 用户
+    participant Agent as AIAgent
+    participant MM as MemoryManager
+    participant BP as BuiltinProvider
+    participant EP as ExternalProvider
+    participant LLM as LLM API
+
+    rect rgb(255, 249, 196)
+        note over Agent: 会话启动
+        Agent-&gt;&gt;BP: load_from_disk()
+        BP--&gt;&gt;Agent: 捕获冻结快照
+        Agent-&gt;&gt;MM: initialize_all(session_id)
+        MM-&gt;&gt;EP: initialize(session_id)
+    end
+
+    rect rgb(232, 245, 233)
+        note over Agent: 构建系统提示
+        Agent-&gt;&gt;BP: system_prompt_block()
+        BP--&gt;&gt;Agent: 冻结的 MEMORY.md + USER.md
+        Agent-&gt;&gt;MM: build_system_prompt()
+        MM-&gt;&gt;EP: system_prompt_block()
+        EP--&gt;&gt;MM: Provider 静态文本
+        MM--&gt;&gt;Agent: 合并文本
+    end
+
+    rect rgb(227, 242, 253)
+        note over Agent: 每轮对话
+        U-&gt;&gt;Agent: 发送消息
+        Agent-&gt;&gt;MM: prefetch_all(user_msg)
+        MM-&gt;&gt;EP: prefetch(user_msg)
+        EP--&gt;&gt;MM: 预取的上下文
+        MM--&gt;&gt;Agent: 合并上下文
+        Agent-&gt;&gt;LLM: API 调用（系统提示 + 历史 + 注入上下文 + 用户消息）
+        LLM--&gt;&gt;Agent: 响应 + 工具调用
+
+        alt [工具调用: memory]
+            Agent-&gt;&gt;MM: MemoryStore.add/replace/remove
+            MM--&gt;&gt;Agent: 结果 JSON
+            Agent-&gt;&gt;BP: on_memory_write(action, target, content)
+            BP-&gt;&gt;EP: on_memory_write() 镜像
+        end
+
+        Agent--&gt;&gt;U: 最终响应
+    end
+
+    rect rgb(243, 229, 245)
+        note over Agent: 轮次结束
+        Agent-&gt;&gt;MM: sync_all(user_msg, response)
+        MM-&gt;&gt;EP: sync_turn(user_msg, response)
+        Agent-&gt;&gt;MM: queue_prefetch_all(user_msg)
+        MM-&gt;&gt;EP: queue_prefetch(user_msg)
+    end
+
+</code></pre>
+
+<h2 id="记忆生成机制">记忆生成机制：</h2>
+
+<ol>
+  <li><strong>显式写入</strong>：Agent 通过 <code>memory</code> 工具主动调用 <code>add</code> / <code>replace</code> / <code>remove</code> 操作。触发条件包括用户明确指令（&#8221;记住这个&#8221;）、Agent 发现环境细节、用户纠正行为等。</li>
+  <li><strong>后台自动审查</strong>：基于轮次计数器 <code>_memory_nudge_interval</code>，达到阈值后 <code>_spawn_background_review()</code> 创建一个完整的 AIAgent 副本，在后台线程中审查对话历史，自动提取值得保存的记忆。这一过程对用户完全透明，不阻塞主交互。</li>
+  <li><strong>外部 Provider 自动提取</strong>：如 Mem0 的服务端 LLM 事实提取、Hindsight 的知识图谱实体解析、OpenViking 的 6 类记忆自动分类等。</li>
+</ol>
+
+<h2 id="记忆存储">记忆存储</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>&#160;</th>
+      <th>&#160;</th>
+      <th>&#160;</th>
+      <th>&#160;</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>内置文件存储</strong></td>
+      <td><code>MEMORY.md</code> + <code>USER.md</code>（Markdown 文件）</td>
+      <td>Agent 笔记 + 用户画像</td>
+      <td>跨会话永久</td>
+    </tr>
+    <tr>
+      <td><strong>外部 Provider 存储</strong></td>
+      <td>各自后端（API、知识图谱、SQLite、文件系统等）</td>
+      <td>深度结构化记忆</td>
+      <td>跨会话永久</td>
+    </tr>
+    <tr>
+      <td><strong>会话 SQLite 存储</strong></td>
+      <td><code>SessionDB</code>（SQLite + FTS5）</td>
+      <td>完整对话历史 + 全文检索</td>
+      <td>跨会话永久</td>
+    </tr>
+    <tr>
+      <td><strong>会话内 TodoStore</strong></td>
+      <td>Python 内存字典</td>
+      <td>任务追踪</td>
+      <td>仅当前会话</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="记忆检索机制">记忆检索机制</h2>
+
+<ol>
+  <li><strong>被动注入</strong>（System Prompt）：内置记忆在会话启动时捕获冻结快照，注入系统提示。整个会话期间保持不变，最大化前缀缓存命中。</li>
+  <li><strong>主动预取</strong>（Prefetch）：每轮 API 调用前，<code>prefetch_all()</code> 向所有 Provider 查询与用户消息相关的上下文。结果通过 XML <code>&lt;memory-context&gt;</code> 标签围栏包裹后注入 user message，确保模型不会将其误解为新的用户输入。预取结果在单轮内缓存复用，避免多次工具调用造成重复检索。</li>
+  <li><strong>显式工具调用</strong>：用户或 Agent 通过专用工具进行定向检索 — <code>session_search</code>（FTS5 全文检索 + LLM 摘要）、各 Provider 的语义搜索工具等。</li>
+</ol>
+
+<h2 id="记忆反思机制">记忆反思机制</h2>
+
+<p>记忆反思是 Hermes 记忆系统最具创新性的设计，包含四种反思触发：</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>反思类型</th>
+      <th>触发时机</th>
+      <th>执行方式</th>
+      <th>目的</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>后台审查</strong></td>
+      <td>每 N 轮对话后</td>
+      <td>后台线程创建 AIAgent 副本</td>
+      <td>自动提取用户偏好、行为模式</td>
+    </tr>
+    <tr>
+      <td><strong>压缩前提取</strong></td>
+      <td>上下文压缩前</td>
+      <td><code>on_pre_compress()</code> 钩子</td>
+      <td>防止压缩丢失重要记忆</td>
+    </tr>
+    <tr>
+      <td><strong>会话结束提取</strong></td>
+      <td>会话终止时</td>
+      <td><code>on_session_end()</code> 钩子</td>
+      <td>终态总结与持久化</td>
+    </tr>
+    <tr>
+      <td><strong>子代理观察</strong></td>
+      <td>子代理完成时</td>
+      <td><code>on_delegation()</code> 钩子</td>
+      <td>父 Agent 学习委派任务结果</td>
+    </tr>
+  </tbody>
+</table>
+
+<h1 id="第三方记忆插件">第三方记忆插件</h1>
+
+<p>内置 Auto Memory 让 Claude Code 在本地文件里记住以后还可能用到的偏好、命令和项目经验，但没有打算把每次会话过程完整存下来，也没有把多台机器、多名开发者、多种 Agent 的历史统一到一个搜索入口。</p>
+
+<p>第三方插件主要解决的就是这两个问题。</p>
+
+<h2 id="claude-mem">claude-mem</h2>
+
+<blockquote>
+  <p>参考文章：https://www.heyuan110.com/zh/posts/ai/2026-02-03-claude-mem-deep-dive/</p>
+</blockquote>
+
+<p>Claude Code 的上下文窗口是 200K tokens（Claude Sonnet 4）。听起来很大，但实际使用中，每次工具调用会消耗 1,000 到 10,000 tokens。一个中等复杂的开发任务，50 次工具调用就能把上下文窗口塞满。更关键的是，<strong>会话一结束，所有上下文都消失了</strong>。这是因为内置 Auto Memory 让 Claude Code 在本地文件里记住以后还可能用到的偏好、命令和项目经验，但没有打算把每次会话过程完整存下来。Claude-mem 实现了一个为 Claude Code 设计的持久化记忆系统，通过 Claude Agent SDK 自动从代码交互中提取和存储结构化记忆，并在未来的会话中智能注入相关上下文。</p>
+
+<h3 id="claude-code-的核心架构">claude code 的核心架构</h3>
+
+<p>Claude-Mem 的架构可以类比为一个&#8221;智能档案馆&#8221;：</p>
+
+<ul>
+  <li>Hook 是档案员（负责收集）</li>
+  <li>Worker 是管理员（负责分类压缩）</li>
+  <li>数据库是档案柜（负责存储）</li>
+  <li>搜索系统是检索台（负责查找）</li>
+  <li>而 SessionStart 注入就是每天早上给你的工作简报。</li>
+</ul>
+
+<pre><code>┌─────────────────────────────────────────────┐
+│                Claude Code IDE               │
+│  ┌─────────┐ ┌──────────┐ ┌──────────────┐  │
+│  │Session  │ │UserPrompt│ │ PostToolUse  │  │
+│  │Start    │ │Submit    │ │              │  │
+│  │Hook     │ │Hook      │ │ Hook         │  │
+│  └────┬────┘ └────┬─────┘ └──────┬───────┘  │
+│       │           │              │           │
+└───────┼───────────┼──────────────┼───────────┘
+        │           │              │
+        ▼           ▼              ▼
+┌─────────────────────────────────────────────┐
+│          Worker Service (Port 37777)         │
+│  ┌─────────────┐  ┌──────────────────────┐  │
+│  │ Context     │  │ Session Manager      │  │
+│  │ Builder     │  │ (AI Agent Generator) │  │
+│  └─────────────┘  └──────────────────────┘  │
+│  ┌─────────────┐  ┌──────────────────────┐  │
+│  │ Search      │  │ SSE Broadcaster      │  │
+│  │ Manager     │  │ (Real-time Events)   │  │
+│  └─────────────┘  └──────────────────────┘  │
+└────────┬──────────────────┬─────────────────┘
+         │                  │
+         ▼                  ▼
+┌────────────────┐  ┌────────────────┐
+│  SQLite + FTS5 │  │ ChromaDB       │
+│  (结构化存储)   │  │ (向量嵌入)      │
+└────────────────┘  └────────────────┘
+
+</code></pre>
+
+<p>这套系统由三个 Hook 脚本、一个 HTTP Worker 服务、双数据库存储和 4 个 MCP 工具组成。下面逐层拆解。</p>
+
+<h4 id="hook-系统无感捕获一切">Hook 系统：无感捕获一切</h4>
+
+<p>Claude-Mem 利用 Claude Code 的 <a href="https://code.claude.com/docs/en/plugins">Hook 生命周期</a>在五个关键时间点注入逻辑：</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: left">Hook</th>
+      <th style="text-align: left">触发时机</th>
+      <th style="text-align: left">做什么</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left"><strong>SessionStart</strong></td>
+      <td style="text-align: left">会话开始</td>
+      <td style="text-align: left">从数据库检索最近 10 个会话的相关上下文，注入到新会话</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>UserPromptSubmit</strong></td>
+      <td style="text-align: left">用户发送消息</td>
+      <td style="text-align: left">记录用户输入和会话元数据</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>PostToolUse</strong></td>
+      <td style="text-align: left">每次工具调用后</td>
+      <td style="text-align: left">捕获工具操作的观察结果（文件读写、代码变更等）</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>关键设计：所有 Hook 都是轻量级 HTTP 客户端（v7.0 重构后每个 Hook 仅约 75 行代码），它们只负责向 Worker Service 发送请求，<strong>不做任何重计算</strong>。这保证了 Hook 不会拖慢 Claude Code 的响应速度。</p>
+
+<p>当你开始一个新的 Claude Code 会话时，SessionStart Hook 会触发上下文注入：</p>
+
+<ol>
+  <li>向 Worker 发送 <code>GET /api/context/inject</code> 请求</li>
+  <li>ContextBuilder 从最近 10 个会话中检索最多 50 个相关观察（均可配置）</li>
+  <li>用混合搜索按相关性排序</li>
+  <li>格式化为 Markdown 注入到新会话</li>
+</ol>
+
+<p>PostToolUse Hook 在每次工具调用后<strong>阻塞等待</strong>（最长 110 秒），让 AI 代理把完整的工具输出压缩成约 500 tokens 的观察，然后用压缩后的观察<strong>替换</strong>原始输出注入回上下文。完整输出则存入磁盘归档。</p>
+
+<p>Endless Mode 不是免费的午餐：</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: left">优势</th>
+      <th style="text-align: left">代价</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left">极大扩展单次会话容量</td>
+      <td style="text-align: left">每次工具调用增加 60-90 秒延迟</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">上下文不会&#8221;爆掉&#8221;</td>
+      <td style="text-align: left">压缩过程可能丢失细节</td>
+    </tr>
+  </tbody>
+</table>
+
+<h4 id="worker-service中央调度器">Worker Service：中央调度器</h4>
+
+<p>Worker Service 是整个系统的大脑，运行在 Bun 上，默认监听 <code>127.0.0.1:37777</code>。它的启动采用<strong>两阶段模式</strong>：</p>
+
+<ul>
+  <li><strong>第一阶段（快速）</strong>：HTTP 服务立即绑定端口，把控制权还给 Hook（防止超时）</li>
+  <li><strong>第二阶段（后台）</strong>：初始化数据库、崩溃恢复、SearchManager 建立、MCP 连接</li>
+</ul>
+
+<p>Worker 的核心职责包括：</p>
+
+<ol>
+  <li><strong>会话管理</strong>：跟踪活跃的开发会话，维护双 ID 映射（IDE 会话 ID ↔ 记忆代理会话 ID）</li>
+  <li><strong>AI 代理调度</strong>：后台生成观察（Observation）、摘要（Summary）</li>
+  <li><strong>搜索编排</strong>：协调 SQLite FTS5 和 ChromaDB 的混合搜索</li>
+  <li><strong>实时广播</strong>：通过 SSE（Server-Sent Events）向 Web UI 推送事件</li>
+  <li><strong>崩溃恢复</strong>：启动时扫描 <code>pending_messages</code> 表，重试未完成的任务。</li>
+</ol>
+
+<h4 id="存储架构">存储架构</h4>
+
+<p>Claude-Mem 使用&#8221;三重冗余&#8221;存储：</p>
+
+<p><strong>SQLite（结构化数据）</strong>：</p>
+
+<ul>
+  <li>数据库位置：<code>~/.claude-mem/claude-mem.db</code></li>
+  <li>核心表：<code>sdk_sessions</code>、<code>observations</code>、<code>session_summaries</code>、<code>user_prompts</code>、<code>pending_messages</code></li>
+  <li>使用 FTS5 虚拟表实现关键词全文搜索</li>
+  <li><code>pending_messages</code> 表确保崩溃恢复——任何未处理的工作都会被持久化</li>
+</ul>
+
+<p><strong>ChromaDB（向量嵌入）</strong>：</p>
+
+<ul>
+  <li>位置：<code>~/.claude-mem/vector-db/</code></li>
+  <li>每个观察的字段（标题、叙述、事实）都作为独立向量存储</li>
+  <li><code>ChromaSync</code> 异步同步，带智能回填策略</li>
+</ul>
+
+<p><strong>文件系统</strong>：</p>
+
+<ul>
+  <li><code>~/.claude-mem/settings.json</code>：配置文件</li>
+  <li><code>~/.claude-mem/logs/</code>：运行日志</li>
+  <li>可选的 <code>CLAUDE.md</code> 活动时间线文件</li>
+</ul>
+
+<h4 id="ai-压缩引擎101-到-1001-的压缩比">AI 压缩引擎：10:1 到 100:1 的压缩比</h4>
+
+<p>每次你用 Claude Code 读文件、写代码、运行命令，PostToolUse Hook 都会捕获原始的工具输入输出。但原始数据太大了——一次文件读取可能就有几千 tokens。</p>
+
+<p>Claude-Mem 的 AI 代理会把这些原始数据<strong>压缩成约 500 tokens 的结构化观察</strong>，包含：</p>
+
+<pre><code>{
+  "id": "obs_20260203_001",
+  "type": "discovery",         // 类型：bugfix/feature/refactor/discovery/decision/change
+  "title": "发现 API 认证中间件的竞态条件",
+  "narrative": "用户在排查 /api/users 端点偶发 401 错误时...",
+  "facts": [
+    "auth 中间件在 token 过期时没有加锁",
+    "并发请求可能同时触发 token 刷新",
+    "修复方案：使用 mutex 保证单次刷新"
+  ],
+  "concepts": ["problem-solution", "gotcha"],
+  "session_id": "sess_abc123",
+  "timestamp": "2026-02-03T00:00:00Z"
+}
+</code></pre>
+
+<p>Claude-Mem 支持三种 AI 提供者，可以在运行时热切换（共享对话历史，不丢失上下文）：</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: left">引擎</th>
+      <th style="text-align: left">优势</th>
+      <th style="text-align: left">适用场景</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left"><strong>SDKAgent</strong>（默认）</td>
+      <td style="text-align: left">使用 Claude Agent SDK，观察质量最高</td>
+      <td style="text-align: left">追求最佳效果，包含在 Claude Code 订阅中</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>GeminiAgent</strong></td>
+      <td style="text-align: left">免费层 1,500 请求/天，支持速率限制</td>
+      <td style="text-align: left">预算有限，轻量使用</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><strong>OpenRouterAgent</strong></td>
+      <td style="text-align: left">100+ 模型可选，有免费模型</td>
+      <td style="text-align: left">灵活选择，实验不同模型</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>所有引擎在遇到错误（429/5xx）时都会自动降级到 SDKAgent。</p>
+
+<h4 id="endless-mode仿生记忆架构突破上下文窗口的极限">Endless Mode：仿生记忆架构，突破上下文窗口的极限</h4>
+
+<p>标准 Claude Code 会话的 Token 消耗是<strong>二次方增长</strong>的。每次工具调用不仅增加新内容，还要在上下文中保留之前所有工具的输出。大约 50 次工具调用后，200K 的上下文窗口就满了。</p>
+
+<p>Endless Mode（目前处于 Beta）实现了一套受人类记忆启发的两层记忆系统：</p>
+
+<pre><code>┌───────────────────────────────┐
+│  工作记忆（Working Memory）    │  ← 在上下文窗口中
+│  压缩后的观察，每条约 500 tokens │
+│  相当于人的"短期记忆"           │
+└───────────────┬───────────────┘
+                │ 压缩
+                ▼
+┌───────────────────────────────┐
+│  归档记忆（Archive Memory）    │  ← 在磁盘上
+│  完整的工具输出，按需调取        │
+│  相当于人的"长期记忆"           │
+└───────────────────────────────┘
+</code></pre>
+
+<h4 id="渐进式搜索">渐进式搜索</h4>
+
+<pre><code>第一层：索引搜索（~50-100 tokens/条）
+    │  返回观察 ID、标题、日期、类型
+    │  快速筛选，找到感兴趣的条目
+    ▼
+第二层：时间线上下文
+    │  展示锚定观察前后的时间线
+    │  理解事件的因果关系和决策链
+    ▼
+第三层：完整详情（~500-1000 tokens/条）
+    │  仅获取用户选中的观察全文
+    │  最终确认需要的信息
+    ▼
+  结果：相比传统 RAG 节省约 10 倍 Token
+</code></pre>
+
+<p><strong>第一层：索引搜索（~50–100 tokens/条）</strong></p>
+
+<p><code>search(query)</code> 在<strong>客户端进程内</strong>执行——对本地 JSONL 做关键词/语义匹配（纯本地计算，零模型 token），返回 top-K 条目的<strong>投影</strong>：只有 ID + 类型 + 日期 + 标题/一句话片段。数据库的说法叫覆盖索引扫描：查的是全行，返回的是裁剪后的列。</p>
+
+<p>关键点：这一步<strong>模型看到的是“目录”而不是“内容”</strong>。10 条候选 × 80 tokens ≈ 800 tokens 就完成了初筛。共有以下三种检索策略：</p>
+
+<ul>
+  <li><strong>ChromaStrategy</strong>：基于 ChromaDB 的向量相似度搜索，擅长语义匹配（“昨天修的那个认证 Bug”）</li>
+  <li><strong>SQLiteStrategy</strong>：基于 FTS5 的关键词搜索，擅长精确匹配（“401 错误”）</li>
+  <li><strong>HybridStrategy</strong>：相关性融合排序，取两者之长</li>
+</ul>
+
+<p><strong>第二层：时间线上下文</strong></p>
+
+<p>模型从第一层选中某个 ID 后，调用类似 <code>timeline(id, before, after)</code> 的工具。因为日志按时间物理有序，这个查询就是拿 ID 定位行号，向前向后各取 N 行的<strong>轻量投影</strong>（类型+短摘要）。</p>
+
+<p>这层解决的是 RAG 的一个盲区：单条文档检索给出的是“孤立的事实”，而 agent 记忆的价值常常在<strong>事件链</strong>——“用户改了主意，是因为前一小时那个报错”。时间线窗口用极低成本还原因果上下文。</p>
+
+<p><strong>第三层：完整详情（~500–1000 tokens/条）</strong></p>
+
+<p>只有模型真正决定要用的那 1–2 条，才 <code>get_observations(id)</code> 取全文。注意是<strong>按需、按单条</strong>——100 条候选里最终展开的可能就 3 条，97 条永远停在 80 token 的目录级。</p>
+
+<h4 id="mcp工具">MCP工具</h4>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: left">工具</th>
+      <th style="text-align: left">功能</th>
+      <th style="text-align: left">Token 消耗</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left"><code>search</code></td>
+      <td style="text-align: left">返回紧凑索引</td>
+      <td style="text-align: left">~50-100/条</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><code>timeline</code></td>
+      <td style="text-align: left">时间线上下文</td>
+      <td style="text-align: left">中等</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><code>get_observations</code></td>
+      <td style="text-align: left">完整观察详情</td>
+      <td style="text-align: left">~500-1000/条</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><code>__IMPORTANT</code></td>
+      <td style="text-align: left">工作流文档</td>
+      <td style="text-align: left">一次性</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="memsearch">memsearch</h2>
+
+<p><strong><a href="https://github.com/zilliztech/memsearch"><code>memsearch</code></a> 更像外置 Memory Store。</strong> 它用每日 Markdown 保存原始内容，Milvus 做向量索引缓存，检索时结合语义向量、BM25 和 RRF。</p>
+
+<p>它适合多工具、多成员、长周期项目，比如 Claude Code、OpenClaw、OpenCode、Codex CLI 共用一套记忆。</p>
+
+<p>这类方案比本地 Markdown 重得多。索引、嵌入模型、Milvus Lite 或云端 Zilliz、同步策略、数据权限，都要有人负责。记忆还只有几十条时，通常没必要上到这一层。</p>
+
+<p><strong>如何选择呢？</strong></p>
+
+<p>单人项目想让 Claude 记住测试命令、提交习惯和项目偏好，先用 <code>CLAUDE.md</code> 加 Auto Memory。团队共享稳定规则，就放进仓库里的 <code>CLAUDE.md</code>、<code>.claude/rules/</code> 或正式文档，让改动走 review。</p>
+
+<p>需要自动保存会话过程，再看 <code>claude-mem</code> 这类 Hooks 加本地数据库的方案。</p>
+
+<p>多个 Agent、多台机器、多名开发者共享长期记忆，才考虑 <code>memsearch</code>、Mem0 或自建数据库。</p>
+
+<p>至于 BM25、向量检索和 reranker，更适合几万条文档、工单、Wiki 混在一起查的场景。</p>
+
+<h2 id="mem0">Mem0</h2>
+
+<h1 id="如何设计一套轻量级记忆系统">如何设计一套轻量级记忆系统</h1>
+
+<h2 id="step-1-先定文件结构和写入规则">step 1: 先定文件结构和写入规则</h2>
+
+<p><code>CLAUDE.md</code> 只放每次会话都必须知道的内容，比如测试命令、提交规范、禁改目录。目录或文件类型相关的规则，不要继续往这个文件里塞，放进 <code>.claude/rules/</code>，再用 <code>paths</code> 控制加载范围。</p>
+
+<pre><code class="language-markdown"># MEMORY.md 不负责解释来龙去脉，只做入口。它告诉 Claude 现在有哪些记忆，以及需要细看时该打开哪个文件：
+
+- [Integration tests use real MySQL](feedback/integration-test-real-mysql.md): 数据库行为相关集成测试必须连接真实 MySQL。
+- [Payment freeze before 2026-06-30](project/payment-freeze-before-2026-06-30.md): 2026-06-30 前支付模块暂停合入新需求。
+- [Slow query wiki](reference/slow-query-wiki.md): 线上慢查询排查入口在内部 Wiki 的 db-slow-log 页面。
+</code></pre>
+
+<p>长期记忆单独放到 <code>memory/</code> 目录。刚开始别分太细，四类够用：<code>user</code> 放用户长期偏好，<code>feedback</code> 放用户明确纠正过的做法，<code>project</code> 放阶段性决策和短期冻结规则，<code>reference</code> 放资料入口。每个 topic file 里写 <code>created_at</code>、<code>updated_at</code>、记录原因和适用范围；依赖当前代码状态的内容，打开以后先核对再用。</p>
+
+<pre><code>memory/
+├── MEMORY.md
+├── feedback/
+│   └── integration-test-real-mysql.md
+├── project/
+│   └── payment-freeze-before-2026-06-30.md
+├── reference/
+│   └── slow-query-wiki.md
+└── user/
+    └── backend-preferences.md
+</code></pre>
+
+<p><img src="/post-images/Agent/2026-08-21-记忆.assets/claude-code-lightweight-memory-system.webp" alt="轻量记忆系统落地" /></p>
+
+
+        </article>
+      </div>
+    </div>
+  </main>
+
+  <!-- Right: Category Articles -->
+  <aside class="post-category-sidebar" role="navigation" aria-label="分类文章列表">
+    <div class="category-panel">
+      
+      
+      <div class="category-sidebar-title">
+        <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
+        Agent
+      </div>
+      <ul class="category-article-list">
+        
+        
+        <li class="">
+          <a href="/2026/10/04/agent/Muse/" title="Muse">
+            <span class="article-title">Muse</span>
+            <span class="article-date">10-04</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/10/04/agent/Observability/" title="Observability">
+            <span class="article-title">Observability</span>
+            <span class="article-date">10-04</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/10/04/agent/RSI/" title="RSI">
+            <span class="article-title">RSI</span>
+            <span class="article-date">10-04</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/09/20/agent/Clarity/" title="Clarity">
+            <span class="article-title">Clarity</span>
+            <span class="article-date">09-20</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/09/20/agent/ClaudeCode-%E6%A0%B8%E5%BF%83%E6%B5%81%E7%A8%8B/" title="ClaudeCode 核心流程">
+            <span class="article-title">ClaudeCode 核心流程</span>
+            <span class="article-date">09-20</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/09/20/agent/Codex/" title="Codex">
+            <span class="article-title">Codex</span>
+            <span class="article-date">09-20</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/09/20/agent/DeepSeek-Harness/" title="DeepSeek Harness">
+            <span class="article-title">DeepSeek Harness</span>
+            <span class="article-date">09-20</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/09/20/agent/Hermes/" title="Hermes">
+            <span class="article-title">Hermes</span>
+            <span class="article-date">09-20</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/09/20/agent/Orchestration/" title="Orchestration">
+            <span class="article-title">Orchestration</span>
+            <span class="article-date">09-20</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/09/20/agent/mem0/" title="mem0">
+            <span class="article-title">mem0</span>
+            <span class="article-date">09-20</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/09/14/agent/Agent-Ultimate-Edition/" title="Agent Ultimate Edition">
+            <span class="article-title">Agent Ultimate Edition</span>
+            <span class="article-date">09-14</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/08/24/agent/%E9%95%BF%E7%A8%8B%E4%BB%BB%E5%8A%A1/" title="长程任务">
+            <span class="article-title">长程任务</span>
+            <span class="article-date">08-24</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/08/21/agent/RAG/" title="RAG">
+            <span class="article-title">RAG</span>
+            <span class="article-date">08-21</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/08/21/agent/%E4%B8%8A%E4%B8%8B%E6%96%87%E5%B7%A5%E7%A8%8B/" title="上下文工程">
+            <span class="article-title">上下文工程</span>
+            <span class="article-date">08-21</span>
+          </a>
+        </li>
+        
+        <li class="active">
+          <a href="/2026/08/21/agent/%E8%AE%B0%E5%BF%86/" title="记忆">
+            <span class="article-title">记忆</span>
+            <span class="article-date">08-21</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/08/21/agent/Agent-RL/" title="Agent RL">
+            <span class="article-title">Agent RL</span>
+            <span class="article-date">08-21</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/08/21/agent/MCP/" title="MCP">
+            <span class="article-title">MCP</span>
+            <span class="article-date">08-21</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/08/10/agent/Plan-and-Solve/" title="Plan and Solve">
+            <span class="article-title">Plan and Solve</span>
+            <span class="article-date">08-10</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/08/10/agent/Reflection/" title="Reflection">
+            <span class="article-title">Reflection</span>
+            <span class="article-date">08-10</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/07/31/agent/ReAct/" title="ReAct">
+            <span class="article-title">ReAct</span>
+            <span class="article-date">07-31</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/07/30/agent/Scaling-Laws%E4%B8%8E%E6%A8%A1%E5%9E%8B%E5%B9%BB%E8%A7%89/" title="Scaling Laws">
+            <span class="article-title">Scaling Laws</span>
+            <span class="article-date">07-30</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/07/30/agent/%E6%A8%A1%E5%9E%8B%E9%80%89%E6%8B%A9%E7%9A%84%E8%80%83%E9%87%8F/" title="模型选择的考量">
+            <span class="article-title">模型选择的考量</span>
+            <span class="article-date">07-30</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/07/30/agent/Tokenizer/" title="Tokenizer">
+            <span class="article-title">Tokenizer</span>
+            <span class="article-date">07-30</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/07/23/agent/%E6%8F%90%E7%A4%BA%E5%B7%A5%E7%A8%8B/" title="提示工程">
+            <span class="article-title">提示工程</span>
+            <span class="article-date">07-23</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/06/09/agent/%E5%A4%A7%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E9%A9%B1%E5%8A%A8%E7%9A%84%E6%99%BA%E8%83%BD%E4%BD%93/" title="初识智能体">
+            <span class="article-title">初识智能体</span>
+            <span class="article-date">06-09</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/04/23/agent/Openclaw/" title="Openclaw">
+            <span class="article-title">Openclaw</span>
+            <span class="article-date">04-23</span>
+          </a>
+        </li>
+        
+      </ul>
+      
+    </div>
+  </aside>
+</div>
+
+<!-- Theme Toggle Button -->
+<button type="button" class="theme-toggle" aria-label="Toggle Theme">
+  <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+  </svg>
+  <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="12" cy="12" r="5"></circle>
+    <line x1="12" y1="1" x2="12" y2="3"></line>
+    <line x1="12" y1="21" x2="12" y2="23"></line>
+    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+    <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+    <line x1="1" y1="12" x2="3" y2="12"></line>
+    <line x1="21" y1="12" x2="23" y2="12"></line>
+    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+    <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+  </svg>
+</button>
+
+<!-- Back to Top Button -->
+<button type="button" class="back-to-top" aria-label="Back to Top">
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <polyline points="18 15 12 9 6 15"></polyline>
+  </svg>
+</button>
+
+
+    <!-- Site Footer -->
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-content">
+      <div class="footer-info">
+        <h4>xinfan9's blog</h4>
+        <p>Actually, less is more!</p>
+      </div>
+      <div class="footer-links">
+        <a href="https://github.com/xinfan9/" target="_blank" title="GitHub">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+        </a>
+        <a href="mailto:11411619@qq.com" title="Email">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+        </a>
+        <a href="/feed.xml" title="RSS">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11a9 9 0 0 1 9 9"/><path d="M4 4a16 16 0 0 1 16 16"/><circle cx="5" cy="19" r="1"/></svg>
+        </a>
+      </div>
+      <div class="footer-copyright">
+        <p>&copy; 2026 xinfan9. Built with Jekyll.</p>
+      </div>
+    </div>
+  </div>
+</footer>
+      
+    
+    <!-- Global Buttons (for non-post pages) -->
+    
+  </body>
+</html>
