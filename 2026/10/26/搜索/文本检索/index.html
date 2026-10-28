@@ -1,0 +1,805 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+  <head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="Content-Language" content="zh-CN">
+	<title>文本检索 - xinfan9's blog</title>
+
+	<link rel="icon" href="/styles/images/favicon.jpg">
+
+	<!-- Preconnect for CDN -->
+	
+	<link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+	<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+	
+
+
+	<!-- Inline Critical Reset (was index.css) -->
+	<style>
+		*,*::before,*::after{box-sizing:border-box}html{-ms-text-size-adjust:100%;-webkit-text-size-adjust:100%;-webkit-tap-highlight-color:rgba(0,0,0,0)}body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Microsoft YaHei",sans-serif;font-size:14px;line-height:1.42857143;color:#333;background-color:#f7f7f7}article,aside,details,figcaption,figure,footer,header,main,nav,section,summary{display:block}a{color:#43759e;text-decoration:none;background:transparent}a:hover,a:focus{color:#2c4d68;text-decoration:underline}a:focus{outline:thin dotted;outline-offset:-2px}img{vertical-align:middle;max-width:100%;height:auto}input,button,select,textarea{font-family:inherit;font-size:inherit;line-height:inherit}h1,h2,h3,h4,h5,h6{margin-top:0}.container{max-width:1200px;margin-left:auto;margin-right:auto;padding-left:15px;padding-right:15px}.clearfix::after{content:"";display:table;clear:both}.text-muted{color:#777}.sr-only{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0,0,0,0);border:0}
+	</style>
+
+	
+	<link rel="prefetch" as="image" href="/styles/images/api/background.webp">
+
+	<!-- Clarity Blog Theme -->
+	<link rel="stylesheet" href="/assets/css/clarity-blog.css?v=1793188313">
+
+	<!-- Prism.js Theme (non-blocking, only needed for code blocks) -->
+	
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" media="print" onload="this.media='all'" onerror="console.warn('Prism CSS load failed')">
+	
+	
+	<link rel="canonical" href="https://xinfang.site/2026/10/26/%E6%90%9C%E7%B4%A2/%E6%96%87%E6%9C%AC%E6%A3%80%E7%B4%A2/">
+	<link rel="alternate" type="application/rss+xml" title="xinfan9's blog" href="https://xinfang.site/feed.xml">
+	
+	<meta name="description" content="TF （词频）
+">
+
+	<!-- Open Graph for social sharing -->
+	<meta property="og:title" content="文本检索">
+	<meta property="og:description" content="TF （词频）
+">
+	<meta property="og:url" content="https://xinfang.site/2026/10/26/%E6%90%9C%E7%B4%A2/%E6%96%87%E6%9C%AC%E6%A3%80%E7%B4%A2/">
+	<meta property="og:site_name" content="xinfan9's blog">
+	<meta property="og:type" content="article">
+	<meta property="article:published_time" content="2026-10-26T09:32:23+08:00">
+	
+	<meta property="og:image" content="https://xinfang.site/styles/images/api/background.webp">
+	<meta property="og:image:width" content="1200">
+	<meta property="og:image:height" content="630">
+	
+	<meta property="og:locale" content="zh_CN">
+
+	<!-- Twitter Card -->
+	<meta name="twitter:card" content="summary_large_image">
+	<meta name="twitter:title" content="文本检索">
+	<meta name="twitter:description" content="TF （词频）
+">
+	<meta name="twitter:image" content="https://xinfang.site/styles/images/favicon.jpg">
+	
+	<!-- Theme color for mobile browsers -->
+	<meta name="theme-color" content="#0b72d9" media="(prefers-color-scheme: light)">
+	<meta name="theme-color" content="#0f172a" media="(prefers-color-scheme: dark)">
+
+	<!-- Prevent FOUC for theme -->
+	<script>
+		(function() {
+			const savedTheme = localStorage.getItem('theme');
+			const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+			if (savedTheme) {
+				document.documentElement.setAttribute('data-theme', savedTheme);
+			} else if (prefersDark) {
+				document.documentElement.setAttribute('data-theme', 'dark');
+			}
+		})();
+	</script>
+	
+	<!-- Prism.js only on post pages with code blocks -->
+	
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" defer></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js" defer></script>
+	
+
+	<!-- Mermaid.js for diagram rendering (conditional) -->
+	
+
+	<!-- MathJax for LaTeX rendering (conditional) -->
+	
+	<script>
+		MathJax = {
+			tex: { inlineMath: [['$','$'], ['\\(','\\)']], displayMath: [['$$','$$'], ['\\[','\\]']] },
+			svg: { fontCache: 'global' },
+			startup: { typeset: true }
+		};
+	</script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-svg.js" defer></script>
+	
+
+	<!-- Blog Interactive Features -->
+	<script src="/assets/js/blog.js?v=1793188313" defer></script>
+
+	<!-- JSON-LD Structured Data -->
+	
+	<script type="application/ld+json">
+	{
+		"@context": "https://schema.org",
+		"@type": "BlogPosting",
+		"inLanguage": "zh-CN",
+		"headline": "文本检索",
+		"image": "https://xinfang.site/styles/images/favicon.jpg",
+		"datePublished": "2026-10-26T09:32:23+08:00",
+		"dateModified": "2026-10-26T09:32:23+08:00",
+		"author": {
+			"@type": "Person",
+			"name": "xinfan9"
+		},
+		"publisher": {
+			"@type": "Organization",
+			"name": "xinfan9's blog",
+			"logo": {
+				"@type": "ImageObject",
+				"url": "https://xinfang.site/styles/images/favicon.jpg"
+			}
+		},
+		"mainEntityOfPage": {
+			"@type": "WebPage",
+			"@id": "https://xinfang.site/2026/10/26/%E6%90%9C%E7%B4%A2/%E6%96%87%E6%9C%AC%E6%A3%80%E7%B4%A2/"
+		},
+		"keywords": "搜索",
+		"articleBody": "TF （词频）\n",
+		"description": "TF （词频）\n"
+	}
+	</script>
+	
+</head>
+
+  <body class="index">
+
+    <!-- Reading Progress Bar -->
+<div class="reading-progress" id="reading-progress"></div>
+
+<!-- Page Background -->
+<div class="post-background"></div>
+
+<div class="post-layout">
+  <!-- Left: TOC -->
+  <aside class="post-toc-sidebar" id="post-toc-sidebar" role="navigation" aria-label="文章目录">
+    <div class="toc-panel">
+      <div class="toc-title">
+        <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="12" x2="15" y2="12"></line><line x1="3" y1="18" x2="18" y2="18"></line></svg>
+        目录
+      </div>
+      <ul class="toc-list" id="toc-list"></ul>
+    </div>
+  </aside>
+
+  <!-- Center: Article -->
+  <main class="post-main">
+    <div class="panel docs-content">
+      <div class="wrapper">
+        <header class="post-header" role="banner">
+          <a href="https://xinfang.site/" class="back-home-link">
+            <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+            返回主页
+          </a>
+          <h1 class="post-title">文本检索</h1>
+          <div class="post-meta-info">
+            <time class="meta-item meta-date" datetime="2026-10-26T09:32:23+08:00">
+              <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+              2026-10-26
+            </time>
+            
+            <time class="meta-item meta-update" datetime="2026-10-27T11:42:36+08:00">
+              <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 2.2"/></svg>
+              2026-10-27
+            </time>
+            
+            <span class="meta-item meta-author">
+              <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+              xinfan9
+            </span>
+            
+            <span class="meta-item meta-words">
+              <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+              1285 字
+            </span>
+            
+            <span class="meta-item meta-reading">
+              <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+              约 13 分钟
+            </span>
+          </div>
+        </header>
+        <article class="post-content" role="article">
+          <h2 id="tf-词频">TF （词频）</h2>
+
+<p>TF（Term Frequency，词频）就是某个词在文档里出现多少次，常见有两种写法：</p>
+
+<ol>
+  <li>原始词频（BM25 使用的是原始词频）</li>
+</ol>
+
+<div class="kdmath">$$
+TF(t, D) = \text{词 } t \text{ 在文档 } D \text{ 中出现的次数}
+$$</div>
+
+<ol>
+  <li>归一化词频</li>
+</ol>
+
+<div class="kdmath">$$
+TF(t, D) = \frac{\text{词 } t \text{ 的出现次数}}{\text{文档总词数}}
+$$</div>
+
+<h2 id="idf逆文档频率">IDF（逆文档频率）</h2>
+
+<p>逆文档频率也叫<strong>稀有词权重</strong>，表示越少文档包含这个词，权重越高。</p>
+
+<div class="kdmath">$$
+IDF(t) = \ln\left(1 + \frac{N - n(t) + 0.5}{n(t) + 0.5}\right)
+$$</div>
+
+<ul>
+  <li>$N$：文档总数。</li>
+  <li>$n(t)$：包含词 $t$ 的文档数。</li>
+</ul>
+
+<h2 id="bm25">BM25</h2>
+
+<div class="kdmath">$$
+BM25(D, Q) = \sum_{t \in Q} IDF(t) \cdot \frac{f(t, D) \cdot (k_1 + 1)}{f(t, D) + k_1\left(1 - b + b \cdot \frac{|D|}{\text{avgdl}}\right)}
+$$</div>
+
+<ul>
+  <li>$f(t, D)$：词 $t$ 在当前文档出现的次数。</li>
+  <li>
+    <table>
+      <tbody>
+        <tr>
+          <td>$</td>
+          <td>D</td>
+          <td>$：当前文档的词数。</td>
+        </tr>
+      </tbody>
+    </table>
+  </li>
+  <li>$\text{avgdl}$：所有文档的平均词数。</li>
+  <li>$k_1$：控制词频收益的饱和速度，常用 1.2～2.0。</li>
+  <li>$b$：控制长度校正，常用 0.75；0 表示不校正。</li>
+</ul>
+
+<p>两个关键点：<br />
+词频会饱和：出现 20 次的贡献，不是出现 2 次的 10 倍。<br />
+长文档会被校正：长文档天然容易包含更多查询词，不能因此占便宜。</p>
+
+<h1 id="倒排索引">倒排索引</h1>
+
+<h2 id="一倒排索引的核心数据结构">一、倒排索引的核心数据结构</h2>
+
+<p>倒排索引本质是 <strong>term → 文档列表</strong> 的映射，Lucene 里分三层：</p>
+
+<ul>
+  <li><strong>Term Index（词项索引，.tip 文件）</strong>：FST（Finite State Transducer）结构，把 term 前缀共享压缩在内存里，作用类似 B+树的非叶子层——先在内存定位 term 大致在 .tim 的哪个 block，避免全量 term dict 进内存。</li>
+  <li><strong>Term Dictionary（词典，.tim 文件）</strong>：排序后的 term 列表（按 UTF-8 字节序），分 block 存储，block 内做前缀公共压缩 + 差值编码。</li>
+  <li><strong>Posting List（倒排链）</strong>：每个 term 对应一组文档，每个 posting 包含：
+    <ul>
+      <li>docID（delta 编码 + PackedInt/BLOCK 压缩，默认每 128 个 docID 一个 block）</li>
+      <li>term freq（出现次数，用于打分）</li>
+      <li>position / offset（可选，用于短语查询、高亮，存 .pos）</li>
+      <li>跳表（Skip List）：posting list 太长，做 block 级跳跃指针，支持 O(log n) 的交集跳转和 WAND 剪枝</li>
+    </ul>
+  </li>
+</ul>
+
+<p>配套还有<strong>正排结构</strong>：Stored Fields（.fdx/.fdt，原文存储，行存）和 DocValues（列存，用于排序、聚合、脚本取值，避免回表）。</p>
+
+<h2 id="二索引写入流程">二、索引写入流程</h2>
+
+<p>一次文档写入的完整链路：</p>
+
+<ol>
+  <li><strong>Analysis 分词</strong>：文档经过 Analyzer（分词器 + 小写化 + 停用词等 filter），产出 term 序列。ES 默认 standard 分词，中文常见 ik。</li>
+  <li><strong>IndexWriter 写入内存 buffer</strong>：Lucene 的 indexing buffer，同时按 field 结构写入（倒排、DocValues、Stored 各自的内存结构）。写入同时记 <strong>translog</strong>（ES 层的事务日志，保证 crash 不丢数据——注意这是 ES 的机制，Lucene 本身没有）。</li>
+  <li><strong>Refresh → 生成 segment</strong>：buffer 刷成一个新的 <strong>segment（段）</strong>，写入文件系统缓存并打开索引句柄，此时文档<strong>可被搜索</strong>——这就是 ES 的“近实时”（默认 1s，NRT）。段是<strong>不可变的</strong>（immutable），删除不真删，只在 .liv（liveDocs 位图）里打删除标记，等 merge 时物理消除。</li>
+  <li><strong>Flush / commit</strong>：segment fsync 到磁盘，清空 translog。</li>
+  <li><strong>Merge（段合并）</strong>：小段太多会拖垮检索（每次查询要打开所有段），由 <strong>TieredMergePolicy</strong> 按段大小分层合并；删除的文档在合并时被真正丢弃。merge 在后台线程做，是 IO/CPU 大户，ES 的 force merge 就是手动触发合并。</li>
+</ol>
+
+<p><strong>不可变性是 Lucene 设计的基石</strong>：不需要锁就能并发读、内核 page cache 天然充当索引缓存、压缩率可以做得很激进（数据不变可以全量预计算编码）——代价就是更新=标记删除+重写，靠 merge 收敛。</p>
+
+<h2 id="三检索执行流程">三、检索执行流程</h2>
+
+<ol>
+  <li><strong>查询解析</strong>：query DSL → Query 对象（TermQuery/BoolQuery/PhraseQuery…）。</li>
+  <li><strong>词典查找</strong>：经 FST 定位到 term，拿到 posting list 的文件偏移，读出倒排链。</li>
+  <li><strong>倒排合并</strong>：多个 term / 多个子句的文档集合做交并：
+    <ul>
+      <li>跳表 + 按 docID 长度排序（最短链驱动）加速交集</li>
+      <li>粗排 TopK 用 <strong>WAND / Block-Max WAND</strong>（Lucene 的 BS1/BS2 scorer）跳过不可能进 Top K 的文档，避免全量打分</li>
+    </ul>
+  </li>
+  <li><strong>打分</strong>：默认 <strong>BM25</strong>（ES 5.x 后取代 TF-IDF）。核心改进：词频饱和（k1 参数，TF 线性增长改为对数饱和）、字段长度归一化（b 参数，短字段加权，惩罚长字段）、IDF 项。BM25 现在是 Lucene 的默认 Similarity。</li>
+  <li><strong>短语/位置查询</strong>：读 .pos 里的 position 列表，做位置对齐匹配（slop 控制）。</li>
+  <li><strong>取回字段</strong>：TopK 文档回 Stored Fields 取 _source，或走 DocValues 做排序聚合。</li>
+</ol>
+
+<h2 id="高频问题">高频问题</h2>
+
+<p><strong>ES 侧机制类：</strong></p>
+
+<ul>
+  <li><strong>refresh / flush / translog / merge 四者的区别和作用</strong>——最高频，几乎必考。重点讲清“可搜索≠落盘”，refresh 决定可见性，translog 决定持久性。</li>
+  <li><strong>写入后为什么搜不到 / near-real-time 原理</strong>：refresh_interval 机制。</li>
+  <li><strong>segment 不可变的优劣</strong>：缓存友好、无锁并发、压缩激进 vs 更新代价、小段开销、依赖 merge。</li>
+  <li><strong>深分页问题</strong>：from+size 每个分片要取 from+size 条在协调节点归并排序（二次排序，堆内存爆炸）；ES 用 max_result_window 默认 10000 兜底；替代方案 <strong>search_after</strong>（基于上一页排序值的游标，只能顺序翻）和 <strong>scroll</strong>（快照式批量导出，非实时）。</li>
+  <li><strong>query context vs filter context</strong>：query 要算分走 BM25；filter 不算分，结果可缓存（位图/bkd 缓存），bool 里的 filter/must_not 属于后者——考点是“哪些查询条件应该放 filter”。</li>
+</ul>
+
+<p><strong>Lucene 数据结构类（区分资深的分水岭）：</strong></p>
+
+<ul>
+  <li><strong>FST 原理</strong>：前缀+后缀共享的有限状态机，内存占用极小（可比 term 总量小一个量级），O(len(term)) 查找。追问通常是“为什么不用 B+树/哈希”——哈希不支持前缀/范围查询且内存大；B+树节点冗余大。</li>
+  <li><strong>posting list 压缩</strong>：delta 编码 + FOR（Frame of Reference，按 block 用最小位数存储）+ 跳表。</li>
+  <li><strong>DocValues 为什么存在</strong>：倒排做不了排序/聚合（回表太慢），列存一次性顺序读。顺带会问 <strong>BKD-Tree</strong>（数值/地理范围查询的 multidimensional 结构，替代早期的 precision tree）。</li>
+  <li><strong>删除文档的可见性</strong>：.liv 位图，merge 才物理删除；所以大量删除重建场景（如你做全量索引切换）会主动 force merge。</li>
+</ul>
+
+<p><strong>打分类：</strong></p>
+
+<ul>
+  <li><strong>BM25 vs TF-IDF</strong>：词频饱和、长度归一、IDF 平滑，三个公式差异要能写出来。</li>
+  <li><strong>相关性与性能矛盾</strong>：WAND 剪枝原理（跳过 even 打最优分也进不了 TopK 的文档）。</li>
+</ul>
+
+<p><strong>分布式类（ES 特有）：</strong></p>
+
+<ul>
+  <li><strong>分片路由</strong>：shard = hash(routing) % num_primary_shards，所以主分片数建好后不能改。</li>
+  <li><strong>写入一致性</strong>：primary→replica 流程、wait_for_active_shards、translog 在 replica 上也写。</li>
+  <li><strong>段合并与 replica 一致性</strong>：各分片独立 merge，段结构不必一致，但文档集合语义一致。</li>
+</ul>
+
+<h2 id="一b树-vs-fst-具体区别">一、B+树 vs FST 具体区别</h2>
+
+<p>先给结论：<strong>它们不是同一竞争维度的选择——B+树为“可变有序数据”设计，FST 为“静态只读词典”设计。Lucene 选 FST 的前提是段不可变，词典一次构建、永不修改，才敢用构建时代价换取极致的查询性能和内存占用。</strong></p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: left">维度</th>
+      <th style="text-align: left">B+树</th>
+      <th style="text-align: left">FST</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left">本质</td>
+      <td style="text-align: left">多路平衡搜索树：内部节点做路由，叶子存 key+数据指针，叶子间链表相连</td>
+      <td style="text-align: left">最小化有限状态转换器：term 的公共<strong>前缀</strong>共享路径，公共<strong>后缀</strong>共享终止子图</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">可变性</td>
+      <td style="text-align: left">支持原地增删改（节点分裂/合并、页内挪动）</td>
+      <td style="text-align: left">构建后<strong>不可变</strong>，更新只能重建</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">空间</td>
+      <td style="text-align: left">每 key 在多层节点冗余出现，节点间靠指针连接，空间 ≈ 数据量×系数</td>
+      <td style="text-align: left">前后缀全共享 + 转移边带输出值，空间可<strong>小于原始 term 集合本身</strong></td>
+    </tr>
+    <tr>
+      <td style="text-align: left">查找复杂度</td>
+      <td style="text-align: left">O(log N)，树高通常 3~4（磁盘友好，节点对齐页）</td>
+      <td style="text-align: left">O(len(term))，与 term 总量<strong>无关</strong>，只与查的词长度有关</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">前缀/模糊/范围</td>
+      <td style="text-align: left">范围查询强（叶子链表顺序扫），但前缀要定位下界后扫一段</td>
+      <td style="text-align: left">天然前缀树语义：前缀=状态节点，范围=有序遍历状态机，模糊/补全直接扩展（Lucene suggest 模块就是 FST）</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">数据布局</td>
+      <td style="text-align: left">节点=磁盘页，随机 IO 每层一次</td>
+      <td style="text-align: left">编码成紧凑字节数组，整体常驻<strong>内存</strong>，无指针</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">定位结果</td>
+      <td style="text-align: left">叶子节点存数据指针/行 ID</td>
+      <td style="text-align: left">FST 是 <strong>transducer</strong>：每条边带输出值，走完一条 term 路径累计的输出直接算出该 term 在 .tim 里的 block 偏移——<strong>不需要存任何显式指针</strong></td>
+    </tr>
+  </tbody>
+</table>
+
+<p><strong>FST 比 trie 强在哪（追问点）</strong>：trie 只共享前缀，后缀不共享；FST 构建时把所有 term 排序后做最小化（minimize），等价的后缀子图合并成一个。比如 <code>cat / can / dog</code> —— trie 里 <code>at</code> 和 <code>an</code> 是两条独立路径，FST 会把它们压缩共享。再加上 transducer 的边输出值复用（前缀 term 的输出可以由后缀 term 的输出差值表示），所以一个亿级 term 的词典，FST 可能只有几十 MB，放进内存毫无压力。</p>
+
+<p><strong>为什么哈希也不行（完整追问链）</strong>：哈希 O(1) 精确查询比 FST 快，但①不支持前缀/范围/通配/模糊，而搜索词典必须做 <code>ab*</code>、<code>ab..f</code> 这类查询；②哈希要存完整 term 字符串本体，内存是 FST 的一个量级以上；③哈希无序，merge 时无法做顺序归并。</p>
+
+<p><strong>面试一句话总结</strong>：“B+树是磁盘时代的动态索引，用树高换页级 IO；FST 是内存时代的静态词典，用不可变性换共享压缩和 O(L) 查找。Lucene 词典是只读的，天然适合 FST——这正是<strong>段不可变这个架构决策在数据结构层的投影</strong>。”</p>
+
+<h2 id="二按索引中某字段排序的实现">二、按索引中某字段排序的实现</h2>
+
+<p>分三层回答，层层递进，这是面试官爱挖的链路：</p>
+
+<h3 id="1-检索时排序docvalues-列存核心机制">1. 检索时排序：DocValues 列存（核心机制）</h3>
+
+<p>“排序依据的字段<strong>不走倒排</strong>，走 <strong>DocValues 列存</strong>——按 docID 顺序密排的字段值数组。流程是：倒排检索 + BM25/WAND 拿到候选 docID 流 → collector 维护一个 size=K 的优先队列（小顶堆）→ 每来一个 doc，用 docID 做偏移去 DocValues 里 O(1) 取该字段值 → 和堆顶比较决定是否换入。最终堆里就是 TopK。”</p>
+
+<p>关键细节（加分项）：</p>
+
+<ul>
+  <li><strong>text 字段不能直接排序</strong>：text 被分词成多个 term，一个 doc 有多个值无法比较。必须用它的 <strong>keyword 子字段</strong>（<code>field.keyword</code>），单值可排序。这是最常见的实操坑。</li>
+  <li>DocValues 三种物理编码，面试可提：<strong>SORTED</strong>（值去重按字典序编号，每 doc 存 ord——枚举型字段压缩率极高）、<strong>SORTED_NUMERIC</strong>（数值差值编码）、DENSE/GENERIC。为什么编码重要：排序字段相邻 doc 值往往相似，差值+block 压缩后顺序扫很快。</li>
+  <li><strong>排序字段要禁打分剪枝的联动</strong>：sort by field 时相关性分数不再决定 TopK，BM25 的 max_score 优化、track_total_hits 计数都会相应调整，<code>_score</code> 可能为 null。</li>
+  <li>老机制 <strong>fielddata</strong>（query 时从倒排反向构建 doc→value 映射，放 JVM 堆）：慢且吃堆内存，现已被 DocValues 取代——被问到 fielddata 就是送分题，答“DocValues 建段时预构建列存，fielddata 是查询时懒构建的堆内缓存”。</li>
+</ul>
+
+<h3 id="2-索引物理排序index-sorting进阶考点">2. 索引物理排序：index sorting（进阶考点）</h3>
+
+<p>“ES 6.0+/Lucene 6.5+ 支持 <strong>index.sort</strong>，在建索引时就把<strong>段内文档按指定字段物理排序</strong>——即 docID 的编号顺序 = 字段排序顺序。这不是查询时排序，而是让数据落盘时就‘排好’。”</p>
+
+<p>三个收益：</p>
+
+<ol>
+  <li><strong>查询提前终止</strong>：sort by 该字段时，段内文档已按此序排列，扫到前 K 个就能确认后面不可能更优，直接 <strong>truncate 提前结束整个段</strong>——查询从 O(命中数) 降到 O(K)，这是最大的性能收益；</li>
+  <li><strong>压缩率提升</strong>：DocValues 和 Stored Fields 中相邻 doc 值相似，差值编码效率大幅提高；</li>
+  <li>范围类 filter 配合 docID 有序可整段跳过。</li>
+</ol>
+
+<p>代价：flush 时要在内存 buffer 内对文档<strong>先排序再编码</strong>，写吞吐下降——所以它适合<strong>读多写少、且查询固定按某字段排序</strong>的场景（比如日志类索引按 timestamp 排序是教科书用法）。</p>
+
+<h3 id="3-分布式归并es-层收尾">3. 分布式归并（ES 层收尾）</h3>
+
+<p>“单分片内拿到 TopK 后，<strong>每个分片</strong>返回自己的 Top (from+size) 条（带着排序值和 _shard_doc tie-break），协调节点做<strong>归并排序</strong>取全局 TopK。这里有稳定性的坑：如果排序字段值相同，不同分片返回顺序不稳定会导致翻页重复/丢失，ES 内部用 <code>_shard_doc</code> 隐藏字段做确定性 tie-break——深分页讲 search_after 时把这点带上。”</p>
+
+<h3 id="面试综合陈述模板">面试综合陈述模板</h3>
+
+<p>“字段排序分三个层面：<strong>微观</strong>上排序值存在 DocValues 列存里，检索时 collector 维护 TopK 堆，用 docID 直接偏移取列存值比较，text 字段要靠 keyword 子字段；<strong>中观</strong>上可以用 index.sort 让段内 docID 物理有序，换来提前终止和更高压缩率，代价是写入时排序；<strong>宏观</strong>上各分片本地 TopK 后由协调节点归并，同分片内 tie-break 保证稳定。整条链路体现的设计思想是：<strong>排序和检索解耦——倒排负责‘找谁’，列存负责‘怎么排’，物理预排负责‘排得快’</strong>。”</p>
+
+<p>两个问题都建议并入你的追问链：B+树 vs FST 挂在“词典结构为什么这样设计”的追问分支下，字段排序挂在“DocValues 存在的意义”分支下（第一问必然引出第二问）。需要我把这两节合入之前的面试文档吗？</p>
+
+<p>1m 8s</p>
+
+<p>如果有多个排序字段呢</p>
+
+<p>2026-10-26 15:27:39</p>
+
+<p>多字段排序是个很好的追问收口点，继续按机制层展开。</p>
+
+<h2 id="结论先行">结论先行</h2>
+
+<p><strong>多字段排序 = 字典序（lexicographic）比较的复合比较器</strong>：按 sort 数组顺序逐字段比较，第一个字段分不出胜负才看第二个。实现上不是“排多次”，而是<strong>一个复合比较器一次遍历搞定</strong>。</p>
+
+<h2 id="一es-查询层的语义规则">一、ES 查询层的语义规则</h2>
+
+<pre><code>GET /idx/_search
+{ "sort": [
+    { "category": "desc" },
+    { "price": "asc" },
+    "_score"
+]}
+</code></pre>
+
+<p>规则要点：</p>
+
+<ul>
+  <li><strong>字典序语义</strong>：先按 category 降序；category 相同才比 price 升序；再相同才比 _score。sort 数组里<strong>前面的字段优先级高</strong>，与 SQL 的 <code>ORDER BY a, b</code> 一致；</li>
+  <li><code>_score</code> 可以混排在任意位置，实现“相关性为主、字段值做 tie-break”或“字段为主、相关性微调”两种模式；</li>
+  <li><strong>missing 值处理</strong>是实操坑：缺字段的 doc 用 <code>missing: "_last"</code>（默认）或 <code>_first</code> 决定它排哪头——因为底层比较器遇到缺失值必须返回一个确定的三值结果，这是多字段比较器必须显式定义的分支；</li>
+  <li>text 字段同样不能直接排序，走 <code>field.keyword</code> 子字段。</li>
+</ul>
+
+<h2 id="二lucene-底层复合比较器">二、Lucene 底层：复合比较器</h2>
+
+<p>单字段排序时，collector 的 TopK 堆用该字段的单值比较器；多字段时 Lucene 把多个 FieldComparator <strong>串成复合比较器</strong>：</p>
+
+<ul>
+  <li>每个 doc 到来时，<strong>按序取每个字段的 DocValues 值</strong>（docID 做偏移，每字段一次 O(1) 取值，多字段就是 K 次顺序读，DocValues 列存本来就为这种顺序扫描优化）；</li>
+  <li>从第一个字段开始比较，<strong>遇分歧立即返回</strong>，后续字段不再取值——所以“前置字段区分度高”时，实际取值次数远少于字段数；</li>
+  <li>堆中每个条目存的是<strong>复合排序 key</strong>（各字段值组成的元组），进堆出堆都用这个 key 比较。</li>
+</ul>
+
+<p>性能特征（追问点）：<strong>排序字段越多，每个候选 doc 的取值和比较成本越高</strong>，但仍是 O(命中 × 字段数)，且得益于提前分歧，实际开销取决于前置字段的区分度——面试可以点出“把高区分度字段放前面”既是语义优先级问题，也是性能优化。</p>
+
+<h2 id="三indexsort-的多字段物理预排进阶">三、index.sort 的多字段物理预排（进阶）</h2>
+
+<p><code>index.sort</code> 同样支持多字段：</p>
+
+<pre><code class="language-json">{ "index.sort.field": ["category", "price"],
+  "index.sort.order": ["desc", "asc"] }
+</code></pre>
+
+<p>关键机制：<strong>段内 docID 编号 = 多字段字典序排列结果</strong>，所以 docID 本身就是复合排序键的物化。</p>
+
+<p>有一个精巧细节（加分项）：<strong>升序和降序混排怎么物理实现？</strong> Lucene 用“值变换”技巧——降序字段在编码进 DocValues 保留的排序视图时对值做反转（数值取反/翻转符号位，字符串用降序的 ord），这样物理上始终按字节升序遍历就等于逻辑上的混合方向。也就是说底层统一成一种单调序，方向在编码层解决。</p>
+
+<p>多字段 index.sort 下的收益变化（要诚实）：</p>
+
+<ul>
+  <li>提前终止（early termination）依然成立，但只在<strong>查询的排序规则与 index.sort 的字段前缀完全一致</strong>时才能 truncate；如果查询按 (category, price) 排而物理序是 (category, price, timestamp)，前缀匹配仍可提前终止；如果查询按 price 排（跳过了前置字段），物理序无效，退回全扫+堆；</li>
+  <li>字段越多，写入时排序成本越高（flush 前要对全 buffer 文档做字典序排序），且前缀约束越强，查询必须“迁就”物理序——所以多字段 index.sort 实际上适合<strong>查询排序模式高度固定</strong>的业务。</li>
+</ul>
+
+<h2 id="四分布式归并与稳定性">四、分布式归并与稳定性</h2>
+
+<p>多字段让 tie（排序值完全相同）概率下降，但没有消除：各分片本地 TopK → 协调节点按同一复合比较器归并。跨分片 tie-break 依然靠 <code>_shard_doc</code> 保证确定性翻页。深分页 search_after 的游标值此时是<strong>多字段值元组</strong>——<code>search_after</code> 传的是上一页最后一条的各排序字段值数组（加 <code>_shard_doc</code>），这也是为什么 sort 字段里放一个唯一字段（如 _id 或时间戳）是最佳实践：让复合键全局唯一，彻底消除 tie。</p>
+
+<h2 id="五ha3-对照">五、HA3 对照</h2>
+
+<p>正排 profile 多列 + 排序表达式：HA3 的 RankProfile 里 sort by 多个 attribute 本质也是复合比较，seeker 层预排/裁剪与物理序的联动思想同 index.sort——可以说“多字段字典序 + 列存取值 + 唯一键收尾 tie-break”是搜索系统通用三件套。</p>
+
+<h2 id="一句话总结挂到追问链">一句话总结（挂到追问链）</h2>
+
+<p>“多字段排序是复合比较器的字典序：排序数组顺序即优先级，取值按序、遇分歧即止，所以高区分度字段前置既是语义也是性能优化；index.sort 多字段让 docID 物理化复合序，方向混排靠值变换统一成单调序，但提前终止要求查询排序与物理序前缀匹配；收尾靠唯一字段（时间戳/_id）消除 tie，search_after 游标就是复合键元组。”</p>
+
+<p>这一节可以直接接在文档里“字段排序三层”之后作为第 4 层追问，需要我合入文档吗？</p>
+
+<p>29.9s</p>
+
+<p>详细介绍FST</p>
+
+<p>2026-10-26 15:28:15</p>
+
+<p>FST 值得单独深挖——它是 Lucene 面试里“数据结构分水岭”题的满分答案。我按<strong>演进 → 结构 → 构建 → Lucene 落地 → 能力边界</strong>五层讲透。</p>
+
+<h2 id="一定位fst-是什么">一、定位：FST 是什么</h2>
+
+<p>一句话：<strong>FST（Finite State Transducer，最小化有限状态转换机）是一个“有序字符串 → 值”的映射函数</strong>。普通自动机（DFA）回答“这个字符串在不在集合里”，FST 还能回答“它在集合里的话，对应的输出值是什么”。</p>
+
+<p>Lucene 用它做 term → .tim 文件 block 偏移的映射——即<strong>用 FST 把整个词典编码成一块极小的、可全量放进内存的查找结构</strong>。</p>
+
+<p>理解 FST 要走两步演进：trie → DAWG → FST。</p>
+
+<h2 id="二从-trie-到-dawg后缀共享">二、从 Trie 到 DAWG：后缀共享</h2>
+
+<p><strong>Trie 只共享前缀</strong>。存 <code>bat / cat / catnap</code>：</p>
+
+<pre><code>Trie（前缀共享）:
+        root
+       /    \
+      b      c
+      |      |
+      a      a
+      |      |
+      t      t------n
+             |      |
+            (F)     a
+                     |
+                     p
+                     |
+                    (F)
+</code></pre>
+
+<p><code>bat</code> 和 <code>cat</code> 的公共后缀 &#8220;at&#8221; 在 trie 里是<strong>两份独立拷贝</strong>。词典越大，这种冗余越夸张。</p>
+
+<p><strong>DAWG（有向无环词图）= trie + 最小化</strong>：构建完成后把“结构完全相同”的子图合并。上图中 <code>cat</code> 路径上的 a→t 子图和 <code>bat</code> 路径上的 a→t 子图完全等价（都只通向终态），合并：</p>
+
+<pre><code>DAWG（前缀+后缀共享）:
+        root
+       /    \
+      b      c
+       \    /
+        \  /
+         a
+         |
+         t------n
+         |      |
+        (F)     a
+                 |
+                 p
+                 |
+                (F)
+</code></pre>
+
+<p>&#8220;at&#8221; 只存一份。这就是<strong>最小化（minimization）</strong>：等价状态归一。对真实词典（亿级 term，大量后缀重叠，比如所有以 -ing/-tion 结尾的词），DAWG 可以把内存压到原始字符串的几分之一。</p>
+
+<h2 id="三fst给-dawg-装上输出">三、FST：给 DAWG 装上“输出”</h2>
+
+<p><strong>Transducer 与 DFA 的唯一区别：边（arc）上带输出值（output），终态可以带 final output。查一个 term，沿路径把所有边的输出累加，再加上终态的 final output，就是这个 term 的映射值。</strong></p>
+
+<p>例：把三个 term 映射到 .tim 中的 block 偏移（有序，输出单调递增）：</p>
+
+<ul>
+  <li>cat → 100</li>
+  <li>catnap → 112</li>
+  <li>dog → 200</li>
+</ul>
+
+<p>编码成 FST：</p>
+
+<pre><code>FST:
+        root
+       /  \
+   c[100]  d[200]
+      |      |
+      a      o
+      |      |
+      t      g → (F)
+      |           位置 200 的查询路径: 200
+     (F,100)
+      |
+  ————n[12]————  ← catnap 在分歧点分出的新弧
+      |
+      a
+      |
+      p
+      |
+     (F)
+</code></pre>
+
+<p>查询走读（这是面试必演示的）：</p>
+
+<ul>
+  <li>查 <code>cat</code>：root &#8211;c(100)→ &#8211;a→ &#8211;t→ 到终态，路径输出和 = 100，终态 final output = 0，<strong>结果 100</strong> ✓</li>
+  <li>查 <code>catnap</code>：走到 t 之后继续 &#8211;n(12)→ a→ p→ 终态，100 + 12 = <strong>112</strong> ✓</li>
+  <li>查 <code>dog</code>：d(200)→o→g→终态，<strong>200</strong> ✓</li>
+</ul>
+
+<p><strong>精妙之处（输出共享）</strong>：cat 和 catnap 共享整条 <code>cat</code> 路径，路径上的输出 100 只存一份；两者的差异 112−100=12 恰好放在分歧弧 <code>n</code> 上。这是 FST 的构建算法自动计算的——<strong>每个输出只在“必须区分的弧”上存一次，共享路径上零冗余</strong>。Lucene 利用了 term 输出（文件偏移）单调递增的性质进一步把输出编码成差值，进一步压缩。</p>
+
+<p>所以 FST 的空间可以<strong>小于所有 term 字符串本身</strong>：字符靠前后缀共享，输出靠分歧点共享，双维度去冗余。社区经典实测（Robert McCandlic，Lucene committer）：OpenStreetMap 900 万条街道名，FST 编码后约 10MB——比原文小一个量级，且查询速度与 HashMap 相当。</p>
+
+<h2 id="四构建算法有序插入--冻结--最小化">四、构建算法：有序插入 + 冻结 + 最小化</h2>
+
+<p>FST 要求输入<strong>按字典序排序</strong>（Lucene 词典本来就排序，天然满足）。核心是 Daciuk 增量最小化算法：</p>
+
+<ol>
+  <li>逐个插入 term。插入新 term 时，先沿现有 FST 走出与<strong>前一个 term</strong> 的最长公共前缀；</li>
+  <li>公共前缀之后的旧节点<strong>冻结（freeze）</strong>：因为输入有序，后续任何 term 都不可能再从这些节点分叉出去（未来 term 与它们的关系最多是公共前缀）——所以它们定型，可进入最小化；</li>
+  <li>冻结的子图在<strong>注册表（registry，按结构哈希）</strong>里查找等价状态，找到就合并指针（“at” 合并就发生在这里）；新 term 的剩余字符追加新弧；</li>
+  <li>重复直到输入结束，最后全树冻结。</li>
+</ol>
+
+<p>复杂度：构建 O(总输入字节数)（均摊），查找 O(len(term)) <strong>与词典规模无关</strong>——这是与 B+树 O(log N) 的本质差异，面试点出来很加分。</p>
+
+<p><strong>为什么必须排序</strong>：无序输入无法判定“这个节点不会再被扩展”，只能全量构建后离线最小化，内存峰值和构建时间都不可控。这也解释了 FST 只适合<strong>一次性构建、只读</strong>的场景——和 Lucene 段不可变完美咬合。</p>
+
+<h2 id="五lucene-中的落地">五、Lucene 中的落地</h2>
+
+<ul>
+  <li><strong>存哪</strong>：序列化进 .tip 文件，整体常驻内存（page cache + JVM 堆外/堆内按版本实现）。每个 field 一棵 FST。</li>
+  <li><strong>输出是什么</strong>：term 所在 .tim block 的文件偏移。定位 block 后，block 内 25~48 个 term 做前缀压缩 + 线性/二分扫描，找到精确 term 及其 posting list 指针。</li>
+  <li><strong>编码细节</strong>：每条弧 = label 字节 + 输出值（vlong 变长编码）+ 目标节点地址；节点内弧按 label 有序排列支持二分；root 弧单独缓存（几乎所有查询第一步走 root）。Lucene 还做“每弧最小字节数”打包（先统计 block 内弧的最大编码长度再统一定长）。</li>
+  <li><strong>不只是词典</strong>：Suggest 模块（自动补全/拼写纠错 AnalyzingSuggester）、正则/通配/模糊查询的 Levenshtein 自动机、多 term 交集（intersect 操作）都构建在自动机体系上——FST 是 Lucene 的基础设施而非单一 trick。</li>
+</ul>
+
+<h2 id="六能力面与局限收口">六、能力面与局限（收口）</h2>
+
+<p><strong>能做</strong>：精确查找 O(L)；前缀查询（走到前缀末状态，其可达子图就是所有候选——autocomplete 天然实现）；范围查询（在状态机上按序枚举）；模糊/正则（把 pattern 编译成自动机与词典 FST 求交）；merge 时多路归并（自动机有序遍历）。</p>
+
+<p><strong>局限</strong>：不可变（更新=重建，依赖上层段机制规避）；构建需要输入有序且吃内存（构建期临时节点 + registry）；只适合“字符串键→小整数值”类负载（值域大则输出编码膨胀）。</p>
+
+<p><strong>面试陈述模板</strong>：“FST 是‘字符串→值’的静态映射函数，trie 提供前缀共享，最小化提供后缀共享，transducer 的弧输出提供值共享——三重去冗余让它比原始 term 集合还小，常驻内存做词典定位。构建依赖输入有序，用冻结+registry 增量最小化，O(n) 构建 O(L) 查询。它与段不可变互为因果：因为段不可变，词典可以一次构建只读；因为 FST 只读，Lucene 才敢把 refresh 做得这么轻。选它而不是 B+树，是因为 B+树的可变性在只读词典上是纯开销，而它换不来 FST 的前缀语义和量级压缩。”</p>
+
+<p><strong>追问链（挂文档里）</strong>：</p>
+
+<ul>
+  <li>为什么不用哈希 → 无前缀/范围/归并语义，且要存 term 本体</li>
+  <li>为什么不用 B+树 → 磁盘导向设计，节点冗余大，O(log N) 依赖规模</li>
+  <li>查找复杂度多少、和词典大小有关吗 → O(L) 与 N 无关，关键差异</li>
+  <li>怎么构建、为什么要求有序 → 冻结正确性依赖有序</li>
+  <li>内存为什么小 → 前缀/后缀/输出三重共享，附实测数字</li>
+  <li>FST 在 Lucene 还用在哪 → suggest、模糊/正则自动机、intersect</li>
+  <li>更新怎么办 → 不可变，段级重建 + merge 归并</li>
+</ul>
+
+<p>这节是文档 1.2 的完整展开版，需要我合入面试文档（替换现有 FST 段落并追加追问链）吗？</p>
+
+        </article>
+      </div>
+    </div>
+  </main>
+
+  <!-- Right: Category Articles -->
+  <aside class="post-category-sidebar" role="navigation" aria-label="分类文章列表">
+    <div class="category-panel">
+      
+      
+      <div class="category-sidebar-title">
+        <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
+        搜索
+      </div>
+      <ul class="category-article-list">
+        
+        
+        <li class="active">
+          <a href="/2026/10/26/%E6%90%9C%E7%B4%A2/%E6%96%87%E6%9C%AC%E6%A3%80%E7%B4%A2/" title="文本检索">
+            <span class="article-title">文本检索</span>
+            <span class="article-date">10-26</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/10/25/%E6%90%9C%E7%B4%A2/%E6%8E%92%E5%BA%8F%E7%AE%97%E6%B3%95/" title="排序算法">
+            <span class="article-title">排序算法</span>
+            <span class="article-date">10-25</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/10/22/%E6%90%9C%E7%B4%A2/%E6%8A%80%E8%83%BD%E5%8F%91%E7%8E%B0%E4%B8%8E%E6%A3%80%E7%B4%A2/" title="技能发现与检索">
+            <span class="article-title">技能发现与检索</span>
+            <span class="article-date">10-22</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/10/22/%E6%90%9C%E7%B4%A2/%E7%9F%AD%E8%AF%AD%E6%90%9C%E7%B4%A2/" title="短语搜索">
+            <span class="article-title">短语搜索</span>
+            <span class="article-date">10-22</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/10/22/%E6%90%9C%E7%B4%A2/%E8%AE%B0%E5%BF%86%E6%A3%80%E7%B4%A2/" title="记忆检索">
+            <span class="article-title">记忆检索</span>
+            <span class="article-date">10-22</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/10/22/%E6%90%9C%E7%B4%A2/FST5/" title="FST5">
+            <span class="article-title">FST5</span>
+            <span class="article-date">10-22</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/10/22/%E6%90%9C%E7%B4%A2/%E5%90%91%E9%87%8F%E6%A3%80%E7%B4%A2/" title="向量检索">
+            <span class="article-title">向量检索</span>
+            <span class="article-date">10-22</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/10/22/%E6%90%9C%E7%B4%A2/%E5%9B%BE%E6%A3%80%E7%B4%A2/" title="图检索">
+            <span class="article-title">图检索</span>
+            <span class="article-date">10-22</span>
+          </a>
+        </li>
+        
+      </ul>
+      
+    </div>
+  </aside>
+</div>
+
+<!-- Theme Toggle Button -->
+<button type="button" class="theme-toggle" aria-label="Toggle Theme">
+  <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+  </svg>
+  <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="12" cy="12" r="5"></circle>
+    <line x1="12" y1="1" x2="12" y2="3"></line>
+    <line x1="12" y1="21" x2="12" y2="23"></line>
+    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+    <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+    <line x1="1" y1="12" x2="3" y2="12"></line>
+    <line x1="21" y1="12" x2="23" y2="12"></line>
+    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+    <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+  </svg>
+</button>
+
+<!-- Back to Top Button -->
+<button type="button" class="back-to-top" aria-label="Back to Top">
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <polyline points="18 15 12 9 6 15"></polyline>
+  </svg>
+</button>
+
+
+    <!-- Site Footer -->
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-content">
+      <div class="footer-info">
+        <h4>xinfan9's blog</h4>
+        <p>Actually, less is more!</p>
+      </div>
+      <div class="footer-links">
+        <a href="https://github.com/xinfan9/" target="_blank" title="GitHub">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+        </a>
+        <a href="mailto:11411619@qq.com" title="Email">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+        </a>
+        <a href="/feed.xml" title="RSS">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11a9 9 0 0 1 9 9"/><path d="M4 4a16 16 0 0 1 16 16"/><circle cx="5" cy="19" r="1"/></svg>
+        </a>
+      </div>
+      <div class="footer-copyright">
+        <p>&copy; 2026 xinfan9. Built with Jekyll.</p>
+      </div>
+    </div>
+  </div>
+</footer>
+      
+    
+    <!-- Global Buttons (for non-post pages) -->
+    
+  </body>
+</html>

@@ -1,0 +1,956 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+  <head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="Content-Language" content="zh-CN">
+	<title>向量检索 - xinfan9's blog</title>
+
+	<link rel="icon" href="/styles/images/favicon.jpg">
+
+	<!-- Preconnect for CDN -->
+	
+	<link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+	<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+	
+
+
+	<!-- Inline Critical Reset (was index.css) -->
+	<style>
+		*,*::before,*::after{box-sizing:border-box}html{-ms-text-size-adjust:100%;-webkit-text-size-adjust:100%;-webkit-tap-highlight-color:rgba(0,0,0,0)}body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Microsoft YaHei",sans-serif;font-size:14px;line-height:1.42857143;color:#333;background-color:#f7f7f7}article,aside,details,figcaption,figure,footer,header,main,nav,section,summary{display:block}a{color:#43759e;text-decoration:none;background:transparent}a:hover,a:focus{color:#2c4d68;text-decoration:underline}a:focus{outline:thin dotted;outline-offset:-2px}img{vertical-align:middle;max-width:100%;height:auto}input,button,select,textarea{font-family:inherit;font-size:inherit;line-height:inherit}h1,h2,h3,h4,h5,h6{margin-top:0}.container{max-width:1200px;margin-left:auto;margin-right:auto;padding-left:15px;padding-right:15px}.clearfix::after{content:"";display:table;clear:both}.text-muted{color:#777}.sr-only{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0,0,0,0);border:0}
+	</style>
+
+	
+	<link rel="prefetch" as="image" href="/styles/images/api/background.webp">
+
+	<!-- Clarity Blog Theme -->
+	<link rel="stylesheet" href="/assets/css/clarity-blog.css?v=1793188313">
+
+	<!-- Prism.js Theme (non-blocking, only needed for code blocks) -->
+	
+	
+	<link rel="canonical" href="https://xinfang.site/2026/10/22/%E6%90%9C%E7%B4%A2/%E5%90%91%E9%87%8F%E6%A3%80%E7%B4%A2/">
+	<link rel="alternate" type="application/rss+xml" title="xinfan9's blog" href="https://xinfang.site/feed.xml">
+	
+	<meta name="description" content="向量检索
+倒排检索解决的是集合匹配问题：query 分词 → 求交 docid 集合 → 打分排序。它的精度来自精确匹配，但便宜的手机&#8221;搜不到&#8221;高性价比千元机&#8221;。
+">
+
+	<!-- Open Graph for social sharing -->
+	<meta property="og:title" content="向量检索">
+	<meta property="og:description" content="向量检索
+倒排检索解决的是集合匹配问题：query 分词 → 求交 docid 集合 → 打分排序。它的精度来自精确匹配，但便宜的手机&#8221;搜不到&#8221;高性价比千元机&#8221;。
+">
+	<meta property="og:url" content="https://xinfang.site/2026/10/22/%E6%90%9C%E7%B4%A2/%E5%90%91%E9%87%8F%E6%A3%80%E7%B4%A2/">
+	<meta property="og:site_name" content="xinfan9's blog">
+	<meta property="og:type" content="article">
+	<meta property="article:published_time" content="2026-10-22T21:18:20+08:00">
+	
+	<meta property="og:image" content="https://xinfang.site/styles/images/api/background.webp">
+	<meta property="og:image:width" content="1200">
+	<meta property="og:image:height" content="630">
+	
+	<meta property="og:locale" content="zh_CN">
+
+	<!-- Twitter Card -->
+	<meta name="twitter:card" content="summary_large_image">
+	<meta name="twitter:title" content="向量检索">
+	<meta name="twitter:description" content="向量检索
+倒排检索解决的是集合匹配问题：query 分词 → 求交 docid 集合 → 打分排序。它的精度来自精确匹配，但便宜的手机&#8221;搜不到&#8221;高性价比千元机&#8221;。
+">
+	<meta name="twitter:image" content="https://xinfang.site/styles/images/favicon.jpg">
+	
+	<!-- Theme color for mobile browsers -->
+	<meta name="theme-color" content="#0b72d9" media="(prefers-color-scheme: light)">
+	<meta name="theme-color" content="#0f172a" media="(prefers-color-scheme: dark)">
+
+	<!-- Prevent FOUC for theme -->
+	<script>
+		(function() {
+			const savedTheme = localStorage.getItem('theme');
+			const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+			if (savedTheme) {
+				document.documentElement.setAttribute('data-theme', savedTheme);
+			} else if (prefersDark) {
+				document.documentElement.setAttribute('data-theme', 'dark');
+			}
+		})();
+	</script>
+	
+	<!-- Prism.js only on post pages with code blocks -->
+	
+
+	<!-- Mermaid.js for diagram rendering (conditional) -->
+	
+
+	<!-- MathJax for LaTeX rendering (conditional) -->
+	
+	<script>
+		MathJax = {
+			tex: { inlineMath: [['$','$'], ['\\(','\\)']], displayMath: [['$$','$$'], ['\\[','\\]']] },
+			svg: { fontCache: 'global' },
+			startup: { typeset: true }
+		};
+	</script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-svg.js" defer></script>
+	
+
+	<!-- Blog Interactive Features -->
+	<script src="/assets/js/blog.js?v=1793188313" defer></script>
+
+	<!-- JSON-LD Structured Data -->
+	
+	<script type="application/ld+json">
+	{
+		"@context": "https://schema.org",
+		"@type": "BlogPosting",
+		"inLanguage": "zh-CN",
+		"headline": "向量检索",
+		"image": "https://xinfang.site/styles/images/favicon.jpg",
+		"datePublished": "2026-10-22T21:18:20+08:00",
+		"dateModified": "2026-10-22T21:18:20+08:00",
+		"author": {
+			"@type": "Person",
+			"name": "xinfan9"
+		},
+		"publisher": {
+			"@type": "Organization",
+			"name": "xinfan9's blog",
+			"logo": {
+				"@type": "ImageObject",
+				"url": "https://xinfang.site/styles/images/favicon.jpg"
+			}
+		},
+		"mainEntityOfPage": {
+			"@type": "WebPage",
+			"@id": "https://xinfang.site/2026/10/22/%E6%90%9C%E7%B4%A2/%E5%90%91%E9%87%8F%E6%A3%80%E7%B4%A2/"
+		},
+		"keywords": "搜索",
+		"articleBody": "向量检索\n倒排检索解决的是集合匹配问题：query 分词 → 求交 docid 集合 → 打分排序。它的精度来自精确匹配，但便宜的手机&#8221;搜不到&#8221;高性价比千元机&#8221;。\n",
+		"description": "向量检索\n倒排检索解决的是集合匹配问题：query 分词 → 求交 docid 集合 → 打分排序。它的精度来自精确匹配，但便宜的手机&#8221;搜不到&#8221;高性价比千元机&#8221;。\n"
+	}
+	</script>
+	
+</head>
+
+  <body class="index">
+
+    <!-- Reading Progress Bar -->
+<div class="reading-progress" id="reading-progress"></div>
+
+<!-- Page Background -->
+<div class="post-background"></div>
+
+<div class="post-layout">
+  <!-- Left: TOC -->
+  <aside class="post-toc-sidebar" id="post-toc-sidebar" role="navigation" aria-label="文章目录">
+    <div class="toc-panel">
+      <div class="toc-title">
+        <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="12" x2="15" y2="12"></line><line x1="3" y1="18" x2="18" y2="18"></line></svg>
+        目录
+      </div>
+      <ul class="toc-list" id="toc-list"></ul>
+    </div>
+  </aside>
+
+  <!-- Center: Article -->
+  <main class="post-main">
+    <div class="panel docs-content">
+      <div class="wrapper">
+        <header class="post-header" role="banner">
+          <a href="https://xinfang.site/" class="back-home-link">
+            <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+            返回主页
+          </a>
+          <h1 class="post-title">向量检索</h1>
+          <div class="post-meta-info">
+            <time class="meta-item meta-date" datetime="2026-10-22T21:18:20+08:00">
+              <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+              2026-10-22
+            </time>
+            
+            <time class="meta-item meta-update" datetime="2026-10-26T09:39:39+08:00">
+              <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 2.2"/></svg>
+              2026-10-26
+            </time>
+            
+            <span class="meta-item meta-author">
+              <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+              xinfan9
+            </span>
+            
+            <span class="meta-item meta-words">
+              <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+              725 字
+            </span>
+            
+            <span class="meta-item meta-reading">
+              <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+              约 8 分钟
+            </span>
+          </div>
+        </header>
+        <article class="post-content" role="article">
+          <h1 id="向量检索">向量检索</h1>
+<p>倒排检索解决的是<strong>集合匹配</strong>问题：query 分词 → 求交 docid 集合 → 打分排序。它的精度来自精确匹配，但便宜的手机&#8221;搜不到&#8221;高性价比千元机&#8221;。</p>
+
+<p>向量检索解决的是<strong>几何邻近</strong>问题：query 和 doc 都映射到同一个向量空间，距离近 = 语义近。它天然跨越语义鸿沟，代价是放弃了精确匹配的确定性——你拿不到&#8221;满足条件的全部文档&#8221;，只能拿&#8221;距离最近的 K 个&#8221;。</p>
+
+<p>这个本质差异会向下衍生出所有技术分歧，有三个不可调和的点：</p>
+
+<ol>
+  <li>倒排是<strong>过滤式</strong>（filter），向量是<strong>排序式</strong>（rank）——两者融合时的语义冲突在工业界至今没有标准答案的问题</li>
+  <li>倒排的空间复杂度由词表决定，向量的空间复杂度由 N×d 决定，对于大量数据，量化技术是向量检索的必要操作。</li>
+  <li>倒排的更新是增量的、确定性的；向量索引的更新是近似的、全局敏感的（新文档可能改变邻居拓扑）——这直接决定了向量系统的构建/更新架构</li>
+</ol>
+
+<p>向量检索擅长理解语义，但不能单独保证满足精确条件。</p>
+
+<p>因此需要混合检索。</p>
+
+<h2 id="一数学层距离度量与归一化">一、数学层：距离、度量与归一化</h2>
+
+<h3 id="11-三种距离的等价关系">1.1 三种距离的等价关系</h3>
+
+<ul>
+  <li><strong>L2（欧氏距离）</strong>：<code>‖x−y‖</code></li>
+  <li><strong>内积（IP）</strong>：<code>x·y</code></li>
+  <li><strong>余弦（cosine）</strong>：<code>x·y / (‖x‖‖y‖)</code></li>
+</ul>
+
+<p>关键事实：<strong>归一化后 L2 与内积等价</strong>。<code>‖x−y‖² = ‖x‖² + ‖y‖² − 2x·y</code>，当 ‖x‖=‖y‖=1 时最小化 L2 等价于最大化内积。因此，把归一化做进索引期，查询期只剩点积一种运算，SIMD 才能统一满载。如果你用的 embedding 模型输出未归一化向量（如某些 BERT 系列的 pooler 输出），<strong>内积 ≠ 余弦</strong>，选错度量会导致检索质量不可解释。实践上建议统一在入库前归一化，除非模型文档明确说明了内积训练目标（如部分对比学习模型用 unnormalized IP 训练）。</p>
+
+<h3 id="12-精确-vs-近似为什么必须近似">1.2 精确 vs 近似：为什么必须近似</h3>
+
+<p>暴力检索（flat）是 O(N×d) 每次查询。N=1 亿、d=768、AVX-512 单核约 200 GFLOPS 时，一次全量扫描约 1e8 × 768 × 2 / 2e11 ≈ 0.77 秒/核。听起来&#8221;还能忍&#8221;？但这是<strong>单查询</strong>的延迟，QPS 一上来自动雪崩。所以 ANN 的本质不是&#8221;图快&#8221;，而是<strong>用可控的召回损失换数量级的吞吐/延迟/成本</strong>——这个 trade-off 没有免费午餐，一切后面技术都在这条曲线上滑动。</p>
+
+<p>衡量 ANN 的标尺是 <strong>recall@k vs 延迟/内存</strong> 。工程上常引用 recall@10 ≥ 0.95 作为&#8221;上线可用&#8221;的经验阈值，但真正该看的是<strong>端到端指标</strong>。</p>
+
+<h2 id="二索引层三大流派">二、索引层：三大流派</h2>
+
+<h3 id="21-ivf倒排表">2.1 IVF：倒排表</h3>
+
+<p>IVF（Inverted File）就是<strong>向量版的倒排</strong>：k-means 把空间切成 k 个 cell，每条向量归属最近质心，倒排链挂 cell→docid 列表。查询时只扫离 query 最近的 <code>nprobe</code> 个 cell。</p>
+
+<p><img src="/post-images/搜索/2026-10-22-向量检索.assets/image-20261025162545668.webp" alt="image-20261025162545668" /></p>
+
+<p>IVF 的主要参数是 <code>nlist</code>（聚类数量）和 <code>nprobe</code>（查询时探测多少个聚类）。</p>
+
+<p><code>nprobe</code> 越大，通常召回越高，但扫描成本也越大。</p>
+
+<p>对照倒排：</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>倒排概念</th>
+      <th>IVF 对应物</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>term</td>
+      <td>质心（cell）</td>
+    </tr>
+    <tr>
+      <td>posting list</td>
+      <td>cell 内向量列表</td>
+    </tr>
+    <tr>
+      <td>分词</td>
+      <td>归属最近质心（硬划分，1 条向量只挂 1 个链）</td>
+    </tr>
+    <tr>
+      <td>查询 term 选择</td>
+      <td>nprobe 个最近 cell</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>关键缺点有以下几个：</p>
+
+<ol>
+  <li><strong>硬划分带来的召回损失</strong>：每条向量只挂 1 个链，查询正好落在两个 cell 边界附近时，真最近邻可能在未探测的 cell 里。缓解手段是提高 nprobe 和多分配（一条向量挂多个 cell，换存储）；residual 编码（存&#8221;向量减质心&#8221;）降低的是 cell 内编码误差，解决的是另一个问题。</li>
+  <li>和倒排一样有&#8221;词典倾斜&#8221;问题——数据不均匀时某些 cell 巨大，扫描退化。IVF-HNSW（用 HNSW 找质心）就是针对这个的修补。</li>
+</ol>
+
+<h3 id="22-hnsw">2.2 HNSW</h3>
+
+<p>HNSW，全称 Hierarchical Navigable Small World，中文通常翻译为分层可导航小世界图。它是一种基于图结构的近似最近邻搜索（ANN，Approximate Nearest Neighbor）算法，广泛应用于向量数据库、语义搜索、RAG（检索增强生成）以及 AI Agent 的长期记忆检索。</p>
+
+<p>HNSW 的核心思想可以概括为：</p>
+
+<p>通过多层图结构快速定位目标向量所在的区域，再利用图上的邻居关系逐步逼近最相似的向量，从而避免遍历整个向量数据库。</p>
+
+<h4 id="一为什么需要-hnsw">一、为什么需要 HNSW？</h4>
+
+<p>假设我们正在构建一个 AI Agent 的长期记忆系统，数据库中保存了 100 万条记忆。</p>
+
+<p>每条记忆经过 Embedding 模型编码，形成一个 768 维的向量。</p>
+
+<p>当用户提问时，系统需要找到与问题最相似的若干条记忆。</p>
+
+<p>最简单的方法是暴力搜索（Flat/Brute Force）：</p>
+
+<ol>
+  <li>计算查询向量与全部 100 万个向量的距离。</li>
+  <li>按距离排序。</li>
+  <li>返回最相似的 Top K 条记忆。</li>
+</ol>
+
+<p>这种方式称为精确最近邻搜索，结果准确，但计算成本较高。</p>
+
+<p>如果向量数量为 (N)，维度为 (d)，一次查询的距离计算复杂度通常为：</p>
+
+<p>[ O(Nd) ]</p>
+
+<p>当数据达到千万甚至亿级规模时，暴力搜索的成本就会非常明显。</p>
+
+<p>HNSW 要解决的问题是：</p>
+
+<p>能否只访问数据库中的一小部分向量，就找到足够接近真实 Top K 的结果？</p>
+
+<p>答案是可以，但需要牺牲少量精确性，换取显著的查询性能提升。</p>
+
+<h4 id="二hnsw-的核心数据结构">二、HNSW 的核心数据结构</h4>
+
+<p>HNSW 的设计结合了两个思想：</p>
+
+<ul>
+  <li>Small World（小世界图）：利用近邻连接和少量远距离连接，提高图上的导航效率。</li>
+  <li>Hierarchical（分层结构）：建立多层、不同稀疏程度的图，让搜索先粗定位，再精细搜索。</li>
+</ul>
+
+<p><img src="/post-images/搜索/2026-10-22-向量检索.assets/image-20261025161009039.webp" alt="image-20261025161009039" /></p>
+
+<h5 id="1-layer-0底层图">1. Layer 0：底层图</h5>
+
+<p>Layer 0 包含所有向量节点。</p>
+
+<p>每个节点会与一定数量的邻近节点建立连接，形成一张可导航的近邻图。</p>
+
+<h5 id="2-layer-1中间层">2. Layer 1：中间层</h5>
+
+<p>只有部分节点出现在这一层。</p>
+
+<p>节点数量更少，因此搜索可以更快地跨越较大的区域。</p>
+
+<h5 id="3-layer-2-及更高层">3. Layer 2 及更高层</h5>
+
+<p>越往上，节点越稀疏。</p>
+
+<p>最高层通常只包含少量节点，充当整个搜索过程的入口。</p>
+
+<p>这里有一个重要细节：HNSW 的层数不是固定的。</p>
+
+<p>每个新节点会随机分配一个最高层级，层级分布通常呈指数衰减，因此高层节点越来越少。</p>
+
+<p>这种结构类似于跳表（Skip List）。</p>
+
+<p>区别在于，跳表主要处理有序的一维数据，而 HNSW 处理的是高维向量空间中的近邻关系。</p>
+
+<h4 id="三hnsw-是如何搜索的">三、HNSW 是如何搜索的？</h4>
+
+<p>搜索从最高层入口节点开始，每次选择距离查询向量更近的邻居。</p>
+
+<p>第一阶段：高层贪心搜索。 从最高层入口出发，检查当前节点的邻居。如果有更接近查询向量的节点，就移动过去，直到没有更好的邻居，再下降一层。</p>
+
+<p>第二阶段：底层候选集搜索。 到达 Layer 0 后，不再只沿一条贪心路径前进，而是维护候选队列和当前最优结果集合，探索多个有希望的邻居，以降低陷入局部最优的风险。</p>
+
+<p>这也是为什么 HNSW 能够在速度和召回率之间取得较好的平衡</p>
+
+<h4 id="四hnsw-是如何构建索引的">四、HNSW 是如何构建索引的？</h4>
+
+<p>HNSW 并不是先计算所有向量之间的距离，再一次性构建整张图，而是支持增量插入。</p>
+
+<p>插入一个新向量时，主要经过四步：</p>
+
+<ol>
+  <li>随机分层：为新节点生成一个最高层级，它会出现在该层以及以下所有层。</li>
+  <li>寻找插入位置：从当前图的最高层入口开始搜索，逐层定位新向量附近的节点。</li>
+  <li>建立双向连接：从候选邻居中选择合适的节点，并建立连接。</li>
+  <li>维护图结构：当某个节点的连接数量超过限制时，裁剪连接，尽量保留既近又具有方向多样性的邻居。</li>
+</ol>
+
+<p>最后一点非常重要。</p>
+
+<p>假设新节点 A 周围有 B、C、D 三个几乎重叠的节点，还有一个稍远的 E。</p>
+
+<p>如果只按距离选择邻居，A 可能全部连接到 B、C、D，造成连接冗余。</p>
+
+<p>HNSW 的启发式邻居选择策略可能保留 E，因为它能提供不同方向的导航路径。</p>
+
+<p>因此，HNSW 构建的并不只是一个普通 KNN 图，而是一张专门为高效搜索优化的近邻图。</p>
+
+<h4 id="五hnsw-的三个核心参数">五、HNSW 的三个核心参数</h4>
+
+<p>这是工程实践中最值得掌握的部分。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>参数</th>
+      <th>控制什么</th>
+      <th>增大后的主要影响</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>M</code></td>
+      <td>图的连接数量</td>
+      <td>召回率通常更高，但内存、构建成本增加</td>
+    </tr>
+    <tr>
+      <td><code>efConstruction</code></td>
+      <td>建图时的候选搜索宽度</td>
+      <td>图质量通常更好，但建图更慢</td>
+    </tr>
+    <tr>
+      <td><code>efSearch</code></td>
+      <td>查询时的候选搜索宽度</td>
+      <td>召回率通常更高，但查询延迟增加</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>假设我们有 100 万个向量，需要找到与查询向量 Q 最相似的 3 个节点（Top K = 3）。</p>
+
+<p>HNSW 不会遍历所有节点，而是沿着图的邻居关系逐步搜索。</p>
+
+<p>假设：</p>
+
+<ul>
+  <li><code>efSearch = 3</code>：搜索过程中保留最多 3 个较优候选结果。</li>
+  <li><code>efSearch = 20</code>：保留最多 20 个较优候选结果。</li>
+  <li><code>efSearch = 100</code>：保留最多 100 个较优候选结果。</li>
+</ul>
+
+<p>虽然最终都只返回 Top 3，但搜索时保留更多候选节点，通常意味着有机会探索更多路径，找到更接近真实 Top 3 的结果。</p>
+
+<p><img src="/post-images/搜索/2026-10-22-向量检索.assets/image-20261025161714288.webp" alt="image-20261025161714288" /></p>
+
+<p><img src="/post-images/搜索/2026-10-22-向量检索.assets/image-20261025161748680.webp" alt="image-20261025161748680" /></p>
+
+<p>另外，在常见实现中，<code>efSearch</code> 通常需要不小于最终返回数量 K。例如你要 Top 10，一般至少需要 <code>efSearch &gt;= 10</code>。</p>
+
+<h2 id="三压缩编码sqpqrabitq">三、压缩编码：SQ、PQ、RaBitQ</h2>
+
+<h3 id="31-sq标量量化">3.1 SQ：标量量化</h3>
+
+<p>SQ（Scalar Quantization）的核心思想是：</p>
+
+<p>把每一个浮点数转换为占用更少字节的整数。</p>
+
+<p>例如，一个向量：</p>
+
+<pre><code>原始 float32：
+[0.12345, -0.85231, 0.67321, 0.29183]
+
+量化 int8：
+[16, -109, 86, 37]
+</code></pre>
+
+<p>量化时使用缩放系数等参数，检索时可以反量化或直接采用量化距离计算。</p>
+
+<p>SQ 的优点是实现简单，通常不需要像 PQ 那样训练聚类码本。但量化参数仍然需要校准，具体精度取决于数据分布和实现方式。</p>
+
+<h3 id="32-pq乘积量化">3.2 PQ：乘积量化</h3>
+
+<p>PQ（Product Quantization）比 SQ 更进一步。</p>
+
+<p>它不再逐维存储数值，而是把高维向量切成多个子向量，每段只保存一个码本编号。</p>
+
+<p>假设数据库里有 100 万条向量，每条向量有 4 个维度，设置 <code>m=2</code></p>
+
+<p>我们拿其中一个向量：</p>
+
+<p>[ x=[0.2,\ 0.8,\ 0.7,\ 0.3] ]</p>
+
+<p>原本每个数字都是 float32，一共需要：</p>
+
+<p>[ 4\times4=16\text{ 字节} ]</p>
+
+<p>现在 PQ 想把它压缩。</p>
+
+<h5 id="第一步把向量切成几段">第一步：把向量切成几段</h5>
+
+<p><img src="/post-images/搜索/2026-10-22-向量检索.assets/image-20261025163052373.webp" alt="image-20261025163052373" /></p>
+
+<h5 id="第二步为每段准备一本字典">第二步：为每段准备一本“字典”</h5>
+
+<p>这里的字典就是码本（Codebook）。</p>
+
+<p>假设第 1 段通过 K-means 聚类，学到了以下代表向量：</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>编号</th>
+      <th>代表向量</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>0</td>
+      <td>[0.1, 0.1]</td>
+    </tr>
+    <tr>
+      <td>1</td>
+      <td>[0.2, 0.7]</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td>[0.8, 0.2]</td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td>[0.9, 0.9]</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>真实 PQ 通常每段使用 256 个代表向量，这里为了方便只展示 4 个。</p>
+
+<p>我们要压缩的第一段是：</p>
+
+<p>[ [0.2,0.8] ]</p>
+
+<p>它最接近编号 1 的代表向量：</p>
+
+<p>[ [0.2,0.7] ]</p>
+
+<p>所以不再保存 <code>[0.2,0.8]</code>，只保存编号 <code>1</code>。</p>
+
+<p>第二段同理，假设最接近编号 <code>2</code>。</p>
+
+<p>那么整个向量就被编码成：</p>
+
+<p><img src="/post-images/搜索/2026-10-22-向量检索.assets/image-20261025163238914.webp" alt="image-20261025163238914" /></p>
+
+<h5 id="第三步压缩后怎么计算距离">第三步：压缩后怎么计算距离？</h5>
+
+<p>查询时，先计算查询向量的每一段与该段所有码本代表向量的距离，并形成查找表。</p>
+
+<p>然后读取数据库向量的编码 <code>[1,2]</code>，查出两个对应距离，加起来就得到近似的平方距离。</p>
+
+<p>[ \hat d(q,x)^2 = |q_1-c_{1,1}|^2+ |q_2-c_{2,2}|^2 ]</p>
+
+<p>所以 PQ 的两个优势是：</p>
+
+<ol>
+  <li>数据库存储非常小。</li>
+  <li>查询时可以用查表和加法替代大量浮点运算。</li>
+</ol>
+
+<p>代价是：代表向量毕竟不是原始向量，距离存在误差。</p>
+
+<h3 id="33-rabitq极低比特量化">3.3 RaBitQ：极低比特量化</h3>
+
+<p>RaBitQ（Randomized Binary Quantization，随机二值量化）是一种极低比特的向量压缩算法，核心思想是：<strong>通过随机正交旋转和二值量化，将每个维度从 float32 的 32 bit 压缩到约 1 bit，同时利用非对称距离估计，尽可能保留向量之间的距离关系。</strong></p>
+
+<p>与 PQ 的区别在于：</p>
+
+<ul>
+  <li><strong>PQ</strong>：将高维向量切成多个子向量，通过 K-means 学习码本，每段用一个编号代替原始子向量。</li>
+  <li><strong>RaBitQ</strong>：通过随机旋转，将向量映射到新的坐标系，再用二值码表示量化方向，并结合辅助信息估计真实距离。</li>
+</ul>
+
+<p>假设有一个 768 维 float32 向量：</p>
+
+<ul>
+  <li>原始存储：<code>768 × 4 = 3072 B</code></li>
+  <li>RaBitQ 二值编码：<code>768 / 8 = 96 B</code></li>
+  <li>理论压缩比：<code>3072 / 96 = 32×</code></li>
+</ul>
+
+<p>需要注意，32 倍是纯二值编码的理论压缩比，实际系统还需要保存质心、范数、量化修正参数等辅助信息。</p>
+
+<h4 id="第一步中心化与随机正交旋转">第一步：中心化与随机正交旋转</h4>
+
+<p>假设有一个二维向量：<br />
+<span class="kdmath">$[
+x=[0.8,\ 0.6]
+]$</span><br />
+RaBitQ 首先将向量相对于参考中心进行中心化，并对残差方向进行归一化。</p>
+
+<p>假设参考中心为原点，那么归一化后的向量仍然是：<br />
+<span class="kdmath">$[
+u=[0.8,\ 0.6]
+]$</span><br />
+然后通过随机正交矩阵 (R) 对向量进行旋转：<br />
+<span class="kdmath">$[
+u'=Ru
+]$</span><br />
+例如旋转后得到：<br />
+<span class="kdmath">$[
+u'=[-0.4,\ 0.9165]
+]$</span><br />
+随机正交旋转有一个重要性质：<strong>不会改变两个向量之间的欧氏距离和内积。</strong><br />
+<span class="kdmath">$[
+|Rx-Ry|=|x-y|
+]$</span><br />
+为什么需要旋转？</p>
+
+<p>因为直接对原始向量的各维度进行二值化，量化误差可能严重依赖数据的坐标方向。</p>
+
+<p>随机旋转可以降低这种方向依赖，使量化误差具有更容易分析和控制的统计性质。</p>
+
+<p>需要注意，旋转本身不会消除量化误差，它只是改变向量相对于量化坐标轴的方向。</p>
+
+<h4 id="第二步将浮点向量编码为二值向量">第二步：将浮点向量编码为二值向量</h4>
+
+<p>旋转后得到：<br />
+<span class="kdmath">$[
+u'=[-0.4,\ 0.9165]
+]$</span><br />
+RaBitQ 使用旋转后的符号信息选择二值量化方向。</p>
+
+<p>简化理解：</p>
+
+<ul>
+  <li>负数编码为 <code>0</code></li>
+  <li>正数编码为 <code>1</code></li>
+</ul>
+
+<p>那么：<br />
+<span class="kdmath">$[
+[-0.4,\ 0.9165]\rightarrow[0,1]
+]$</span><br />
+原始二维向量需要：<br />
+<span class="kdmath">$[
+2\times32=64\text{ bit}
+]$</span><br />
+现在只需要：<br />
+<span class="kdmath">$[
+2\times1=2\text{ bit}
+]$</span><br />
+对于 768 维向量，同样可以将 768 个 float32 数值转换为 768 个二进制位。</p>
+
+<p><strong>RaBitQ 的核心压缩收益来自每个维度只保留 1 bit 的方向编码。</strong></p>
+
+<p>不过，实际算法不是简单地把符号位保存下来就结束了，还需要保留用于距离估计的辅助信息。</p>
+
+<h4 id="第三步为什么二值编码会丢失距离信息">第三步：为什么二值编码会丢失距离信息？</h4>
+
+<p>假设两个向量：<br />
+<span class="kdmath">$[
+a=[0.1,\ 0.9]
+]$</span><br />
+[<br />
+b=[0.4,\ 0.7]<br />
+]</p>
+
+<p>如果直接按照正负号进行编码：<br />
+<span class="kdmath">$[
+a\rightarrow[1,1]
+]$</span></p>
+
+<div class="kdmath">$$
+[
+b\rightarrow[1,1]
+]
+$$</div>
+
+<p>两个向量的二值编码完全相同，但它们的实际位置并不相同。</p>
+
+<p>因此，<strong>二值编码虽然大幅降低了存储空间，却丢失了连续数值的精细信息。</strong></p>
+
+<p>如果直接使用二值码之间的汉明距离进行搜索，可能无法准确判断原始向量的相似程度。</p>
+
+<p>这也是 RaBitQ 最关键的技术问题：</p>
+
+<p><strong>当数据库只保留极少的二值信息时，如何仍然有效估计查询向量与原始向量之间的距离？</strong></p>
+
+<h4 id="第四步非对称距离估计">第四步：非对称距离估计</h4>
+
+<p>RaBitQ 采用非对称距离估计（Asymmetric Distance Estimation）。</p>
+
+<p>所谓非对称，是指查询侧和数据库侧使用不同精度的向量表示：</p>
+
+<ul>
+  <li><strong>数据库侧</strong>：保存二值编码和必要的辅助标量。</li>
+  <li><strong>查询侧</strong>：保留较高精度的浮点向量。</li>
+  <li><strong>距离计算</strong>：通过二值码、查询向量和辅助信息估计原始距离。</li>
+</ul>
+
+<p>为什么不把查询向量也压缩成 1 bit？</p>
+
+<p>因为查询向量通常只有一个，而数据库可能有上亿个向量。</p>
+
+<p>保留一个查询向量的浮点精度，成本非常低；如果把数据库所有向量都保存为 float32，内存成本则非常高。</p>
+
+<p>因此，非对称计算可以在降低数据库存储成本的同时，尽可能保留查询侧的信息。</p>
+
+<p>RaBitQ 的关键数学性质是：在论文规定的随机化条件下，可以构造对真实距离或相关内积量的<strong>无偏估计量</strong>，并给出相应的误差界。</p>
+
+<p>这里需要区分两个概念：</p>
+
+<ul>
+  <li><strong>无偏</strong>：从随机化的统计意义上看，估计误差的期望为零。</li>
+  <li><strong>准确</strong>：某一次具体查询得到的估计值接近真实值。</li>
+</ul>
+
+<p>无偏不代表每一次距离估计都准确，更不代表最近邻排序完全不会出错。</p>
+
+<p>RaBitQ 的价值在于：<strong>在极低比特压缩下，仍然能够提供具有理论误差保证的距离估计方法。</strong></p>
+
+<h4 id="第五步结合粗筛与精确重排">第五步：结合粗筛与精确重排</h4>
+
+<p>由于二值量化仍然存在误差，RaBitQ 通常适合与精确重排组合使用。</p>
+
+<p>假设数据库有 1 亿条向量，需要返回最相似的 Top 10。</p>
+
+<p>检索过程可以分成两个阶段：</p>
+
+<ol>
+  <li><strong>粗筛阶段</strong>：使用 RaBitQ 的压缩表示快速估计距离，找到最有希望的 Top 100 候选。</li>
+  <li><strong>重排阶段</strong>：读取这 100 个候选的原始 float32 向量或高精度表示，重新计算精确距离，返回 Top 10。</li>
+</ol>
+
+<p>这种方式的优势是，不需要对全部 1 亿条向量计算高精度距离。</p>
+
+<p>但需要注意：</p>
+
+<p><strong>重排只能纠正候选集合内部的排序，无法找回粗筛阶段遗漏的真正最近邻。</strong></p>
+
+<p>因此，粗筛候选数量、压缩精度和最终召回率之间仍然需要权衡。</p>
+
+<h4 id="第六步rabitq-与-pq-的本质区别">第六步：RaBitQ 与 PQ 的本质区别</h4>
+
+<table>
+  <thead>
+    <tr>
+      <th>维度</th>
+      <th>PQ</th>
+      <th>RaBitQ</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>压缩方式</td>
+      <td>子向量映射到码本中心</td>
+      <td>随机旋转后二值量化</td>
+    </tr>
+    <tr>
+      <td>编码内容</td>
+      <td>每段对应的码本编号</td>
+      <td>每维的二值方向信息</td>
+    </tr>
+    <tr>
+      <td>训练要求</td>
+      <td>通常需要 K-means 训练码本</td>
+      <td>随机旋转本身不需要 K-means，残差编码可使用聚类中心</td>
+    </tr>
+    <tr>
+      <td>距离计算</td>
+      <td>ADC 查表并累加</td>
+      <td>非对称距离估计</td>
+    </tr>
+    <tr>
+      <td>主要误差</td>
+      <td>码本中心与原始向量之间的偏差</td>
+      <td>二值量化造成的信息损失</td>
+    </tr>
+    <tr>
+      <td>理论特点</td>
+      <td>通过量化优化压缩与检索性能</td>
+      <td>强调距离估计的无偏性及误差界</td>
+    </tr>
+    <tr>
+      <td>适用场景</td>
+      <td>高压缩比的近似最近邻搜索</td>
+      <td>极低比特存储、内存受限的近似检索</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>最后总结：</p>
+
+<p><strong>PQ 的思路是用少量码本编号近似还原原始向量；RaBitQ 的思路是在只保留极少二值信息的情况下，仍然能够有效估计原始向量距离。</strong></p>
+
+<p>两者都通过牺牲部分精度换取内存和计算收益，但优化路径不同。</p>
+
+<p>PQ 侧重于码本表示与查表计算，RaBitQ 侧重于随机量化与具有理论保证的距离估计。</p>
+
+<p>RaBitQ 并不意味着在所有场景下都优于 PQ，实际仍需要比较相同内存预算和查询延迟下的 Recall@K。</p>
+
+<h2 id="34-三种压缩方法怎么选">3.4 三种压缩方法怎么选？</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>方案</th>
+      <th>典型压缩倍数</th>
+      <th>优势</th>
+      <th>主要代价</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>SQ int16</td>
+      <td>2×</td>
+      <td>精度通常较高</td>
+      <td>压缩有限</td>
+    </tr>
+    <tr>
+      <td>SQ int8</td>
+      <td>4×</td>
+      <td>简单、计算友好</td>
+      <td>需要量化校准</td>
+    </tr>
+    <tr>
+      <td>PQ m=32</td>
+      <td>96×</td>
+      <td>存储紧凑、查表快</td>
+      <td>码本训练、近似误差</td>
+    </tr>
+    <tr>
+      <td>RaBitQ 1 bit/维</td>
+      <td>32×</td>
+      <td>极低比特表示、距离估计有理论支持</td>
+      <td>辅助元数据、估计误差、实现复杂度</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="向量索引的生命周期">向量索引的生命周期</h2>
+
+<p><img src="/post-images/搜索/2026-10-22-向量检索.assets/image-20261025162846177.webp" alt="image-20261025162846177" /></p>
+
+        </article>
+      </div>
+    </div>
+  </main>
+
+  <!-- Right: Category Articles -->
+  <aside class="post-category-sidebar" role="navigation" aria-label="分类文章列表">
+    <div class="category-panel">
+      
+      
+      <div class="category-sidebar-title">
+        <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
+        搜索
+      </div>
+      <ul class="category-article-list">
+        
+        
+        <li class="">
+          <a href="/2026/10/26/%E6%90%9C%E7%B4%A2/%E6%96%87%E6%9C%AC%E6%A3%80%E7%B4%A2/" title="文本检索">
+            <span class="article-title">文本检索</span>
+            <span class="article-date">10-26</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/10/25/%E6%90%9C%E7%B4%A2/%E6%8E%92%E5%BA%8F%E7%AE%97%E6%B3%95/" title="排序算法">
+            <span class="article-title">排序算法</span>
+            <span class="article-date">10-25</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/10/22/%E6%90%9C%E7%B4%A2/%E6%8A%80%E8%83%BD%E5%8F%91%E7%8E%B0%E4%B8%8E%E6%A3%80%E7%B4%A2/" title="技能发现与检索">
+            <span class="article-title">技能发现与检索</span>
+            <span class="article-date">10-22</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/10/22/%E6%90%9C%E7%B4%A2/%E7%9F%AD%E8%AF%AD%E6%90%9C%E7%B4%A2/" title="短语搜索">
+            <span class="article-title">短语搜索</span>
+            <span class="article-date">10-22</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/10/22/%E6%90%9C%E7%B4%A2/%E8%AE%B0%E5%BF%86%E6%A3%80%E7%B4%A2/" title="记忆检索">
+            <span class="article-title">记忆检索</span>
+            <span class="article-date">10-22</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/10/22/%E6%90%9C%E7%B4%A2/FST5/" title="FST5">
+            <span class="article-title">FST5</span>
+            <span class="article-date">10-22</span>
+          </a>
+        </li>
+        
+        <li class="active">
+          <a href="/2026/10/22/%E6%90%9C%E7%B4%A2/%E5%90%91%E9%87%8F%E6%A3%80%E7%B4%A2/" title="向量检索">
+            <span class="article-title">向量检索</span>
+            <span class="article-date">10-22</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/10/22/%E6%90%9C%E7%B4%A2/%E5%9B%BE%E6%A3%80%E7%B4%A2/" title="图检索">
+            <span class="article-title">图检索</span>
+            <span class="article-date">10-22</span>
+          </a>
+        </li>
+        
+      </ul>
+      
+    </div>
+  </aside>
+</div>
+
+<!-- Theme Toggle Button -->
+<button type="button" class="theme-toggle" aria-label="Toggle Theme">
+  <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+  </svg>
+  <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="12" cy="12" r="5"></circle>
+    <line x1="12" y1="1" x2="12" y2="3"></line>
+    <line x1="12" y1="21" x2="12" y2="23"></line>
+    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+    <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+    <line x1="1" y1="12" x2="3" y2="12"></line>
+    <line x1="21" y1="12" x2="23" y2="12"></line>
+    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+    <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+  </svg>
+</button>
+
+<!-- Back to Top Button -->
+<button type="button" class="back-to-top" aria-label="Back to Top">
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <polyline points="18 15 12 9 6 15"></polyline>
+  </svg>
+</button>
+
+
+    <!-- Site Footer -->
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-content">
+      <div class="footer-info">
+        <h4>xinfan9's blog</h4>
+        <p>Actually, less is more!</p>
+      </div>
+      <div class="footer-links">
+        <a href="https://github.com/xinfan9/" target="_blank" title="GitHub">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+        </a>
+        <a href="mailto:11411619@qq.com" title="Email">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+        </a>
+        <a href="/feed.xml" title="RSS">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11a9 9 0 0 1 9 9"/><path d="M4 4a16 16 0 0 1 16 16"/><circle cx="5" cy="19" r="1"/></svg>
+        </a>
+      </div>
+      <div class="footer-copyright">
+        <p>&copy; 2026 xinfan9. Built with Jekyll.</p>
+      </div>
+    </div>
+  </div>
+</footer>
+      
+    
+    <!-- Global Buttons (for non-post pages) -->
+    
+  </body>
+</html>

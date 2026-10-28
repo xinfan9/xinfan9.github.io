@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+  <head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="Content-Language" content="zh-CN">
+	<title>SSE - xinfan9's blog</title>
+
+	<link rel="icon" href="/styles/images/favicon.jpg">
+
+	<!-- Preconnect for CDN -->
+	
+	<link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+	<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+	
+
+
+	<!-- Inline Critical Reset (was index.css) -->
+	<style>
+		*,*::before,*::after{box-sizing:border-box}html{-ms-text-size-adjust:100%;-webkit-text-size-adjust:100%;-webkit-tap-highlight-color:rgba(0,0,0,0)}body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Microsoft YaHei",sans-serif;font-size:14px;line-height:1.42857143;color:#333;background-color:#f7f7f7}article,aside,details,figcaption,figure,footer,header,main,nav,section,summary{display:block}a{color:#43759e;text-decoration:none;background:transparent}a:hover,a:focus{color:#2c4d68;text-decoration:underline}a:focus{outline:thin dotted;outline-offset:-2px}img{vertical-align:middle;max-width:100%;height:auto}input,button,select,textarea{font-family:inherit;font-size:inherit;line-height:inherit}h1,h2,h3,h4,h5,h6{margin-top:0}.container{max-width:1200px;margin-left:auto;margin-right:auto;padding-left:15px;padding-right:15px}.clearfix::after{content:"";display:table;clear:both}.text-muted{color:#777}.sr-only{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0,0,0,0);border:0}
+	</style>
+
+	
+	<link rel="prefetch" as="image" href="/styles/images/api/background.webp">
+
+	<!-- Clarity Blog Theme -->
+	<link rel="stylesheet" href="/assets/css/clarity-blog.css?v=1793188313">
+
+	<!-- Prism.js Theme (non-blocking, only needed for code blocks) -->
+	
+	
+	<link rel="canonical" href="https://xinfang.site/2026/10/27/agent/SSE/">
+	<link rel="alternate" type="application/rss+xml" title="xinfan9's blog" href="https://xinfang.site/feed.xml">
+	
+	<meta name="description" content="SSE是什么：基于 HTTP 的单向服务端推送。客户端发一个 GET，服务端保持连接不关，以 text/event-stream 格式持续回写 data: xxx\n\n。
+">
+
+	<!-- Open Graph for social sharing -->
+	<meta property="og:title" content="SSE">
+	<meta property="og:description" content="SSE是什么：基于 HTTP 的单向服务端推送。客户端发一个 GET，服务端保持连接不关，以 text/event-stream 格式持续回写 data: xxx\n\n。
+">
+	<meta property="og:url" content="https://xinfang.site/2026/10/27/agent/SSE/">
+	<meta property="og:site_name" content="xinfan9's blog">
+	<meta property="og:type" content="article">
+	<meta property="article:published_time" content="2026-10-27T18:06:48+08:00">
+	
+	<meta property="og:image" content="https://xinfang.site/styles/images/api/background.webp">
+	<meta property="og:image:width" content="1200">
+	<meta property="og:image:height" content="630">
+	
+	<meta property="og:locale" content="zh_CN">
+
+	<!-- Twitter Card -->
+	<meta name="twitter:card" content="summary_large_image">
+	<meta name="twitter:title" content="SSE">
+	<meta name="twitter:description" content="SSE是什么：基于 HTTP 的单向服务端推送。客户端发一个 GET，服务端保持连接不关，以 text/event-stream 格式持续回写 data: xxx\n\n。
+">
+	<meta name="twitter:image" content="https://xinfang.site/styles/images/favicon.jpg">
+	
+	<!-- Theme color for mobile browsers -->
+	<meta name="theme-color" content="#0b72d9" media="(prefers-color-scheme: light)">
+	<meta name="theme-color" content="#0f172a" media="(prefers-color-scheme: dark)">
+
+	<!-- Prevent FOUC for theme -->
+	<script>
+		(function() {
+			const savedTheme = localStorage.getItem('theme');
+			const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+			if (savedTheme) {
+				document.documentElement.setAttribute('data-theme', savedTheme);
+			} else if (prefersDark) {
+				document.documentElement.setAttribute('data-theme', 'dark');
+			}
+		})();
+	</script>
+	
+	<!-- Prism.js only on post pages with code blocks -->
+	
+
+	<!-- Mermaid.js for diagram rendering (conditional) -->
+	
+
+	<!-- MathJax for LaTeX rendering (conditional) -->
+	
+
+	<!-- Blog Interactive Features -->
+	<script src="/assets/js/blog.js?v=1793188313" defer></script>
+
+	<!-- JSON-LD Structured Data -->
+	
+	<script type="application/ld+json">
+	{
+		"@context": "https://schema.org",
+		"@type": "BlogPosting",
+		"inLanguage": "zh-CN",
+		"headline": "SSE",
+		"image": "https://xinfang.site/styles/images/favicon.jpg",
+		"datePublished": "2026-10-27T18:06:48+08:00",
+		"dateModified": "2026-10-27T18:06:48+08:00",
+		"author": {
+			"@type": "Person",
+			"name": "xinfan9"
+		},
+		"publisher": {
+			"@type": "Organization",
+			"name": "xinfan9's blog",
+			"logo": {
+				"@type": "ImageObject",
+				"url": "https://xinfang.site/styles/images/favicon.jpg"
+			}
+		},
+		"mainEntityOfPage": {
+			"@type": "WebPage",
+			"@id": "https://xinfang.site/2026/10/27/agent/SSE/"
+		},
+		"keywords": "Agent",
+		"articleBody": "SSE是什么：基于 HTTP 的单向服务端推送。客户端发一个 GET，服务端保持连接不关，以 text/event-stream 格式持续回写 data: xxx\\n\\n。\n",
+		"description": "SSE是什么：基于 HTTP 的单向服务端推送。客户端发一个 GET，服务端保持连接不关，以 text/event-stream 格式持续回写 data: xxx\\n\\n。\n"
+	}
+	</script>
+	
+</head>
+
+  <body class="index">
+
+    <!-- Reading Progress Bar -->
+<div class="reading-progress" id="reading-progress"></div>
+
+<!-- Page Background -->
+<div class="post-background"></div>
+
+<div class="post-layout">
+  <!-- Left: TOC -->
+  <aside class="post-toc-sidebar" id="post-toc-sidebar" role="navigation" aria-label="文章目录">
+    <div class="toc-panel">
+      <div class="toc-title">
+        <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="12" x2="15" y2="12"></line><line x1="3" y1="18" x2="18" y2="18"></line></svg>
+        目录
+      </div>
+      <ul class="toc-list" id="toc-list"></ul>
+    </div>
+  </aside>
+
+  <!-- Center: Article -->
+  <main class="post-main">
+    <div class="panel docs-content">
+      <div class="wrapper">
+        <header class="post-header" role="banner">
+          <a href="https://xinfang.site/" class="back-home-link">
+            <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+            返回主页
+          </a>
+          <h1 class="post-title">SSE</h1>
+          <div class="post-meta-info">
+            <time class="meta-item meta-date" datetime="2026-10-27T18:06:48+08:00">
+              <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+              2026-10-27
+            </time>
+            
+            <time class="meta-item meta-update" datetime="2026-10-28T19:20:42+08:00">
+              <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 2.2"/></svg>
+              2026-10-28
+            </time>
+            
+            <span class="meta-item meta-author">
+              <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+              xinfan9
+            </span>
+            
+            <span class="meta-item meta-words">
+              <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+              555 字
+            </span>
+            
+            <span class="meta-item meta-reading">
+              <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+              约 6 分钟
+            </span>
+          </div>
+        </header>
+        <article class="post-content" role="article">
+          <p>SSE<strong>是什么</strong>：基于 HTTP 的单向服务端推送。客户端发一个 GET，服务端保持连接不关，以 <code>text/event-stream</code> 格式持续回写 <code>data: xxx\n\n</code>。</p>
+
+<p><strong>核心特点</strong>：</p>
+
+<ul>
+  <li>
+    <p><strong>单向</strong>：只能服务端→客户端；</p>
+  </li>
+  <li>
+    <p><strong>纯 HTTP</strong>：过代理、网关、鉴权零成本，天然兼容（LLM token 流式输出的标准选择）；</p>
+  </li>
+  <li>
+    <p><strong>内置断线续传</strong>：消息带 <code>id:</code>，客户端重连带 <code>Last-Event-ID</code> 补收增量；</p>
+  </li>
+  <li>
+    <p><strong>自动重连</strong>：浏览器 EventSource 断了自动重连，还能用 <code>retry:</code> 建议间隔；</p>
+  </li>
+  <li>
+    <p><strong>弱点</strong>：连接即会话——断连意味着状态丢失；每会话常驻一条挂起连接，空闲也有成本；对无状态水平扩容不友好（长连接粘在单实例上）。</p>
+
+    <blockquote>
+      <p>解决方案：</p>
+
+      <ol>
+        <li><strong>每条消息带递增序号</strong>：<code>id: 137\ndata: {json}\n\n</code>。id 用事件日志表里的自增主键或流内单调序号，<strong>必须在持久层有据可查</strong>（推流前先落日志，再推）——这是能续传的前提。</li>
+        <li><strong>重连时客户端上报位点</strong>：浏览器 EventSource 自动带 <code>Last-Event-ID: 137</code> 请求头；自研客户端（你的场景）重连时带自己已确认的最后序号，等价。</li>
+        <li><strong>服务端从位点之后补推</strong>：<code>SELECT * FROM event_log WHERE run_id=? AND seq &gt; 137 ORDER BY seq</code>。注意是<strong>严格大于</strong>——客户端说“我到 137”，就从 138 推起，137 这条无论客户端收全没收全都不重发。</li>
+        <li><strong>客户端按 id 去重幂等合并</strong>：收到 <code>id &lt;= 已展示序号</code> 的消息直接丢弃（防网络层重复投递）。</li>
+      </ol>
+    </blockquote>
+  </li>
+</ul>
+
+<h2 id="python-实现sse">python 实现SSE</h2>
+
+<pre><code># Python 裸实现 HTTP 服务器（不用任何框架，只用标准库 socket）
+# 目的：从字节层面看懂 HTTP 协议本身
+# 运行: python3 http_raw_demo.py
+# 测试: curl -N "http://localhost:8714/hello"  和  curl -N "http://localhost:8714/stream"
+
+import socket
+import threading
+import time
+
+
+# ═══════════════════════════════════════════════════════════
+# 核心认知：HTTP 就是"TCP 字节流上的一套文本约定"
+# 客户端发一段文本（请求），服务端回一段文本（响应），仅此而已
+# ═══════════════════════════════════════════════════════════
+
+def parse_request(conn: socket.socket) -&gt; tuple[str, dict]:
+    """读请求头直到空行（\r\n\r\n），解析出方法和路径。
+    这就是'SSE 在字节流上切边界'的同一类问题：靠定界符切消息。"""
+    buf = b""
+    while b"\r\n\r\n" not in buf:            # 头部以空行结束
+        chunk = conn.recv(4096)
+        if not chunk:
+            break
+        buf += chunk
+
+    head = buf.decode("utf-8", errors="replace")
+    lines = head.split("\r\n")
+    method, path, _ = lines[0].split(" ", 2)  # "GET /hello HTTP/1.1"
+    headers = {}
+    for line in lines[1:]:
+        if ": " in line:
+            k, v = line.split(": ", 1)
+            headers[k.lower()] = v
+    return method, {"path": path, "headers": headers}
+
+
+def send_response(conn: socket.socket, status: str, body: bytes,
+                  content_type: str, stream: bool = False) -&gt; None:
+    """写响应。两种模式：
+    - 普通 HTTP：带 Content-Length，发完即关（客户端知道读多少字节）
+    - 流式 HTTP（SSE 的原理）：不带长度，chunked 编码，连接保持"""
+    if stream:
+        headers = (
+            f"HTTP/1.1 {status}\r\n"
+            f"Content-Type: {content_type}\r\n"
+            "Transfer-Encoding: chunked\r\n"     # 关键：长度未知，分块传输
+            "Cache-Control: no-cache\r\n"
+            "\r\n"
+        )
+        conn.sendall(headers.encode())
+    else:
+        headers = (
+            f"HTTP/1.1 {status}\r\n"
+            f"Content-Type: {content_type}\r\n"
+            f"Content-Length: {len(body)}\r\n"   # 关键：告知确切字节数
+            "Connection: close\r\n"
+            "\r\n"
+        )
+        conn.sendall(headers.encode() + body)
+
+
+def send_chunk(conn: socket.socket, data: bytes) -&gt; None:
+    """chunked 编码的一块：十六进制长度行 + 数据 + 空行。
+    'HTTP在TCP字节流上切边界'的又一个实例。"""
+    conn.sendall(f"{len(data):X}\r\n".encode() + data + b"\r\n")
+
+
+def end_chunks(conn: socket.socket) -&gt; None:
+    """结束块：0 长度行，客户端据此知道流结束"""
+    conn.sendall(b"0\r\n\r\n")
+
+
+# ═══════════════════════════════════════════════════════════
+# 两个端点：普通响应 + SSE 流式响应
+# ═══════════════════════════════════════════════════════════
+
+def handle(conn: socket.socket) -&gt; None:
+    method, req = parse_request(conn)
+    path = req["path"]
+
+    if path == "/hello":
+        # 普通 HTTP：一次性响应，Content-Length 定长
+        body = b'{"msg": "hello"}'
+        send_response(conn, "200 OK", body, "application/json")
+        conn.close()
+
+    elif path == "/stream":
+        # SSE：Content-Type 是 text/event-stream，连接不关，持续写
+        send_response(conn, "200 OK", b"", "text/event-stream", stream=True)
+        for i in range(1, 6):
+            event = f"id: {i}\ndata: {{\"token\": \"tok-{i}\"}}\n\n".encode()
+            send_chunk(conn, event)
+            time.sleep(0.4)                 # 模拟 LLM 逐 token 生成
+        end_chunks(conn)
+        conn.close()
+    else:
+        send_response(conn, "404 Not Found", b"not found", "text/plain")
+        conn.close()
+
+
+# ═══════════════════════════════════════════════════════════
+# 服务器主循环：TCP 监听 + 每连接一个线程
+# （对比：FastAPI/uvicorn 是事件循环+协程；这里用线程简化，重点在协议）
+# ═══════════════════════════════════════════════════════════
+
+def serve(host: str = "127.0.0.1", port: int = 8714) -&gt; None:
+    srv = socket.socket(socket.AF_INET, socket.SOCK_STREAM)  # SOCK_STREAM = TCP
+    srv.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+    srv.bind((host, port))
+    srv.listen(16)                          # 内核排队等待 accept 的连接
+    print(f"裸 HTTP 服务器已启动 http://{host}:{port}")
+    print("测试: curl -N http://localhost:8714/hello")
+    print("     curl -N http://localhost:8714/stream")
+
+    while True:
+        conn, addr = srv.accept()           # 三次握手已完成，拿到连接
+        threading.Thread(target=handle, args=(conn,), daemon=True).start()
+
+
+if __name__ == "__main__":
+    serve()
+</code></pre>
+
+<h3 id="sse-断线了怎么办事件怎么保证不丢">SSE 断线了怎么办？事件怎么保证不丢？</h3>
+
+<p><strong>答</strong>：</p>
+
+<ul>
+  <li><strong>断线重连</strong>：客户端带 reqId 重连，服务端按 runId 从 RunRegistry 找回活跃 run 的 Sinks 多播器重新订阅；如果 run 已经结束，走事件日志表回放已产生的事件。</li>
+  <li><strong>不丢的保证</strong>：SSE 是<strong>尽力而为的推送层，不是事实层</strong>。Source of truth 是 DB 里的状态机 + checkpoint。断线期间用户没收到的事件，最终状态一定会在重连或下次查询时对齐。这是&#8221;<strong>展示层可丢、事实层不丢</strong>&#8220;的设计原则。</li>
+  <li><strong>背压</strong>：SSE 推送有独立线程池（demoSseExecutor: core 8/max 32/queue 200），队列堆积满 200 后 CallerRunsPolicy 让 Controller 线程降级处理，避免无限堆内存。</li>
+</ul>
+
+<h3 id="sse-对比http的优势">SSE 对比HTTP的优势</h3>
+
+<p>这题比“SSE vs WebSocket”更本质——因为你的 SSE 场景里，客户端的备选方案不是 WebSocket，而是<strong>普通 HTTP 轮询</strong>。答案要从“推”和“拉”的模型差异讲起。</p>
+
+<p><strong>一句话</strong>：普通 HTTP 是“客户端反复问：好了吗？好了吗？”；SSE 是“服务端好了主动告诉你”。核心优势不是快，是<strong>实时性 + 请求成本 + 服务端视角的事件保真</strong>。</p>
+
+<hr />
+
+<h3 id="1-实时性推送延迟-vs-轮询间隔">1. 实时性：推送延迟 vs 轮询间隔</h3>
+
+<p>轮询的延迟下限 = 轮询间隔。500ms 轮一次，平均延迟 250ms，最坏 500ms；想降到 50ms 就得 20 倍频率地打请求。SSE 的延迟 = 网络传输本身（毫秒级），<strong>LLM token 一吐出来就能推到用户屏幕上</strong>——打字机效果的“实时感”只有推送模型做得到，轮询出来的打字机是一顿一顿的卡帧。</p>
+
+<h3 id="2-成本结构一次请求-vs-n-次空转">2. 成本结构：一次请求 vs N 次空转</h3>
+
+<p>轮询 90% 的请求是<strong>无效的</strong>——“还没好？”→“没有”。每个无效请求都要走完整的 TCP/TLS 握手（或 keep-alive）、HTTP 头解析、鉴权、路由、日志——<strong>服务端为“什么都没发生”支付了全额处理成本</strong>。10 个连接 500ms 轮询 = 每秒 20 次空请求；1 万个连接就是每秒 2 万次。SSE 一次 GET 挂住，之后<strong>事件发生才有流量</strong>，无事件时只有心跳注释行（几十字节）。空闲成本对比是数量级的差距。</p>
+
+<h3 id="3-服务端视角事件驱动的天然保真">3. 服务端视角：事件驱动的天然保真</h3>
+
+<p>这是最容易被忽略、但对你项目最核心的一条。轮询模式下服务端要回答“<strong>现在到哪了</strong>”——必须把 token 流聚合成“当前快照”（比如生成到第 137 字的完整文本），每次轮询把快照发过去，客户端自己 diff 出新增部分。问题：</p>
+
+<ul>
+  <li><strong>服务端要维护快照状态</strong>（为轮询专门做一份“当前态”存储）；</li>
+  <li><strong>客户端 diff 有边界情况</strong>（两个轮询之间服务端更新了两次，diff 逻辑要处理乱序/重叠）；</li>
+  <li><strong>中间事件丢失</strong>——只看快照的话，进度事件、错误事件这类瞬时消息轮询模型天然传不了，得另造“事件队列”让轮询来捞。</li>
+</ul>
+
+<p>SSE 是<strong>事件流原样下发</strong>：chunk 事件、进度事件、错误事件、终态事件按发生顺序逐条推，服务端只管“发生了什么就说什么”，不用维护快照，客户端 append-only 渲染。<strong>事件语义在传输层原生保留</strong>——你前面问的 chunk 序号、断线续传、半条消息丢弃，这套机制全部建立在“传的是事件而不是快照”上。</p>
+
+<h3 id="为什么不用udp代替sse">为什么不用UDP代替SSE</h3>
+
+<p>SSE 的“单向”之上还压着三个硬需求</p>
+
+<p>SSE 确实只有服务端→客户端的数据流，但它要的不只是“能发出去”，还要：</p>
+
+<ol>
+  <li><strong>按序到达</strong>——token 流的顺序就是语义顺序，“巴黎/是/法国/首都”乱序到达就是乱码；</li>
+  <li><strong>不丢</strong>——丢一个 chunk，用户屏幕就缺一块（虽然可以补，但谁补？见第 3 点）；</li>
+  <li><strong>客户端地址可达</strong>——服务器要把数据推到客户端。</li>
+</ol>
+
+<p><strong>UDP 三个都不保证</strong>。所以“都是单向”只解决了流量方向问题，没解决可靠性和有序性——而这两样恰恰是 TCP 已经做好的。真用 UDP，你就得自己造丢包检测、重传、排序——<strong>那叫重新发明 TCP</strong>。</p>
+
+        </article>
+      </div>
+    </div>
+  </main>
+
+  <!-- Right: Category Articles -->
+  <aside class="post-category-sidebar" role="navigation" aria-label="分类文章列表">
+    <div class="category-panel">
+      
+      
+      <div class="category-sidebar-title">
+        <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
+        Agent
+      </div>
+      <ul class="category-article-list">
+        
+        
+        <li class="active">
+          <a href="/2026/10/27/agent/SSE/" title="SSE">
+            <span class="article-title">SSE</span>
+            <span class="article-date">10-27</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/10/04/agent/Muse/" title="Muse">
+            <span class="article-title">Muse</span>
+            <span class="article-date">10-04</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/10/04/agent/Observability/" title="Observability">
+            <span class="article-title">Observability</span>
+            <span class="article-date">10-04</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/10/04/agent/RSI/" title="RSI">
+            <span class="article-title">RSI</span>
+            <span class="article-date">10-04</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/09/20/agent/Clarity/" title="Clarity">
+            <span class="article-title">Clarity</span>
+            <span class="article-date">09-20</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/09/20/agent/ClaudeCode-%E6%A0%B8%E5%BF%83%E6%B5%81%E7%A8%8B/" title="ClaudeCode 核心流程">
+            <span class="article-title">ClaudeCode 核心流程</span>
+            <span class="article-date">09-20</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/09/20/agent/Codex/" title="Codex">
+            <span class="article-title">Codex</span>
+            <span class="article-date">09-20</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/09/20/agent/DeepSeek-Harness/" title="DeepSeek Harness">
+            <span class="article-title">DeepSeek Harness</span>
+            <span class="article-date">09-20</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/09/20/agent/Hermes/" title="Hermes">
+            <span class="article-title">Hermes</span>
+            <span class="article-date">09-20</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/09/20/agent/Orchestration/" title="Orchestration">
+            <span class="article-title">Orchestration</span>
+            <span class="article-date">09-20</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/09/20/agent/mem0/" title="mem0">
+            <span class="article-title">mem0</span>
+            <span class="article-date">09-20</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/09/14/agent/Agent-Ultimate-Edition/" title="Agent Ultimate Edition">
+            <span class="article-title">Agent Ultimate Edition</span>
+            <span class="article-date">09-14</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/08/24/agent/%E9%95%BF%E7%A8%8B%E4%BB%BB%E5%8A%A1/" title="长程任务">
+            <span class="article-title">长程任务</span>
+            <span class="article-date">08-24</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/08/21/agent/RAG/" title="RAG">
+            <span class="article-title">RAG</span>
+            <span class="article-date">08-21</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/08/21/agent/%E4%B8%8A%E4%B8%8B%E6%96%87%E5%B7%A5%E7%A8%8B/" title="上下文工程">
+            <span class="article-title">上下文工程</span>
+            <span class="article-date">08-21</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/08/21/agent/%E8%AE%B0%E5%BF%86/" title="记忆">
+            <span class="article-title">记忆</span>
+            <span class="article-date">08-21</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/08/21/agent/Agent-RL/" title="Agent RL">
+            <span class="article-title">Agent RL</span>
+            <span class="article-date">08-21</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/08/21/agent/MCP/" title="MCP">
+            <span class="article-title">MCP</span>
+            <span class="article-date">08-21</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/08/10/agent/Plan-and-Solve/" title="Plan and Solve">
+            <span class="article-title">Plan and Solve</span>
+            <span class="article-date">08-10</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/08/10/agent/Reflection/" title="Reflection">
+            <span class="article-title">Reflection</span>
+            <span class="article-date">08-10</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/07/31/agent/ReAct/" title="ReAct">
+            <span class="article-title">ReAct</span>
+            <span class="article-date">07-31</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/07/30/agent/Scaling-Laws%E4%B8%8E%E6%A8%A1%E5%9E%8B%E5%B9%BB%E8%A7%89/" title="Scaling Laws">
+            <span class="article-title">Scaling Laws</span>
+            <span class="article-date">07-30</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/07/30/agent/%E6%A8%A1%E5%9E%8B%E9%80%89%E6%8B%A9%E7%9A%84%E8%80%83%E9%87%8F/" title="模型选择的考量">
+            <span class="article-title">模型选择的考量</span>
+            <span class="article-date">07-30</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/07/30/agent/Tokenizer/" title="Tokenizer">
+            <span class="article-title">Tokenizer</span>
+            <span class="article-date">07-30</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/07/23/agent/%E6%8F%90%E7%A4%BA%E5%B7%A5%E7%A8%8B/" title="提示工程">
+            <span class="article-title">提示工程</span>
+            <span class="article-date">07-23</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/06/09/agent/%E5%A4%A7%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E9%A9%B1%E5%8A%A8%E7%9A%84%E6%99%BA%E8%83%BD%E4%BD%93/" title="初识智能体">
+            <span class="article-title">初识智能体</span>
+            <span class="article-date">06-09</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/04/23/agent/Openclaw/" title="Openclaw">
+            <span class="article-title">Openclaw</span>
+            <span class="article-date">04-23</span>
+          </a>
+        </li>
+        
+      </ul>
+      
+    </div>
+  </aside>
+</div>
+
+<!-- Theme Toggle Button -->
+<button type="button" class="theme-toggle" aria-label="Toggle Theme">
+  <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+  </svg>
+  <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="12" cy="12" r="5"></circle>
+    <line x1="12" y1="1" x2="12" y2="3"></line>
+    <line x1="12" y1="21" x2="12" y2="23"></line>
+    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+    <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+    <line x1="1" y1="12" x2="3" y2="12"></line>
+    <line x1="21" y1="12" x2="23" y2="12"></line>
+    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+    <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+  </svg>
+</button>
+
+<!-- Back to Top Button -->
+<button type="button" class="back-to-top" aria-label="Back to Top">
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <polyline points="18 15 12 9 6 15"></polyline>
+  </svg>
+</button>
+
+
+    <!-- Site Footer -->
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-content">
+      <div class="footer-info">
+        <h4>xinfan9's blog</h4>
+        <p>Actually, less is more!</p>
+      </div>
+      <div class="footer-links">
+        <a href="https://github.com/xinfan9/" target="_blank" title="GitHub">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+        </a>
+        <a href="mailto:11411619@qq.com" title="Email">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+        </a>
+        <a href="/feed.xml" title="RSS">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11a9 9 0 0 1 9 9"/><path d="M4 4a16 16 0 0 1 16 16"/><circle cx="5" cy="19" r="1"/></svg>
+        </a>
+      </div>
+      <div class="footer-copyright">
+        <p>&copy; 2026 xinfan9. Built with Jekyll.</p>
+      </div>
+    </div>
+  </div>
+</footer>
+      
+    
+    <!-- Global Buttons (for non-post pages) -->
+    
+  </body>
+</html>
