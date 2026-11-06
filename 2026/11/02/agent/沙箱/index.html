@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+  <head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="Content-Language" content="zh-CN">
+	<title>沙箱 - xinfan9's blog</title>
+
+	<link rel="icon" href="/styles/images/favicon.jpg">
+
+	<!-- Preconnect for CDN -->
+	
+	<link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+	<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+	
+
+
+	<!-- Inline Critical Reset (was index.css) -->
+	<style>
+		*,*::before,*::after{box-sizing:border-box}html{-ms-text-size-adjust:100%;-webkit-text-size-adjust:100%;-webkit-tap-highlight-color:rgba(0,0,0,0)}body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Microsoft YaHei",sans-serif;font-size:14px;line-height:1.42857143;color:#333;background-color:#f7f7f7}article,aside,details,figcaption,figure,footer,header,main,nav,section,summary{display:block}a{color:#43759e;text-decoration:none;background:transparent}a:hover,a:focus{color:#2c4d68;text-decoration:underline}a:focus{outline:thin dotted;outline-offset:-2px}img{vertical-align:middle;max-width:100%;height:auto}input,button,select,textarea{font-family:inherit;font-size:inherit;line-height:inherit}h1,h2,h3,h4,h5,h6{margin-top:0}.container{max-width:1200px;margin-left:auto;margin-right:auto;padding-left:15px;padding-right:15px}.clearfix::after{content:"";display:table;clear:both}.text-muted{color:#777}.sr-only{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0,0,0,0);border:0}
+	</style>
+
+	
+	<link rel="prefetch" as="image" href="/styles/images/api/background.webp">
+
+	<!-- Clarity Blog Theme -->
+	<link rel="stylesheet" href="/assets/css/clarity-blog.css?v=1793952871">
+
+	<!-- Prism.js Theme (non-blocking, only needed for code blocks) -->
+	
+	
+	<link rel="canonical" href="https://xinfang.site/2026/11/02/agent/%E6%B2%99%E7%AE%B1/">
+	<link rel="alternate" type="application/rss+xml" title="xinfan9's blog" href="https://xinfang.site/feed.xml">
+	
+	<meta name="description" content="一、定位：沙箱是Claw 的“工具执行器”
+">
+
+	<!-- Open Graph for social sharing -->
+	<meta property="og:title" content="沙箱">
+	<meta property="og:description" content="一、定位：沙箱是Claw 的“工具执行器”
+">
+	<meta property="og:url" content="https://xinfang.site/2026/11/02/agent/%E6%B2%99%E7%AE%B1/">
+	<meta property="og:site_name" content="xinfan9's blog">
+	<meta property="og:type" content="article">
+	<meta property="article:published_time" content="2026-11-02T20:21:33+08:00">
+	
+	<meta property="og:image" content="https://xinfang.site/styles/images/api/background.webp">
+	<meta property="og:image:width" content="1200">
+	<meta property="og:image:height" content="630">
+	
+	<meta property="og:locale" content="zh_CN">
+
+	<!-- Twitter Card -->
+	<meta name="twitter:card" content="summary_large_image">
+	<meta name="twitter:title" content="沙箱">
+	<meta name="twitter:description" content="一、定位：沙箱是Claw 的“工具执行器”
+">
+	<meta name="twitter:image" content="https://xinfang.site/styles/images/favicon.jpg">
+	
+	<!-- Theme color for mobile browsers -->
+	<meta name="theme-color" content="#0b72d9" media="(prefers-color-scheme: light)">
+	<meta name="theme-color" content="#0f172a" media="(prefers-color-scheme: dark)">
+
+	<!-- Prevent FOUC for theme -->
+	<script>
+		(function() {
+			const savedTheme = localStorage.getItem('theme');
+			const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+			if (savedTheme) {
+				document.documentElement.setAttribute('data-theme', savedTheme);
+			} else if (prefersDark) {
+				document.documentElement.setAttribute('data-theme', 'dark');
+			}
+		})();
+	</script>
+	
+	<!-- Prism.js only on post pages with code blocks -->
+	
+
+	<!-- Mermaid.js for diagram rendering (conditional) -->
+	
+
+	<!-- MathJax for LaTeX rendering (conditional) -->
+	
+
+	<!-- Blog Interactive Features -->
+	<script src="/assets/js/blog.js?v=1793952871" defer></script>
+
+	<!-- JSON-LD Structured Data -->
+	
+	<script type="application/ld+json">
+	{
+		"@context": "https://schema.org",
+		"@type": "BlogPosting",
+		"inLanguage": "zh-CN",
+		"headline": "沙箱",
+		"image": "https://xinfang.site/styles/images/favicon.jpg",
+		"datePublished": "2026-11-02T20:21:33+08:00",
+		"dateModified": "2026-11-02T20:21:33+08:00",
+		"author": {
+			"@type": "Person",
+			"name": "xinfan9"
+		},
+		"publisher": {
+			"@type": "Organization",
+			"name": "xinfan9's blog",
+			"logo": {
+				"@type": "ImageObject",
+				"url": "https://xinfang.site/styles/images/favicon.jpg"
+			}
+		},
+		"mainEntityOfPage": {
+			"@type": "WebPage",
+			"@id": "https://xinfang.site/2026/11/02/agent/%E6%B2%99%E7%AE%B1/"
+		},
+		"keywords": "Agent",
+		"articleBody": "一、定位：沙箱是Claw 的“工具执行器”\n",
+		"description": "一、定位：沙箱是Claw 的“工具执行器”\n"
+	}
+	</script>
+	
+</head>
+
+  <body class="index">
+
+    <!-- Reading Progress Bar -->
+<div class="reading-progress" id="reading-progress"></div>
+
+<!-- Page Background -->
+<div class="post-background"></div>
+
+<div class="post-layout">
+  <!-- Left: TOC -->
+  <aside class="post-toc-sidebar" id="post-toc-sidebar" role="navigation" aria-label="文章目录">
+    <div class="toc-panel">
+      <div class="toc-title">
+        <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="12" x2="15" y2="12"></line><line x1="3" y1="18" x2="18" y2="18"></line></svg>
+        目录
+      </div>
+      <ul class="toc-list" id="toc-list"></ul>
+    </div>
+  </aside>
+
+  <!-- Center: Article -->
+  <main class="post-main">
+    <div class="panel docs-content">
+      <div class="wrapper">
+        <header class="post-header" role="banner">
+          <a href="https://xinfang.site/" class="back-home-link">
+            <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+            返回主页
+          </a>
+          <h1 class="post-title">沙箱</h1>
+          <div class="post-meta-info">
+            <time class="meta-item meta-date" datetime="2026-11-02T20:21:33+08:00">
+              <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+              2026-11-02
+            </time>
+            
+            <time class="meta-item meta-update" datetime="2026-11-02T20:21:33+08:00">
+              <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 2.2"/></svg>
+              2026-11-02
+            </time>
+            
+            <span class="meta-item meta-author">
+              <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+              xinfan9
+            </span>
+            
+            <span class="meta-item meta-words">
+              <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+              268 字
+            </span>
+            
+            <span class="meta-item meta-reading">
+              <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+              约 3 分钟
+            </span>
+          </div>
+        </header>
+        <article class="post-content" role="article">
+          <h2 id="一定位沙箱是claw-的工具执行器">一、定位：沙箱是Claw 的“工具执行器”</h2>
+
+<p>Claw本身是一个<strong>无状态多用户服务</strong>，所有代码执行、文件操作、CLI 凭据（<code>/root/userdata/.office-cli/</code>）都不能落在自己进程里——需要一个按需启停、用户隔离、可销毁的执行环境。sandbox 就是这个环境的<strong>生命周期管家</strong>：</p>
+
+<pre><code>Claw 管控（claw-manager）
+        │ HTTP /sandbox/qwenclaw/*
+        ▼
+iagent-sandbox（本服务，Java 17 / Spring Boot 3.1）
+        │ AgentBay SDK
+        ▼
+无影云沙箱（Session 即沙箱，一用户一沙箱）
+</code></pre>
+
+<p>对上层暴露的语义很简单：<code>/create-async</code> 拿 sessionId → <code>/executeCommand</code> 跑命令 → <code>/stop</code> 销毁；<code>/event-callback</code> 接收外部健康检查系统的周期上报（约每沙箱每分钟 1 次）。</p>
+
+<h2 id="二核心机制一异步创建--六态状态机">二、核心机制一：异步创建 + 六态状态机</h2>
+
+<p><strong><code>/create-async</code> 两条分发路径</strong>（这是整个服务最值得讲的设计）：</p>
+
+<ul>
+  <li><strong>快速路径</strong>：线程池队列有余量（绝大多数请求）→ 写 DB <code>scheduling</code> → 提交初始化任务 → 立即返回 sessionId/podId；</li>
+  <li><strong>溢出路径</strong>：队列满 → 写 DB <code>created</code> → 等待 <code>QwenClawInitScheduler</code>（10s 扫一轮，按 created_at 升序取 32 条）CAS 抢占后入队；</li>
+</ul>
+
+<p><strong>状态机</strong>：<code>created → scheduling → initializing → running / failed / stopped</code>。所有流转都是<strong>定向 CAS 更新</strong>（如 <code>markRunning</code> 带 <code>WHERE status='initializing'</code> 守卫），文档里列为“关键约定”：禁止 <code>save()</code> 全量更新与异步初始化竞争——多节点并发只有一个成功，和 octopus-hub 恢复抢占 CAS（status+attempt+nodeIp 三字段联动）是同一套模式。</p>
+
+<p><strong>初始化八步</strong>（工作线程执行）：CAS 到 initializing → reconnect → 写 supervisor 配置（openclaw 进程定义）→ 批量挂 OSS（单次 STS 鉴权 + &#8220;reached the maximum&#8221; 限流重试最多 5 次）→ 取 dashboardUrl → 执行 initCommands → <code>supervisorctl update</code> 启动 claw 进程 → CAS markRunning。<strong>任何一步失败 = 销毁 Session（防僵尸沙箱）→ CAS 标 failed → 驱逐 Redis → 通知管控</strong>，失败语义干净。</p>
+
+<p><strong>通用能力烧在共享镜像里（静态层）、用户数据和配置通过 OSS 挂载进来（持久层）、个性化初始化靠 initCommands 在每次创建时执行（动态层）</strong>。沙箱本身是易失的（空闲 60 分钟就销毁），所以“个性化”的秘诀全在<strong>把可变部分外置到镜像之外</strong>。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: left">层</th>
+      <th style="text-align: left">载体</th>
+      <th style="text-align: left">生命周期</th>
+      <th style="text-align: left">变更成本</th>
+      <th style="text-align: left">放什么</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left">镜像</td>
+      <td style="text-align: left">dockerImageId</td>
+      <td style="text-align: left">静态，所有用户共享</td>
+      <td style="text-align: left">高（重新构建镜像）</td>
+      <td style="text-align: left">公共运行时/工具链</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">OSS 挂载/Context</td>
+      <td style="text-align: left">storageConfigs</td>
+      <td style="text-align: left">持久，跨沙箱存活</td>
+      <td style="text-align: left">低（写入即持久）</td>
+      <td style="text-align: left">用户数据/凭据/工作区</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">initCommands</td>
+      <td style="text-align: left">创建参数</td>
+      <td style="text-align: left">每次创建重放</td>
+      <td style="text-align: left">低（改参数即可）</td>
+      <td style="text-align: left">个性化安装/启动命令</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><strong>超时兜底的顺序细节</strong>：TimeoutCleaner（30s 扫一轮，initializing 超 60s 判死）<strong>先 CAS markFailed 成功后才 destroySession</strong>——防止工作线程恰好 markRunning 后被误销毁；doInit 在长耗时步骤前主动 heartbeat 刷新 updated_at 防误杀。</p>
+
+<h2 id="三幂等五道机制各有分工">三、幂等：五道机制，各有分工</h2>
+
+<p>“每次重建重放”的初始化要幂等，代码里实际落了五层：</p>
+
+<p><strong>1. 状态机 CAS——宏观幂等（防重复初始化）</strong></p>
+
+<p>每个沙箱实例只初始化一次的保证：<code>markInitializing</code> 带 <code>WHERE status='scheduling'</code> 守卫，多节点/调度器/工作线程同时抢，只有一个 CAS 成功；<code>markRunning</code> 带 <code>WHERE status='initializing'</code>——若已被 TimeoutCleaner 标 failed（CAS 返回 0），工作线程直接跳过不覆盖。<strong>“这个沙箱实例”级别的操作不会重复执行</strong>。</p>
+
+<p><strong>2. 前置检查——挂载的幂等（防重复挂载出错）</strong></p>
+
+<p>Step 5 Phase 1 有个精妙的分叉处理（L1304-1331）：</p>
+
+<ul>
+  <li>挂载点在 <code>/root/.openclaw</code> 开头 → <strong>先 <code>rm -rf</code> 清掉再挂</strong>——这是刻意为幂等设计的：该目录有历史残留（上次挂载的痕迹）时，删干净重来；</li>
+  <li>其他挂载点 → <strong>反向策略：目录已存在就整体失败</strong>（&#8221;mount point 已存在&#8221;→ markFailed + 销毁）——<strong>宁可失败也不悄悄重挂</strong>。</li>
+</ul>
+
+<p>这两条规则合起来是一套显式的幂等语义：<strong>要么环境是干净的（新沙箱，挂载点必然不存在），要么操作者明确清理（openclaw 目录强制删除）</strong>。挂载在 ossfs 语义下天然幂等（同一路径重复挂载结果是同一个 OSS 视图），但代码不依赖这个隐式性质，用前置检查把它变成显式契约。</p>
+
+<p><strong>3. 失败即销毁——防“半成品状态”破坏幂等前提</strong></p>
+
+<p><code>markFailedStatusAndDestroyFromInit</code> 的顺序是<strong>先销毁 Session、再标 failed、再驱逐缓存</strong>。这意味着不存在“初始化了一半的沙箱被复用”的场景——下次重试面对的永远是全新容器（挂载点必然不存在、supervisor 配置必然是初始态）。<strong>幂等的前提是环境复位，销毁保证了复位</strong>。Phase 3 限流重试（&#8221;reached the maximum&#8221; 最多 5 次间隔 1s）只对单次挂载调用重试，整个初始化失败不重试——重来就是新沙箱。</p>
+
+<p><strong>4. initCommands 的幂等——约定而非保证</strong></p>
+
+<p>命令内容是管控侧生成的（如 <code>pip install requests</code>），服务侧只逐条执行并检查 exitCode（L1484-1485）。<strong>幂等责任在命令本身</strong>：pip/npm install 天然幂等（已装则跳过）；服务侧的保证是“执行环境每次都是新的”（第 3 点），所以幂等要求退化为“命令对干净环境的效果确定性”。反例也明确：非幂等命令（如 <code>echo x &gt;&gt; file</code>）在单沙箱生命周期内也不会重复执行（初始化只跑一次），跨重建因为环境复位也无累积效应。</p>
+
+<p><strong>5. 数量校验——防 SDK 异常破坏不变量</strong></p>
+
+<p>Phase 2 批量挂载后校验“返回结果数量 == 请求数量”（L1361-1369），不一致直接判失败——防止 SDK 部分返回导致的状态错认。这是把“不变量显式校验”作为幂等的组成部分：<strong>幂等不只靠执行逻辑，还靠对结果的完整性断言</strong>。</p>
+
+        </article>
+      </div>
+    </div>
+  </main>
+
+  <!-- Right: Category Articles -->
+  <aside class="post-category-sidebar" role="navigation" aria-label="分类文章列表">
+    <div class="category-panel">
+      
+      
+      <div class="category-sidebar-title">
+        <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
+        Agent
+      </div>
+      <ul class="category-article-list">
+        
+        
+        <li class="active">
+          <a href="/2026/11/02/agent/%E6%B2%99%E7%AE%B1/" title="沙箱">
+            <span class="article-title">沙箱</span>
+            <span class="article-date">11-02</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/11/02/agent/Agent-Ultimate-Edition/" title="Agent Ultimate Edition">
+            <span class="article-title">Agent Ultimate Edition</span>
+            <span class="article-date">11-02</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/10/27/agent/SSE/" title="SSE">
+            <span class="article-title">SSE</span>
+            <span class="article-date">10-27</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/10/04/agent/Muse/" title="Muse">
+            <span class="article-title">Muse</span>
+            <span class="article-date">10-04</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/10/04/agent/RSI/" title="RSI">
+            <span class="article-title">RSI</span>
+            <span class="article-date">10-04</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/10/04/agent/%E8%B7%AF%E7%94%B1/" title="路由">
+            <span class="article-title">路由</span>
+            <span class="article-date">10-04</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/09/20/agent/Clarity/" title="Clarity">
+            <span class="article-title">Clarity</span>
+            <span class="article-date">09-20</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/09/20/agent/ClaudeCode-%E6%A0%B8%E5%BF%83%E6%B5%81%E7%A8%8B/" title="ClaudeCode 核心流程">
+            <span class="article-title">ClaudeCode 核心流程</span>
+            <span class="article-date">09-20</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/09/20/agent/Codex/" title="Codex">
+            <span class="article-title">Codex</span>
+            <span class="article-date">09-20</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/09/20/agent/DeepSeek-Harness/" title="DeepSeek Harness">
+            <span class="article-title">DeepSeek Harness</span>
+            <span class="article-date">09-20</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/09/20/agent/Hermes/" title="Hermes">
+            <span class="article-title">Hermes</span>
+            <span class="article-date">09-20</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/09/20/agent/mem0/" title="mem0">
+            <span class="article-title">mem0</span>
+            <span class="article-date">09-20</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/08/24/agent/%E9%95%BF%E7%A8%8B%E4%BB%BB%E5%8A%A1/" title="长程任务">
+            <span class="article-title">长程任务</span>
+            <span class="article-date">08-24</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/08/21/agent/RAG/" title="RAG">
+            <span class="article-title">RAG</span>
+            <span class="article-date">08-21</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/08/21/agent/%E4%B8%8A%E4%B8%8B%E6%96%87%E5%B7%A5%E7%A8%8B/" title="上下文工程">
+            <span class="article-title">上下文工程</span>
+            <span class="article-date">08-21</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/08/21/agent/%E8%AE%B0%E5%BF%86/" title="记忆">
+            <span class="article-title">记忆</span>
+            <span class="article-date">08-21</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/08/21/agent/Agent-RL/" title="Agent RL">
+            <span class="article-title">Agent RL</span>
+            <span class="article-date">08-21</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/08/21/agent/MCP/" title="MCP">
+            <span class="article-title">MCP</span>
+            <span class="article-date">08-21</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/08/10/agent/Plan-and-Solve/" title="Plan and Solve">
+            <span class="article-title">Plan and Solve</span>
+            <span class="article-date">08-10</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/08/10/agent/Reflection/" title="Reflection">
+            <span class="article-title">Reflection</span>
+            <span class="article-date">08-10</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/07/31/agent/ReAct/" title="ReAct">
+            <span class="article-title">ReAct</span>
+            <span class="article-date">07-31</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/07/30/agent/Scaling-Laws%E4%B8%8E%E6%A8%A1%E5%9E%8B%E5%B9%BB%E8%A7%89/" title="Scaling Laws">
+            <span class="article-title">Scaling Laws</span>
+            <span class="article-date">07-30</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/07/30/agent/%E6%A8%A1%E5%9E%8B%E9%80%89%E6%8B%A9%E7%9A%84%E8%80%83%E9%87%8F/" title="模型选择的考量">
+            <span class="article-title">模型选择的考量</span>
+            <span class="article-date">07-30</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/07/30/agent/Tokenizer/" title="Tokenizer">
+            <span class="article-title">Tokenizer</span>
+            <span class="article-date">07-30</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/07/23/agent/%E6%8F%90%E7%A4%BA%E5%B7%A5%E7%A8%8B/" title="提示工程">
+            <span class="article-title">提示工程</span>
+            <span class="article-date">07-23</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/06/09/agent/%E5%A4%A7%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E9%A9%B1%E5%8A%A8%E7%9A%84%E6%99%BA%E8%83%BD%E4%BD%93/" title="初识智能体">
+            <span class="article-title">初识智能体</span>
+            <span class="article-date">06-09</span>
+          </a>
+        </li>
+        
+        <li class="">
+          <a href="/2026/04/23/agent/Openclaw/" title="Openclaw">
+            <span class="article-title">Openclaw</span>
+            <span class="article-date">04-23</span>
+          </a>
+        </li>
+        
+      </ul>
+      
+    </div>
+  </aside>
+</div>
+
+<!-- Theme Toggle Button -->
+<button type="button" class="theme-toggle" aria-label="Toggle Theme">
+  <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+  </svg>
+  <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="12" cy="12" r="5"></circle>
+    <line x1="12" y1="1" x2="12" y2="3"></line>
+    <line x1="12" y1="21" x2="12" y2="23"></line>
+    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+    <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+    <line x1="1" y1="12" x2="3" y2="12"></line>
+    <line x1="21" y1="12" x2="23" y2="12"></line>
+    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+    <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+  </svg>
+</button>
+
+<!-- Back to Top Button -->
+<button type="button" class="back-to-top" aria-label="Back to Top">
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <polyline points="18 15 12 9 6 15"></polyline>
+  </svg>
+</button>
+
+
+    <!-- Site Footer -->
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-content">
+      <div class="footer-info">
+        <h4>xinfan9's blog</h4>
+        <p>Actually, less is more!</p>
+      </div>
+      <div class="footer-links">
+        <a href="https://github.com/xinfan9/" target="_blank" title="GitHub">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+        </a>
+        <a href="mailto:11411619@qq.com" title="Email">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+        </a>
+        <a href="/feed.xml" title="RSS">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11a9 9 0 0 1 9 9"/><path d="M4 4a16 16 0 0 1 16 16"/><circle cx="5" cy="19" r="1"/></svg>
+        </a>
+      </div>
+      <div class="footer-copyright">
+        <p>&copy; 2026 xinfan9. Built with Jekyll.</p>
+      </div>
+    </div>
+  </div>
+</footer>
+      
+    
+    <!-- Global Buttons (for non-post pages) -->
+    
+  </body>
+</html>
